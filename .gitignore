@@ -1,3 +1,10 @@
+# Django and IDE-specific
+*.sqlite?
+**/migrations/
+.vscode/
+*.bak
+*.old
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
