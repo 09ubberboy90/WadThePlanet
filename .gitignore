@@ -1,0 +1,6 @@
+/db.sqlite3
+/.vscode/*
+/__pycache__/*
+/planet/__pycache__/*
+/WadThePlanet/__pycache__/*
+/planet/migrations/__pycache__/*
