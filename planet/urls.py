@@ -29,5 +29,6 @@ urlpatterns = [
     # url(r'^(?P<username_slug>[\w\-]+)/(?P<system_slug>[\w\-]+)/(?P<planet_slug>[\w\-]+)/edit/$', views.edit_planet,
     #     name='edit_planet'),
 
-
+    # FIXME(Paolo): Test!
+    url(r'^test$', views.test, name='test'),
 ]
