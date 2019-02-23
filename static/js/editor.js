@@ -21,6 +21,7 @@ function setup() {
     //renderer.toneMappingExposure = 5.0;
 
     // Attach the Canvas to the main container
+    renderer.domElement.id = 'editor';
     $('#editor-container').append(renderer.domElement);  
 
     // Setup scene and main camera
