@@ -1,3 +1,7 @@
 main {
     padding-top: 80px;
 }
+
+#editor-container {
+    min-height: 90vh;
+}

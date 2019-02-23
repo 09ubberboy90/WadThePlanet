@@ -5,6 +5,7 @@
     },
     "exclude": [
         "node_modules",
+        "static/js/OrbitControls.js",  // Otherwise THREE.* autocompletion fails!
     ],
     "typeAcquisition": {
         "enable": true,

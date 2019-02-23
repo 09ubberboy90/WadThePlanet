@@ -1,4 +1,14 @@
 {% load static %}
 
+<!-- 100% parent width (container-fluid), no padding on the only column (col-p-0) -->
+<div class="container-fluid">
+    <div class="row flex-grow-1">
+        <div class="col-p0 flex-grow-1" id="editor-container">
+            <!-- editor.js will insert the WebGL canvas here -->
+        </div>
+    </div>
+</div>
+
 <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r83/three.min.js'></script>
+<script type="text/javascript" src="{% static 'js/OrbitControls.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/editor.js' %}"></script>
