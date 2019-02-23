@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+{% extends 'planet/base.html' %}
+
+{% load staticfiles %}
+
+{% block body_block %}
+    There is some text There
+    <div class="text-center">
+        <img class="img-responsive" src="{% static "images/solar-system.jpg" %}"  alt="Picture of the Solar System" style="max-width: 100%"/>
+    </div>
+{% endblock body_block %}
