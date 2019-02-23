@@ -3,7 +3,7 @@ main {
 }
 
 #editor-container {
-    min-height: 90vh;
+    height: 90vh;
 }
 
 #editor {
