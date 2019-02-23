@@ -1,0 +1,17 @@
+// VScode JavaScript autocompletion configuration
+{
+    "compilerOptions": {
+        "target": "es2015",
+    },
+    "exclude": [
+        "node_modules",
+    ],
+    "typeAcquisition": {
+        "enable": true,
+        "include": [
+            "jquery",
+            "three",
+            "bootstrap",
+        ],
+    },
+}
