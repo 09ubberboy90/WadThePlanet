@@ -1,19 +1,24 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#header" aria-controls="navbarToggleExternalContent"
+        aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
     <!-- Navbar brand -->
     <a class="navbar-brand" href="{% url 'home' %}">WadThePlanet</a>
 
     <!-- Collapsible content -->
-    <div class="collapse navbar-collapse" id="header">
+    <div class="navbar-collapse collapse flex-row-reverse" id="header">
+        <div class="mx-2 d-inline">
+            <button class="btn btn-outline-success" type="submit">Login</button>
+            <button class="btn btn-outline-success" type="submit">Register</button>
+        </div>
 
-        <form class="form-inline ml-center">
-            <div class="lg-form">
-                <input class="form-control" type="text" placeholder="Search" aria-label="Search">
+        <form class="d-inline flex-grow-1">
+            <div class="input-group">
+                <input class="form-control " type="text" placeholder="Search" aria-label="Search">
             </div>
-
         </form>
 
     </div>
-    <!-- Collapsible content -->
 
 </nav>
