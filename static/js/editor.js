@@ -16,8 +16,8 @@ function setup() {
         //alpha: true, // Enable transparent Canvas backround
     });
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.gammaInput = true; // Input textures have premultiplied gamma
-    renderer.gammaOutput = true; // Framebuffer output has premultiplied gamma
+    //renderer.gammaInput = true; // Input textures have premultiplied gamma
+    //renderer.gammaOutput = true; // Framebuffer output has premultiplied gamma
     //renderer.toneMappingExposure = 5.0;
 
     // Attach the Canvas to the main container
@@ -92,7 +92,7 @@ function setupPlanet() {
         //color: 0xFEFEFE,
         map: textureLoader.load("planet/col.jpg"),
         normalMap: textureLoader.load("planet/nrm.jpg"),
-        aoMap: textureLoader.load("planet/AO.jpg"),
+        //aoMap: textureLoader.load("planet/AO.jpg"),
         roughnessMap: textureLoader.load("planet/rgh.jpg"),
         //displacementMap: textureLoader.load("planet/disp.jpg"),
 
