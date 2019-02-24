@@ -120,7 +120,7 @@ function setupTextureCanvas() {
     // Create and init `textureCanvas`, i.e. the Canvas that will hold the texture
     // painted by the user for the planet.
 
-    textureCanvas = $('<canvas>'); // Create a new <canvas> and add it
+    textureCanvas = $('<canvas width="2048" height="2048">'); // Create a new "free-floating" (out-of-DOM) <canvas>
     textureCanvas.width(TEXTURE_SIZE).height(TEXTURE_SIZE);
     textureCanvas.css('display', 'none'); // Hide it
 
@@ -173,6 +173,27 @@ function raycastPlanet(clientX, clientY) {
     return raycaster.intersectObject(planetMesh);
 }
 
+function paintPlanet(clientX, clientY, brushSize, updateMap) {
+    // Raycast to planet from `(clientX, clientY)`, then paint to
+    // `textureCanvas` if there is any intersection.
+    // If `updateMap`, set `planetMesh.material.map.needsUpdate` to tell THREE.js
+    // that the texture has been updated (default true)
+
+    var intersects = raycastPlanet(clientX, clientY);
+    if (intersects.length > 0 && intersects[0].uv) {
+        var pt = intersects[0];
+
+        var ctx = textureCanvas[0].getContext('2d');
+        ctx.beginPath();
+        ctx.arc(pt.uv.x * textureCanvas.width(), pt.uv.y * textureCanvas.height(),
+            brushSize, 0.0, 2.0 * Math.PI);
+        ctx.fillStyle = '#FA2020';
+        ctx.fill();
+
+        planetMesh.material.map.needsUpdate = updateMap || true;
+    }
+}
+
 function onMouseDown(evt) {
     switch (evt.button) {
         case 0: // Left mouse button
@@ -182,6 +203,7 @@ function onMouseDown(evt) {
         case 2: // Right mouse button
             rmbDown = true;
             $('#editor-container').css('cursor', 'crosshair');
+            paintPlanet(evt.clientX, evt.clientY, 100);
             break;
     }
 }
@@ -190,21 +212,18 @@ function onMouseUp(evt) {
     switch (evt.button) {
         case 2: // Right mouse button
             rmbDown = false;
-
-            // FIXME
-            var canvas = textureCanvas[0];
-            var ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            planetMesh.material.map.needsUpdate = true;
             break;
     }
 
     $('#editor-container').css('cursor', 'default');
 }
 
-
 function onMouseMove(evt) {
     evt.preventDefault(); // (Stops the default mouse move event handlers)
+
+    if (rmbDown) {
+        paintPlanet(evt.clientX, evt.clientY, 100);
+    }
 }
 
 // === Attach event handlers ===================================================
