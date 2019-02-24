@@ -3,5 +3,47 @@
 }
 
 #editor-container {
-    height: 90vh;
+    height: 100vh;
+}
+#searchbar{
+    color: white;
+}
+#astronaut{
+    color: #339af0;
+}
+#editor {
+    width: 100%;
+    height: 100%;
+}
+html,
+body,
+header,
+.view {
+    height: 100%;
+}
+
+@media (max-width: 740px) {
+
+    html,
+    body,
+    header,
+    .view {
+        height: 1000px;
+    }
+}
+
+@media (min-width: 800px) and (max-width: 850px) {
+
+    html,
+    body,
+    header,
+    .view {
+        height: 650px;
+    }
+}
+
+@media (min-width: 800px) and (max-width: 850px) {
+    .navbar:not(.top-nav-collapse) {
+        background: #1C2331 !important;
+    }
 }

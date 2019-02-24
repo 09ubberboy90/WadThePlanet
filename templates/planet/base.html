@@ -7,9 +7,17 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+
         <!-- CSS -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
             integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+        <!-- Material Design Bootstrap -->
+        <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.7.3/css/mdb.min.css' />
+
+        <link rel="stylesheet" href="{% static 'css/style.min.css' %}">
         <link rel="stylesheet" href="{% static 'css/main.css' %}">
 
         <!-- Libraries required sitewide -->
@@ -17,6 +25,7 @@
             crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
             crossorigin="anonymous"></script>
+                <script src="{% static 'js/PageControls.js' %}"></script>
 
         <title>
             WDP -
@@ -27,25 +36,30 @@
     </head>
 
     <body>
-
         {% include 'planet/header.html'%}
-        <div class="container-fluid">
-            <div class="row">
-                {% include 'planet/navbar.html'%}
-                <main role="main" class="col flex-grow-1 px-0">
-                    {% block body_block %}
-                        <div class="px-3">
-                            {% block content_block %}
-                                This is the content with padding 
-                            {% endblock %}
-                        </div>
-                    {% endblock %}
-                </main>
+        {% include 'planet/navbar.html'%}
+          <!-- Full Page Intro -->
+        {% block splashscreen %}
+        {% endblock splashscreen %}
+        <main role="main">
+            {% block body_block %}
+            <div class="px-3">
+                {% block content_block %}
+                This is the content with padding
+                {% endblock %}
             </div>
-        </div>
+            {% endblock %}
+        </main>
+
         <!-- Bootstrap (at the end of <body>) -->
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
+
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.7.3/js/mdb.min.js'></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/web-animations/2.2.2/web-animations.min.js"></script>
+
     </body>
 
 </html>

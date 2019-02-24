@@ -1,24 +1,45 @@
-<nav class="navbar navbar-expand-md navbar-dark sticky-top bg-dark" id="header">
-    <!-- Navbar brand -->
-    <a class="navbar-brand" id="logo" href="{% url 'home' %}">WadThePlanet</a>
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark scrolling-navbar" id="navbar">
+    <div class="container">
 
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#header" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+        <!-- Brand -->
+        <a class="navbar-brand" href="{% url 'home' %}" target="_blank">
+            <strong>WadThePlanet</strong>
+        </a>
 
-    <!-- Collapsible content -->
-    <div class="navbar-collapse collapse flex-row-reverse" id="header">
-        <div class="d-inline">
-            <button class="btn btn-outline-success" type="submit">Login</button>
-            <button class="btn btn-outline-success" type="submit">Register</button>
+        <!-- Collapse -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Links -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+            <!-- Left -->
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'test' %}">Planet View</a>
+                </li>
+            </ul>
+            <form class="form-inline md-form my-0 active-cyan-2 ml-2 flex-grow-1">
+                <i class="fas fa-search" id="searchbar" aria-hidden="true"></i>
+                <input class="form-control form-control-sm ml-3 flex-grow-1" id="searchbar" type="text" placeholder="Search" aria-label="Search">
+            </form>
+            <i class="fas fa-user-astronaut fa-2x mx-4 " id="astronaut"></i>
+
+            <!-- Right -->
+            <ul class="navbar-nav nav-flex-icons ">
+
+                <li class="nav-item">
+                    <button class="btn btn-dark" type="submit">Login</button>
+                    <button class="btn btn-dark" type="submit">Register</button>
+                </li>
+            </ul>
+
         </div>
 
-        <form class="mr-2 d-inline flex-grow-1">
-            <div class="input-group">
-                <input class="form-control " type="text" placeholder="Search" aria-label="Search">
-            </div>
-        </form>
-
     </div>
-
 </nav>
