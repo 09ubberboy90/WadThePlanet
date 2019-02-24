@@ -2,21 +2,53 @@
 {% extends 'planet/base.html' %}
 
 {% load staticfiles %}
+{% block splashscreen %}
+<div class="view full-page-intro" style="background-image: url({% static 'images/solar-system.jpg' %}); background-repeat: no-repeat; background-size: cover;">
+    <!-- Mask & flexbox options-->
+    <div class="mask rgba-black-light d-flex justify-content-center align-items-center">
+        <!-- Content -->
+        <div class="container">
+            <!--Grid row-->
+            <div class="text-center white-text">
+                    <h1 class="display-4 font-weight-bold">Create Yours</h1>
+                    <h1 class="display-4 font-weight-bold">Now!</h1>
+                    <button type="button" class="btn btn-elegant btn-lg waves-effect">Register
+                        <a href="#">
+                    </button>
+
+
+                </div>
+                <!--Grid column-->
+            </div>
+            <!--Grid row-->
+
+        </div>
+        <!-- Content -->
+
+    </div>
+    <!-- Mask & flexbox options-->
+
+</div>
+{% endblock splashscreen %}
 
 {% block content_block %}
-    <p>
+
+<p>
     There is some text There
-    </p>
-    <div class="text-center">
-        <img class="img-responsive" src="{% static "images/solar-system.jpg" %}"  alt="Picture of the Solar System" style="max-width: 100%"/>
-    </div>
-    <div class="text-center">
-        <img class="img-responsive" src="{% static "images/solar-system.jpg" %}"  alt="Picture of the Solar System" style="max-width: 100%"/>
-    </div><div class="text-center">
-        <img class="img-responsive" src="{% static "images/solar-system.jpg" %}"  alt="Picture of the Solar System" style="max-width: 100%"/>
-    </div><div class="text-center">
-        <img class="img-responsive" src="{% static "images/solar-system.jpg" %}"  alt="Picture of the Solar System" style="max-width: 100%"/>
-    </div><div class="text-center">
-        <img class="img-responsive" src="{% static "images/solar-system.jpg" %}"  alt="Picture of the Solar System" style="max-width: 100%"/>
-    </div>
+</p>
+<div class="text-center">
+    <img class="img-responsive" src="{% static "images/solar-system.jpg" %}" alt="Picture of the Solar System" style="max-width: 100%" />
+</div>
+<div class="text-center">
+    <img class="img-responsive" src="{% static "images/solar-system.jpg" %}" alt="Picture of the Solar System" style="max-width: 100%" />
+</div>
+<div class="text-center">
+    <img class="img-responsive" src="{% static "images/solar-system.jpg" %}" alt="Picture of the Solar System" style="max-width: 100%" />
+</div>
+<div class="text-center">
+    <img class="img-responsive" src="{% static "images/solar-system.jpg" %}" alt="Picture of the Solar System" style="max-width: 100%" />
+</div>
+<div class="text-center">
+    <img class="img-responsive" src="{% static "images/solar-system.jpg" %}" alt="Picture of the Solar System" style="max-width: 100%" />
+</div>
 {% endblock content_block %}
