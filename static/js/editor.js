@@ -7,8 +7,8 @@ var textureLoader, cubemapLoader;
 var sunLight, skyCubemap;
 var planetMesh;
 var rmbDown = false; // Right mouse button pressed?
-var textureCanvas; // JQuery selector to the <canvas> containing the painted texture
 
+var textureCanvas; // JQuery selector to the <canvas> containing the painted texture
 const TEXTURE_SIZE = 2048; // In pixels, must be power-of-two
 
 // === Setup code ==============================================================
@@ -88,6 +88,7 @@ function setupPlanet() {
 
     // Generate planet geometry. Use a normalized cube; this gives better UV
     // mapping than a SphereGeometry or IcosahedronGeometry!
+    // TODO(Paolo): Add a slider for the user to control morphing between sphere and cube
     const radius = 1.0;
     const nSubdivs = 16;
     var geometry = new THREE.BoxGeometry(1.0, 1.0, 1.0, nSubdivs, nSubdivs, nSubdivs);
@@ -96,6 +97,7 @@ function setupPlanet() {
         var distToCenter = radius + Math.random() * 0.06; // TODO(Paolo): Better heightmaps, fix random seed
         vtx.setLength(distToCenter);
     }
+
     geometry.computeVertexNormals();
 
     var material = new THREE.MeshStandardMaterial({
@@ -120,7 +122,8 @@ function setupTextureCanvas() {
     // Create and init `textureCanvas`, i.e. the Canvas that will hold the texture
     // painted by the user for the planet.
 
-    textureCanvas = $('<canvas width="2048" height="2048">'); // Create a new "free-floating" (out-of-DOM) <canvas>
+    var canvasCode = '<canvas width="' + TEXTURE_SIZE + '" height="' + TEXTURE_SIZE + '">'
+    textureCanvas = $(canvasCode); // Create a new "free-floating" (out-of-DOM) <canvas>
     textureCanvas.width(TEXTURE_SIZE).height(TEXTURE_SIZE);
     textureCanvas.css('display', 'none'); // Hide it
 
@@ -161,12 +164,12 @@ function raycastPlanet(clientX, clientY) {
     // Returns the array of intersections obtained by raycasting to `planetMesh`
     // from the given client{X,Y} position onscreen.
 
-    var editorBounds = $('#editor-container')[0].getBoundingClientRect();
+    var editorBounds = $('#editor')[0].getBoundingClientRect();
     // Calculate mouse position relative to the editor, in UV coordinates (0.0 to 1.0)
     var mouseU = (clientX - editorBounds.left) / editorBounds.width;
     var mouseV = (clientY - editorBounds.top) / editorBounds.height;
     // Transform UV to normalized device coordinates (-1.0 to 1.0)
-    var mouseNDC = new THREE.Vector2(mouseU * 2.0 - 1.0, mouseV * 2.0 - 1.0);
+    var mouseNDC = new THREE.Vector2(mouseU * 2.0 - 1.0, -(mouseV * 2.0 - 1.0));
 
     // Raycast from the mouse position into the planet's geometry to find intersection points 
     raycaster.setFromCamera(mouseNDC, camera);
@@ -181,11 +184,12 @@ function paintPlanet(clientX, clientY, brushSize, updateMap) {
 
     var intersects = raycastPlanet(clientX, clientY);
     if (intersects.length > 0 && intersects[0].uv) {
-        var pt = intersects[0];
+        var uv = intersects[0].uv;
+        planetMesh.material.map.transformUv(uv); // Transform the UV based on sampler params (repeat, flip...)
 
         var ctx = textureCanvas[0].getContext('2d');
         ctx.beginPath();
-        ctx.arc(pt.uv.x * textureCanvas.width(), pt.uv.y * textureCanvas.height(),
+        ctx.arc(uv.x * textureCanvas.width(), uv.y * textureCanvas.height(),
             brushSize, 0.0, 2.0 * Math.PI);
         ctx.fillStyle = '#FA2020';
         ctx.fill();
