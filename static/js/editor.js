@@ -7,6 +7,11 @@ var textureLoader, cubemapLoader;
 var sunLight, skyCubemap;
 var planetMesh;
 var rmbDown = false; // Right mouse button pressed?
+var textureCanvas; // JQuery selector to the <canvas> containing the painted texture
+
+const TEXTURE_SIZE = 2048; // In pixels, must be power-of-two
+
+// === Setup code ==============================================================
 
 function setup() {
     // Setups THREE.js; done once at startup
@@ -51,9 +56,10 @@ function setup() {
     // Create raycaster
     raycaster = new THREE.Raycaster();
 
-    // Init 3D entities
+    // Init entities
     setupEnvironment();
     setupPlanet();
+    setupTextureCanvas();
 }
 
 function setupEnvironment() {
@@ -94,7 +100,7 @@ function setupPlanet() {
 
     var material = new THREE.MeshStandardMaterial({
         //color: 0xFEFEFE,
-        map: textureLoader.load("planet/col.jpg"),
+        //map: textureLoader.load("planet/col.jpg"),
         normalMap: textureLoader.load("planet/nrm.jpg"),
         //aoMap: textureLoader.load("planet/AO.jpg"),
         roughnessMap: textureLoader.load("planet/rgh.jpg"),
@@ -110,6 +116,28 @@ function setupPlanet() {
     scene.add(planetMesh);
 }
 
+function setupTextureCanvas() {
+    // Create and init `textureCanvas`, i.e. the Canvas that will hold the texture
+    // painted by the user for the planet.
+
+    textureCanvas = $('<canvas>'); // Create a new <canvas> and add it
+    textureCanvas.width(TEXTURE_SIZE).height(TEXTURE_SIZE);
+    textureCanvas.css('display', 'none'); // Hide it
+
+    var ctx = textureCanvas[0].getContext("2d");
+    ctx.fillStyle = "#20FA20";
+    ctx.fillRect(0, 0, textureCanvas.width(), textureCanvas.height());
+
+    var texture = new THREE.Texture(textureCanvas[0]);
+    texture.anisotropy = 4;
+    texture.needsUpdate = true;
+
+    planetMesh.material.map = texture;
+    planetMesh.material.map.needsUpdate = true;
+}
+
+// === Event handlers and main code ============================================
+
 function loop() {
     // Process input events and render; done once per frame
     cameraControls.update();
@@ -121,8 +149,8 @@ function loop() {
 function onWindowResize() {
     // Run when the broser window is resized
     var container = $('#editor-container');
-    var width = container.innerWidth(),
-        height = container.innerHeight();
+    var width = container.innerWidth();
+    var height = container.innerHeight();
 
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
@@ -162,6 +190,12 @@ function onMouseUp(evt) {
     switch (evt.button) {
         case 2: // Right mouse button
             rmbDown = false;
+
+            // FIXME
+            var canvas = textureCanvas[0];
+            var ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            planetMesh.material.map.needsUpdate = true;
             break;
     }
 
@@ -173,8 +207,7 @@ function onMouseMove(evt) {
     evt.preventDefault(); // (Stops the default mouse move event handlers)
 }
 
-
-// v-------------------- Attach event handlers via JQuery ---------------------v
+// === Attach event handlers ===================================================
 
 $(document).ready(function () {
     setup();
