@@ -2,10 +2,11 @@
 // Based on Three.js (MIT-licensed) and JQuery
 
 var renderer, scene;
-var camera, cameraControls;
+var camera, cameraControls, raycaster;
 var textureLoader, cubemapLoader;
 var sunLight, skyCubemap;
 var planetMesh;
+var rmbDown = false; // Right mouse button pressed?
 
 function setup() {
     // Setups THREE.js; done once at startup
@@ -22,7 +23,7 @@ function setup() {
 
     // Attach the Canvas to the main container
     renderer.domElement.id = 'editor';
-    $('#editor-container').append(renderer.domElement);  
+    $('#editor-container').append(renderer.domElement);
 
     // Setup scene and main camera
     scene = new THREE.Scene();
@@ -41,12 +42,14 @@ function setup() {
 
     cameraControls = new THREE.OrbitControls(camera, renderer.domElement);
     cameraControls.enablePan = false;
+    cameraControls.rotateSpeed = 0.1;
     cameraControls.enableDamping = true;
     cameraControls.dampingFactor = 0.1;
-    cameraControls.screenSpacePanning = false;
-    cameraControls.rotateSpeed = 0.1;
     cameraControls.minDistance = 1.5;
     cameraControls.maxDistance = 100.0;
+
+    // Create raycaster
+    raycaster = new THREE.Raycaster();
 
     // Init 3D entities
     setupEnvironment();
@@ -82,9 +85,9 @@ function setupPlanet() {
     const radius = 1.0;
     const nSubdivs = 16;
     var geometry = new THREE.BoxGeometry(1.0, 1.0, 1.0, nSubdivs, nSubdivs, nSubdivs);
-    for(let i = 0; i < geometry.vertices.length; i ++) {
+    for (let i = 0; i < geometry.vertices.length; i++) {
         var vtx = geometry.vertices[i];
-        var distToCenter = radius + Math.random() * 0.06;  // TODO(Paolo): Better heightmaps, fix random seed
+        var distToCenter = radius + Math.random() * 0.06; // TODO(Paolo): Better heightmaps, fix random seed
         vtx.setLength(distToCenter);
     }
     geometry.computeVertexNormals();
@@ -115,20 +118,68 @@ function loop() {
     requestAnimationFrame(loop); // Keep looping once per frame
 }
 
-function onWindowResized() {
+function onWindowResize() {
     // Run when the broser window is resized
     var container = $('#editor-container');
-    var width = container.innerWidth(), height = container.innerHeight();
+    var width = container.innerWidth(),
+        height = container.innerHeight();
 
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
     renderer.setSize(width, height);
 }
 
-$(document).ready(function() {
+function raycastPlanet(clientX, clientY) {
+    // Returns the array of intersections obtained by raycasting to `planetMesh`
+    // from the given client{X,Y} position onscreen.
+
+    var editorBounds = $('#editor-container')[0].getBoundingClientRect();
+    // Calculate mouse position relative to the editor, in UV coordinates (0.0 to 1.0)
+    var mouseU = (clientX - editorBounds.left) / editorBounds.width;
+    var mouseV = (clientY - editorBounds.top) / editorBounds.height;
+    // Transform UV to normalized device coordinates (-1.0 to 1.0)
+    var mouseNDC = new THREE.Vector2(mouseU * 2.0 - 1.0, mouseV * 2.0 - 1.0);
+
+    // Raycast from the mouse position into the planet's geometry to find intersection points 
+    raycaster.setFromCamera(mouseNDC, camera);
+    return raycaster.intersectObject(planetMesh);
+}
+
+function onMouseDown(evt) {
+    switch (evt.button) {
+        case 0: // Left mouse button
+            $('#editor-container').css('cursor', 'grab');
+            break;
+
+        case 2: // Right mouse button
+            rmbDown = true;
+            $('#editor-container').css('cursor', 'crosshair');
+            break;
+    }
+}
+
+function onMouseUp(evt) {
+    switch (evt.button) {
+        case 2: // Right mouse button
+            rmbDown = false;
+            break;
+    }
+
+    $('#editor-container').css('cursor', 'default');
+}
+
+
+function onMouseMove(evt) {
+    evt.preventDefault(); // (Stops the default mouse move event handlers)
+}
+
+
+// v-------------------- Attach event handlers via JQuery ---------------------v
+
+$(document).ready(function () {
     setup();
-    onWindowResized(); // Set canvas to correct size on startup
+    onWindowResize(); // Set canvas to correct size on startup by invoking `onWindowResize()`
     loop();
 });
-
-$(window).resize(onWindowResized);
+$(window).on('resize', onWindowResize);
+$('#editor-container').on('mousedown', onMouseDown).on('mouseup', onMouseUp).on('mousemove', onMouseMove);

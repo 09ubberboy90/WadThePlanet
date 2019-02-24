@@ -1,3 +1,7 @@
 .flex-fixed-width-item {
     flex: 0 0 160px;
 }
+
+#editor-container {
+    height: 90vh;
+}
