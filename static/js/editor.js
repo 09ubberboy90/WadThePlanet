@@ -3,7 +3,7 @@
 
 var renderer, scene;
 var camera, cameraControls, raycaster;
-var textureLoader, cubemapLoader;
+var loadingManager, textureLoader, cubemapLoader;
 var sunLight, skyCubemap;
 var planetMesh;
 var rmbDown = false; // Right mouse button pressed?
@@ -22,22 +22,24 @@ function setup() {
         //alpha: true, // Enable transparent Canvas backround
     });
     renderer.setPixelRatio(window.devicePixelRatio);
-    //renderer.gammaInput = true; // Input textures have premultiplied gamma
-    //renderer.gammaOutput = true; // Framebuffer output has premultiplied gamma
-    //renderer.toneMappingExposure = 5.0;
+    renderer.gammaOutput = true; // Framebuffer output has premultiplied gamma
+    //renderer.toneMappingExposure = 1.0;
 
-    // Attach the Canvas to the main container
+    // Attach the Canvas to the main container, but hide it while loading
     renderer.domElement.id = 'editor';
     $('#editor-container').append(renderer.domElement);
+    $('#editor').hide();
 
     // Setup scene and main camera
     scene = new THREE.Scene();
 
     // Setup texture loaders
     // FIXME(Paolo): Make this script into a template to use {% static 'path/to/textures' %}?
-    textureLoader = new THREE.TextureLoader();
+    loadingManager = new THREE.LoadingManager(onDoneLoading);
+
+    textureLoader = new THREE.TextureLoader(loadingManager)
     textureLoader.setPath("/static/textures/");
-    cubemapLoader = new THREE.CubeTextureLoader();
+    cubemapLoader = new THREE.CubeTextureLoader(loadingManager);
     cubemapLoader.setPath("/static/textures/skybox/");
 
     // Setup camera and camera controls
@@ -60,6 +62,9 @@ function setup() {
     setupEnvironment();
     setupPlanet();
     setupTextureCanvas();
+
+    // The editor will be shown automatically when all textures are loaded
+    // (see `onDoneLoading()`)
 }
 
 function setupEnvironment() {
@@ -73,14 +78,14 @@ function setupEnvironment() {
     ]);
     scene.background = skyCubemap;
 
-    //var ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.3);
-    //scene.add(ambientLight);
     sunLight = new THREE.DirectionalLight(0xFFFFFE, 1.0);
     sunLight.position.set(10, 10, 10);
     sunLight.lookAt(0.0, 0.0, 0.0);
     scene.add(sunLight);
-
     // TODO(Paolo): Add sun mesh/billboard to scene
+
+    //var ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.0);
+    //scene.add(ambientLight);
 }
 
 function setupPlanet() {
@@ -108,8 +113,8 @@ function setupPlanet() {
         roughnessMap: textureLoader.load("planet/rgh.jpg"),
         //displacementMap: textureLoader.load("planet/disp.jpg"),
 
-        metalness: 0.1,
-        envMap: skyCubemap,
+        metalness: 0.0,
+        //envMap: skyCubemap,
         //envMapIntensity: 1.0,
         shading: THREE.SmoothShading,
     });
@@ -137,6 +142,13 @@ function setupTextureCanvas() {
 
     planetMesh.material.map = texture;
     planetMesh.material.map.needsUpdate = true;
+}
+
+function onDoneLoading() {
+    // Run when the editor (and its textures) are done loading; hides the loading
+    // spinner and shows the editor's <canvas>
+    $('#editor-container #spinner').fadeOut(500);
+    $('#editor').fadeIn(500);
 }
 
 // === Event handlers and main code ============================================

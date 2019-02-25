@@ -4,6 +4,15 @@
 
 #editor-container {
     height: 100vh;
+    background: black;
+}
+
+#editor-container #spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 10vh;
+    height: 10vh;
 }
 
 #searchbar {
