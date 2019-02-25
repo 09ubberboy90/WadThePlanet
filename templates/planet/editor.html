@@ -5,8 +5,12 @@
         <span class="sr-only">Loading...</span>
     </div>
     <!-- editor.js will insert the WebGL canvas here -->
+
+    <input id="colorpicker" style="position: absolute; top: 50%; left: 50%"/>
 </div>
 
+<link rel="stylesheet" href="https://unpkg.com/huebee@2/dist/huebee.min.css">
+<script src="https://unpkg.com/huebee@2/dist/huebee.pkgd.min.js"></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r83/three.min.js'></script>
 <script type="text/javascript" src="{% static 'js/OrbitControls.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/editor.js' %}"></script>

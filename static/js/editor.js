@@ -11,6 +11,11 @@ var rmbDown = false; // Right mouse button pressed?
 var textureCanvas; // JQuery selector to the <canvas> containing the painted texture
 const TEXTURE_SIZE = 2048; // In pixels, must be power-of-two
 
+var brush = {
+    size: 50,
+    colorpicker: null,
+}
+
 // === Setup code ==============================================================
 
 function setup() {
@@ -62,6 +67,7 @@ function setup() {
     setupEnvironment();
     setupPlanet();
     setupTextureCanvas();
+    setupTools();
 
     // The editor will be shown automatically when all textures are loaded
     // (see `onDoneLoading()`)
@@ -144,6 +150,18 @@ function setupTextureCanvas() {
     planetMesh.material.map.needsUpdate = true;
 }
 
+function setupTools() {
+    // Initializes the editor tools on the side toolbar.
+    // Setup brush color picker
+    brush.colorpicker = new Huebee('#colorpicker', {
+        // options
+        setBGColor: true,
+        saturations: 3,
+        shades: 10,
+        notation: 'hex',
+    });
+}
+
 function onDoneLoading() {
     // Run when the editor (and its textures) are done loading; hides the loading
     // spinner and shows the editor's <canvas>
@@ -195,7 +213,7 @@ function raycastPlanet(clientX, clientY) {
     return raycaster.intersectObject(planetMesh);
 }
 
-function paintPlanet(clientX, clientY, brushSize, updateMap) {
+function paintPlanet(clientX, clientY, brushColor, brushSize, updateMap) {
     // Raycast to planet from `(clientX, clientY)`, then paint to
     // `textureCanvas` if there is any intersection.
     // If `updateMap`, set `planetMesh.material.map.needsUpdate` to tell THREE.js
@@ -210,7 +228,7 @@ function paintPlanet(clientX, clientY, brushSize, updateMap) {
         ctx.beginPath();
         ctx.arc(uv.x * textureCanvas.width(), uv.y * textureCanvas.height(),
             brushSize, 0.0, 2.0 * Math.PI);
-        ctx.fillStyle = '#FA2020';
+        ctx.fillStyle = brush.colorpicker.color;
         ctx.fill();
 
         planetMesh.material.map.needsUpdate = updateMap || true;
@@ -226,7 +244,7 @@ function onMouseDown(evt) {
         case 2: // Right mouse button
             rmbDown = true;
             $('#editor-container').css('cursor', 'crosshair');
-            paintPlanet(evt.clientX, evt.clientY, 100);
+            paintPlanet(evt.clientX, evt.clientY, brush.color, brush.size);
             break;
     }
 }
@@ -245,7 +263,7 @@ function onMouseMove(evt) {
     evt.preventDefault(); // (Stops the default mouse move event handlers)
 
     if (rmbDown) {
-        paintPlanet(evt.clientX, evt.clientY, 100);
+        paintPlanet(evt.clientX, evt.clientY, brush.color, brush.size);
     }
 }
 
