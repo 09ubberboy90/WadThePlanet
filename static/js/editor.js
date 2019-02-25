@@ -147,7 +147,7 @@ function setupTextureCanvas() {
 function onDoneLoading() {
     // Run when the editor (and its textures) are done loading; hides the loading
     // spinner and shows the editor's <canvas>
-    $('#editor-container #spinner').fadeOut(500);
+    $('#editor-container #spinner').remove();
     $('#editor').fadeIn(500);
 }
 
