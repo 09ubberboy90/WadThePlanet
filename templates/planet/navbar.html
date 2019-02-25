@@ -1,29 +1,23 @@
-<ul class="sidebar-container">
-    <li class="header">Navigation</li>
-    <li>
-        <a href="#">
-            <i class="fa fa-home" aria-hidden="true"></i> Homepage
-        </a>
-    </li>
-    <li>
-        <a href="#">
-            <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
-        </a>
-    </li>
-    <li class="header">Another Menu</li>
-    <li>
-        <a href="#">
-            <i class="fa fa-users" aria-hidden="true"></i> Friends
-        </a>
-    </li>
-    <li>
-        <a href="#">
-            <i class="fa fa-cog" aria-hidden="true"></i> Settings
-        </a>
-    </li>
-    <li>
-        <a href="#">
-            <i class="fa fa-info-circle" aria-hidden="true"></i> Information
-        </a>
-    </li>
-</ul>
+<nav class="sidebar-container navbar-dark collapse d-lg-block">
+        <div id="sidebar">
+            <div class="sidebar-left">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">
+                            <i class="fa fa-home" aria-hidden="true"></i> Homepage
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'test' %}">
+                            <i class="fas fa-globe-europe"></i></i> Planet View
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fa fa-users" aria-hidden="true"></i> Account
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+</nav>

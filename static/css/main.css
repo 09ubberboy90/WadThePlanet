@@ -1,16 +1,11 @@
-.flex-fixed-width-item {
-    flex: 0 0 160px;
-}
-
 #editor-container {
     height: 100vh;
     background: black;
 }
 
 #editor-container #spinner {
-    position: absolute;
-    left: 50%;
-    top: 50%;
+    position: relative;
+    top: 45vh;
     width: 10vh;
     height: 10vh;
 }
@@ -23,53 +18,36 @@
     color: #339af0;
 }
 
-#editor {
-    width: 100%;
-    height: 100%;
+.view{
+    background-image: url('../images/solar-system.jpg');
+    background-repeat: no-repeat; 
+    background-size: cover;
 }
 
 .sidebar-container {
     z-index: 5;
     padding-top: 84px;
+    padding-left: 20px; 
     position: fixed;
     width: 220px;
     height: 100%;
     left: 0;
     overflow-x: hidden;
     overflow-y: auto;
-    background: #1C2331;
+    background: rgba(0, 0, 0, .3);
     color: #fff;
 }
 
-html,
-body,
-header,
-.view {
-    height: 100%;
+.main-screen {
+    padding-left: 220px;
 }
 
-@media (max-width: 740px) {
 
-    html,
-    body,
-    header,
-    .view {
-        height: 1000px;
-    }
-}
-
-@media (min-width: 800px) and (max-width: 850px) {
-
-    html,
-    body,
-    header,
-    .view {
-        height: 650px;
-    }
-}
-
-@media (min-width: 800px) and (max-width: 850px) {
+@media (max-width: 992px) {
     .navbar:not(.top-nav-collapse) {
         background: #1C2331 !important;
+    }
+    .main-screen{
+        padding-left: 0px;
     }
 }

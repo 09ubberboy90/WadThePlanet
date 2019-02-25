@@ -7,23 +7,13 @@
         </a>
 
         <!-- Collapse -->
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu"
+            aria-controls="menu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <!-- Links -->
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
-            <!-- Left -->
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home' %}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'test' %}">Planet View</a>
-                </li>
-            </ul>
+        <div class="collapse navbar-collapse" id="menu">
             <form class="form-inline md-form my-0 active-cyan-2 ml-2 flex-grow-1">
                 <i class="fas fa-search" id="searchbar" aria-hidden="true"></i>
                 <input class="form-control ml-md-3 flex-grow-1" id="searchbar" type="text" placeholder="Search" aria-label="Search">
