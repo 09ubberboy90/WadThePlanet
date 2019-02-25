@@ -44,7 +44,7 @@ function setup() {
 
     // Setup camera and camera controls
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.set(0.0, 0.0, 1.0);
+    camera.position.set(0.0, 0.0, 3.0);
     scene.add(camera);
 
     cameraControls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -167,8 +167,15 @@ function onWindowResize() {
     var width = container.innerWidth();
     var height = container.innerHeight();
 
+    var oldAspect = camera.aspect;
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
+
+    // Zoom out as the viewport gets more vertical
+    // This way planets will get a somewhat correct scale on both vertical
+    // screens (ex. mobile phones) and horizontal ones (ex. desktops)
+    camera.position.multiplyScalar(oldAspect / camera.aspect);
+
     renderer.setSize(width, height);
 }
 
