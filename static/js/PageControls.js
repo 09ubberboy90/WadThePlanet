@@ -6,10 +6,10 @@
         if ($navbar.length) {
             if ($navbar.offset().top > SCROLLING_NAVBAR_OFFSET_TOP) {
                 $('.scrolling-navbar').addClass('top-nav-collapse');
-                $('.sidebar-container').css('background-color', 'rgba(0,0,0,.3)');
+                $('.sidebar-container').css('background-color', ' #1C2331');
             } else {
                 $('.scrolling-navbar').removeClass('top-nav-collapse');
-                $('.sidebar-container').css('background-color ', ' #1C2331;');
+                $('.sidebar-container').css('background-color', 'rgba(0,0,0,.3)');
             }
         }
     });
