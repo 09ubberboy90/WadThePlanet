@@ -16,9 +16,17 @@
 })(jQuery);
 $(function() {
     $('#menu').on('hidden.bs.collapse', function () {
-        $('#menu .sidebar-left').remove();
+        $('.adder .sidebar-left').remove();
     })
     $('#menu').on('show.bs.collapse', function () {
-        $('.navbar-collapse').prepend($('#sidebar').html());
+        $('.adder').prepend($('#sidebar').html());
     })
+    $(window).resize(function () {
+        if ($(window).width() >= 975){
+            $('.adder').addClass('collapse');
+        }
+        else if ($(window).width() < 975) {
+            $('.adder').removeClass('collapse');
+        }
+    });
 });
