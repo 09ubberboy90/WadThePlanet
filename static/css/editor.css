@@ -1,0 +1,11 @@
+#editor-container {
+    height: 100vh;
+    background: black;
+}
+
+#editor-container #spinner {
+    position: relative;
+    top: 45vh;
+    width: 10vh;
+    height: 10vh;
+}
