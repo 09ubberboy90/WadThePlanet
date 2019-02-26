@@ -5,6 +5,8 @@ from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from planet.models import Planet
 from planet.forms import *
+from django.contrib import messages
+
 
 # ======================== Utilities ===========================================
 
@@ -40,13 +42,16 @@ def test(request: HttpRequest) -> HttpResponse:
 
 
 def register(request: HttpRequest) -> HttpResponse:
-    # FIXME(Florent): Implement
-    user_form = UserForm()
-    profile_form = ProfileForm()
-    return render(request, 'planet/register.html', {
-        'user_form': user_form,
-        'profile_form': profile_form
-    })
+    if request.method == 'POST':
+        f = CustomUserCreationForm(request.POST)
+        if f.is_valid():
+            f.save()
+            messages.success(request, 'Account created successfully')
+            return redirect('register')
+
+    else:
+        f = CustomUserCreationForm()
+    return render(request, 'planet/register.html', {'user_form': f})
 
 
 def user_login(request: HttpRequest) -> HttpResponse:
