@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+{% extends 'planet/base.html' %}
+
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% crispy user_form %}
+{% crispy profile_form %}
+
+{% block content_block %}
+  <form method="post" novalidate>
+    {% csrf_token %}
+        {{ user_form| crispy}}
+        {{ profile_form.picture| as_crispy_field }}
+    <button type="submit" class="btn btn-primary">Sign in</button>
+  </form>
+{% endblock %}

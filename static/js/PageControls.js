@@ -30,3 +30,7 @@ $(function() {
         }
     });
 });
+$(document).ready(function() {
+    var navheight = $('#navbar').outerHeight();
+    $('.main-screen').css('padding-top', navheight);
+});
