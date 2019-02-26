@@ -322,7 +322,7 @@ function onSave() {
                 alert('Upload failed :(');
             }
         });
-    }, 'image/png');
+    }, 'image/jpeg', 0.90); // 0.90: 90% quality
 }
 
 function onCancel() {

@@ -7,7 +7,6 @@ from planet.models import Planet
 from planet.forms import *
 from django.contrib import messages
 
-
 # ======================== Utilities ===========================================
 
 logger = logging.getLogger(__name__)
@@ -26,7 +25,7 @@ def test(request: HttpRequest) -> HttpResponse:
         # FIXME(Paolo): Resize image if needed, reject wrongly-sized images!
         logger.debug(f'Planet{planet.id}: saving texture...')
         try:
-            planet.texture.save(f'{planet.id}.png', request.FILES['texture'])  # See the AJAX request in editor.js:onSave() 
+            planet.texture.save(f'{planet.id}.jpg', request.FILES['texture'])  # See the AJAX request in editor.js:onSave() 
             planet.save()
             logger.debug(f'Planet{planet.id}: texture saved')
             return HttpResponse('saved')
