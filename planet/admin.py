@@ -1,7 +1,8 @@
 from django.contrib import admin
-
-from planet.models import Planet, Profile
+from django.contrib.auth.admin import UserAdmin
+from planet.models import Planet, PlanetUser
+from planet.forms import CustomUserCreationForm
 
 # Register your models here.
-admin.site.register(Profile)
+admin.site.register(PlanetUser,UserAdmin)
 admin.site.register(Planet)
