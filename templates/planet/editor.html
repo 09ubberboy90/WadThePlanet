@@ -6,8 +6,13 @@
     </div>
     <!-- editor.js will insert the WebGL canvas here -->
 
-    <input id="colorpicker" style="position: absolute; top: 50%; left: 50%"/>
+    <div id="toolbar" style="position: absolute; top: 50%; left: 50%">
+        <input id="brush-color-picker"/>
+        <input id="brush-size-picker" type="number"/>
+    </div>
 </div>
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/editor.css' %}"></script>
 
 <link rel="stylesheet" href="https://unpkg.com/huebee@2/dist/huebee.min.css">
 <script src="https://unpkg.com/huebee@2/dist/huebee.pkgd.min.js"></script>
