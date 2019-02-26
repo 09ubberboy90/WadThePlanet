@@ -15,7 +15,7 @@ var brush = {
     size: 50, // (pixels)
     minsize: 10,
     maxsize: 500,
-    color: '#FEFEFE', // (hex color)
+    color: '#FFFFFF', // (hex color)
 }
 
 // === Setup code ==============================================================
@@ -92,7 +92,7 @@ function setupEnvironment() {
     scene.add(sunLight);
     // TODO(Paolo): Add sun mesh/billboard to scene
 
-    //var ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.0);
+    //var ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.01);
     //scene.add(ambientLight);
 }
 
@@ -163,6 +163,7 @@ function setupTools() {
         shades: 10,
         notation: 'hex',
     });
+    $('#toolbar #brush-color-picker').val(brush.color);  // Set default color on startup
     colorpicker.on('change', function (color, h, s, l) {
         brush.color = color;
     });
