@@ -12,8 +12,10 @@ var textureCanvas; // JQuery selector to the <canvas> containing the painted tex
 const TEXTURE_SIZE = 2048; // In pixels, must be power-of-two
 
 var brush = {
-    size: 50,
-    colorpicker: null,
+    size: 50, // (pixels)
+    minsize: 10,
+    maxsize: 500,
+    color: '#FEFEFE', // (hex color)
 }
 
 // === Setup code ==============================================================
@@ -152,13 +154,26 @@ function setupTextureCanvas() {
 
 function setupTools() {
     // Initializes the editor tools on the side toolbar.
-    // Setup brush color picker
-    brush.colorpicker = new Huebee('#colorpicker', {
+
+    // Setup brush color picker (huebee) on #colorpicker
+    var colorpicker = new Huebee('#toolbar #brush-color-picker', {
         // options
         setBGColor: true,
         saturations: 3,
         shades: 10,
         notation: 'hex',
+    });
+    colorpicker.on('change', function (color, h, s, l) {
+        brush.color = color;
+    });
+
+    // Setup the brush size picker control
+    var sizepicker = $('#toolbar #brush-size-picker');
+    sizepicker.attr('min', brush.minsize);
+    sizepicker.attr('max', brush.maxsize);
+    sizepicker.attr('value', brush.size);
+    sizepicker.on('change input', function() {
+        brush.size = $(this).val();
     });
 }
 
@@ -213,9 +228,10 @@ function raycastPlanet(clientX, clientY) {
     return raycaster.intersectObject(planetMesh);
 }
 
-function paintPlanet(clientX, clientY, brushColor, brushSize, updateMap) {
+function paintPlanet(clientX, clientY, updateMap) {
     // Raycast to planet from `(clientX, clientY)`, then paint to
-    // `textureCanvas` if there is any intersection.
+    // `textureCanvas` if there is any intersection - according to brush color
+    // and size defined in `brush`.
     // If `updateMap`, set `planetMesh.material.map.needsUpdate` to tell THREE.js
     // that the texture has been updated (default true)
 
@@ -227,8 +243,8 @@ function paintPlanet(clientX, clientY, brushColor, brushSize, updateMap) {
         var ctx = textureCanvas[0].getContext('2d');
         ctx.beginPath();
         ctx.arc(uv.x * textureCanvas.width(), uv.y * textureCanvas.height(),
-            brushSize, 0.0, 2.0 * Math.PI);
-        ctx.fillStyle = brush.colorpicker.color;
+            brush.size, 0.0, 2.0 * Math.PI);
+        ctx.fillStyle = brush.color;
         ctx.fill();
 
         planetMesh.material.map.needsUpdate = updateMap || true;
@@ -244,7 +260,7 @@ function onMouseDown(evt) {
         case 2: // Right mouse button
             rmbDown = true;
             $('#editor-container').css('cursor', 'crosshair');
-            paintPlanet(evt.clientX, evt.clientY, brush.color, brush.size);
+            paintPlanet(evt.clientX, evt.clientY);
             break;
     }
 }
@@ -263,7 +279,7 @@ function onMouseMove(evt) {
     evt.preventDefault(); // (Stops the default mouse move event handlers)
 
     if (rmbDown) {
-        paintPlanet(evt.clientX, evt.clientY, brush.color, brush.size);
+        paintPlanet(evt.clientX, evt.clientY);
     }
 }
 
