@@ -131,6 +131,17 @@ function setupPlanet() {
     scene.add(planetMesh);
 }
 
+function loadInitialTexture() {
+    // Load the <img> with id initial-texture and draw it into "texture-canvas",
+    // then set `planetMesh.material.map.needsUpdate`.
+    var ctx = textureCanvas[0].getContext("2d");
+    var initialPlanetImage = $('#initial-texture');
+    ctx.drawImage(initialPlanetImage[0], 0, 0, textureCanvas.width(), textureCanvas.height());
+
+    planetMesh.material.map.needsUpdate = true;
+}
+
+
 function setupTextureCanvas() {
     // Create and init `textureCanvas`, i.e. the Canvas that will hold the texture
     // painted by the user for the planet.
@@ -140,19 +151,10 @@ function setupTextureCanvas() {
     textureCanvas.width(TEXTURE_SIZE).height(TEXTURE_SIZE);
     textureCanvas.css('display', 'none'); // Hide it
 
-    // Load the <img> with id initial-texture and draw it into "texture-canvas",
-    // then remove initial-texture from the DOM
-    var ctx = textureCanvas[0].getContext("2d");
-    var initialPlanetImage = $('#initial-texture');
-    ctx.drawImage(initialPlanetImage[0], 0, 0, textureCanvas.width(), textureCanvas.height());
-    initialPlanetImage.remove();
-
     var texture = new THREE.Texture(textureCanvas[0]);
     texture.anisotropy = 4;
-    texture.needsUpdate = true;
-
     planetMesh.material.map = texture;
-    planetMesh.material.map.needsUpdate = true;
+    loadInitialTexture();
 }
 
 function setupTools() {
@@ -185,7 +187,8 @@ function onDoneLoading() {
     // Run when the editor (and its textures) are done loading; hides the loading
     // spinner and shows the editor's <canvas>
     $('#editor-container #spinner').remove();
-    $('#editor').fadeIn(500);
+    $('#editor-container #controls').fadeIn(500);
+    $('#editor-container #editor').fadeIn(500);
 }
 
 // === Event handlers and main code ============================================
@@ -285,6 +288,46 @@ function onMouseMove(evt) {
     if (rmbDown) {
         paintPlanet(evt.clientX, evt.clientY);
     }
+}
+
+// === #savebar event handlers ================================================
+
+function onSave() {
+    // Editing is to be saved; do it via an AJAX POST request to the current URL.
+    textureCanvas[0].toBlob(function(textureImageBlob) {
+
+        // After the image has been encoded to a blob, pass it as a file to a `FormData`.
+        // This will make the image appear in `request.FILES[0]` on the Django side when sent via AJAX.
+        var formData = new FormData();
+        formData.append('texture', textureImageBlob);
+
+        // TODO(Paolo): Show the user that the upload is in progress
+        // TODO(Paolo): Replace alert()s with non-modal text
+
+        $.ajax({
+            type: 'POST',
+            url: window.location.href, // POST to the current URL
+            data: formData,
+            headers: {
+                // Set this or Django will refuse the POST request!
+                // window.csrfToken is set by the <script> tag in editor.html
+                'X-CSRFToken': window.csrfToken, 
+            },
+            processData: false, // Required because we are sending a Blob and not strings
+            contentType: false, // Ditto
+            success: function() {
+                alert('Upload OK');
+            },
+            error: function() {
+                alert('Upload failed :(');
+            }
+        });
+    }, 'image/png');
+}
+
+function onCancel() {
+    // Editing cancelled; reload initial texture to `textureCanvas`
+    loadInitialTexture();
 }
 
 // === Attach event handlers ===================================================

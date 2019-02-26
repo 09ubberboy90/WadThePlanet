@@ -11,6 +11,23 @@
 }
 
 #editor-container #initial-texture {
+    /* initial-texture is hidden */
     visibility: hidden;
     display: none;
+}
+
+#editor-container #controls {
+    display: none; /* "Save/cancel" bar and toolbar are initially hidden */
+}
+
+#controls #toolbar {
+    position: absolute;
+    top: 30%;
+    right: 2%;
+}
+
+#controls #savebar {
+    position: absolute;
+    bottom: 10%;
+    right: 2%;
 }

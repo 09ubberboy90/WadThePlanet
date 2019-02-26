@@ -18,7 +18,7 @@ class Planet(models.Model):
     # The name of the planet
     name = models.CharField(null=False, max_length=50)
     # The planet's texture (as painted by the user).
-    texture = models.ImageField(null=False)
+    texture = models.ImageField(null=False, upload_to='planets')
 
     def __str__(self) -> str:
         return self.name

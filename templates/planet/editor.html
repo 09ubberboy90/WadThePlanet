@@ -6,13 +6,19 @@
         <span class="sr-only">Loading...</span>
     </div>
 
-    <div id="toolbar" style="position: absolute; top: 50%; left: 50%">
-        <input id="brush-color-picker"/>
-        <input id="brush-size-picker" type="number"/>
-    </div>
-
     <!-- editor.js will remove initial-texture after loading it on startup -->
     <img id="initial-texture" src="{{ MEDIA_URL }}{{ planet.texture }}"/>
+
+    <div id="controls">
+        <div id="toolbar">
+            <input id="brush-color-picker"/>
+            <input id="brush-size-picker" type="number"/>
+        </div>
+        <div id="savebar" class="btn-group">
+            <button id="save" class="btn btn-primary" onclick="onSave()">Save</button>
+            <button id="cancel" class="btn btn-danger" onclick="onCancel()">Cancel</button>
+        </div>
+    </div>
 
     <!-- editor.js will insert the WebGL canvas here -->
 </div>
@@ -21,6 +27,12 @@
 
 <link rel="stylesheet" href="https://unpkg.com/huebee@2/dist/huebee.min.css">
 <script src="https://unpkg.com/huebee@2/dist/huebee.pkgd.min.js"></script>
+
 <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r83/three.min.js'></script>
 <script type="text/javascript" src="{% static 'js/OrbitControls.js' %}"></script>
+
+<script type="text/javascript">
+    // See editor.js:onSave() 
+    window.csrfToken = "{{ csrf_token }}";
+</script>
 <script type="text/javascript" src="{% static 'js/editor.js' %}"></script>
