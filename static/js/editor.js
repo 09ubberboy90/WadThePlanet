@@ -140,9 +140,12 @@ function setupTextureCanvas() {
     textureCanvas.width(TEXTURE_SIZE).height(TEXTURE_SIZE);
     textureCanvas.css('display', 'none'); // Hide it
 
+    // Load the <img> with id initial-texture and draw it into "texture-canvas",
+    // then remove initial-texture from the DOM
     var ctx = textureCanvas[0].getContext("2d");
-    ctx.fillStyle = "#20FA20";
-    ctx.fillRect(0, 0, textureCanvas.width(), textureCanvas.height());
+    var initialPlanetImage = $('#initial-texture');
+    ctx.drawImage(initialPlanetImage[0], 0, 0, textureCanvas.width(), textureCanvas.height());
+    initialPlanetImage.remove();
 
     var texture = new THREE.Texture(textureCanvas[0]);
     texture.anisotropy = 4;
@@ -163,7 +166,7 @@ function setupTools() {
         shades: 10,
         notation: 'hex',
     });
-    $('#toolbar #brush-color-picker').val(brush.color);  // Set default color on startup
+    $('#toolbar #brush-color-picker').val(brush.color); // Set default color on startup
     colorpicker.on('change', function (color, h, s, l) {
         brush.color = color;
     });
@@ -173,7 +176,7 @@ function setupTools() {
     sizepicker.attr('min', brush.minsize);
     sizepicker.attr('max', brush.maxsize);
     sizepicker.attr('value', brush.size);
-    sizepicker.on('change input', function() {
+    sizepicker.on('change input', function () {
         brush.size = $(this).val();
     });
 }

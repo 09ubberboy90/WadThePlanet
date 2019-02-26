@@ -1,15 +1,20 @@
 {% load static %}
 
 <div id="editor-container" class="mh-100 text-center">
+    <!-- editor.js will remove spinner when done loading -->
     <div id="spinner" class="spinner-grow text-light" role="status">
         <span class="sr-only">Loading...</span>
     </div>
-    <!-- editor.js will insert the WebGL canvas here -->
 
     <div id="toolbar" style="position: absolute; top: 50%; left: 50%">
         <input id="brush-color-picker"/>
         <input id="brush-size-picker" type="number"/>
     </div>
+
+    <!-- editor.js will remove initial-texture after loading it on startup -->
+    <img id="initial-texture" src="{{ MEDIA_URL }}{{ planet.texture }}"/>
+
+    <!-- editor.js will insert the WebGL canvas here -->
 </div>
 
 <link rel="stylesheet" type="text/css" href="{% static 'css/editor.css' %}"></script>

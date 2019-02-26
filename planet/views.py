@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse
+from planet.models import Planet
 from planet.forms import *
 
 # Create your views here.
@@ -10,7 +11,10 @@ def home(request: HttpRequest) -> HttpResponse:
 
 def test(request: HttpRequest) -> HttpResponse:
     # FIXME(Paolo): Test!
-    return render(request, 'planet/test.html')
+    context = {
+        'planet': Planet.objects.get(pk=1),
+    }
+    return render(request, 'planet/test.html', context=context)
 
 
 def register(request: HttpRequest) -> HttpResponse:
