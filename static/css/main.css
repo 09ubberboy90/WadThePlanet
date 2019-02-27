@@ -6,6 +6,14 @@
     color: #339af0;
 }
 
+#brand1 {
+    color: white;
+}
+
+#brand2 {
+    color: #909090;
+}
+
 .view {
     background-image: url('../images/solar-system.jpg');
     background-repeat: no-repeat; 
