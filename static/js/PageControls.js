@@ -34,5 +34,4 @@ $(window).resize(function () {
     } else if ($(window).width() < 975) {
         $('.adder').removeClass('collapse');
     }
-    padder();
 });
