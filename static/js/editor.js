@@ -292,10 +292,25 @@ function onMouseMove(evt) {
 
 // === #savebar event handlers ================================================
 
+function showAlert(msg, type, doesNotExpire) {
+    // Puts an alert into #alert-container, adding it the class .type, shows it
+    // for some time and then closes it
+
+    $('#alertbar').empty(); // Clear any previous alert
+
+    var alert = $('<div class="alert">').addClass(type || 'alert-primary').text(msg);
+    alert.appendTo('#alertbar');
+
+    if (!doesNotExpire) {
+        alert.delay(2000).fadeOut(200);
+    }
+}
+
 function onSave() {
     // Editing is to be saved; do it via an AJAX POST request to the current URL.
-    textureCanvas[0].toBlob(function(textureImageBlob) {
+    showAlert('Saving...', 'alert-primary', true);
 
+    textureCanvas[0].toBlob(function(textureImageBlob) {
         // After the image has been encoded to a blob, pass it as a file to a `FormData`.
         // This will make the image appear in `request.FILES[0]` on the Django side when sent via AJAX.
         var formData = new FormData();
@@ -316,18 +331,19 @@ function onSave() {
             processData: false, // Required because we are sending a Blob and not strings
             contentType: false, // Ditto
             success: function() {
-                alert('Upload OK');
+                showAlert('Saved!', 'alert-success');
             },
             error: function() {
-                alert('Upload failed :(');
+                showAlert('Upload error :(', 'alert-danger');
             }
         });
     }, 'image/jpeg', 0.90); // 0.90: 90% quality
 }
 
-function onCancel() {
+function onReset() {
     // Editing cancelled; reload initial texture to `textureCanvas`
     loadInitialTexture();
+    showAlert('Reset', 'alert-warning');
 }
 
 // === Attach event handlers ===================================================

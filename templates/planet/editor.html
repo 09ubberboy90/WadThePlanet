@@ -6,7 +6,7 @@
         <span class="sr-only">Loading...</span>
     </div>
 
-    <!-- editor.js will remove initial-texture after loading it on startup -->
+    <!-- (initial-texture is hidden) -->
     <img id="initial-texture" src="{{ MEDIA_URL }}{{ planet.texture }}"/>
 
     <div id="controls">
@@ -16,11 +16,15 @@
         </div>
         <div id="savebar" class="btn-group">
             <button id="save" class="btn btn-primary" onclick="onSave()">Save</button>
-            <button id="cancel" class="btn btn-danger" onclick="onCancel()">Cancel</button>
+            <button id="reset" class="btn btn-danger" onclick="onReset()">Reset</button>
         </div>
     </div>
 
-    <!-- editor.js will insert the WebGL canvas here -->
+    <!-- editor.js will append the THREE.js WebGL canvas here -->
+</div>
+
+<div id="alertbar">
+    <!-- editor.js will append alerts here when needed -->
 </div>
 
 <link rel="stylesheet" type="text/css" href="{% static 'css/editor.css' %}"></script>
