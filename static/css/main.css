@@ -14,10 +14,8 @@
     color: #909090;
 }
 
-.view {
-    background-image: url('../images/solar-system.jpg');
-    background-repeat: no-repeat; 
-    background-size: cover;
+#splash * h1 {
+    text-shadow: 2pt 1pt rgba(0, 0, 0, 0.5);
 }
 
 .sidebar-container {

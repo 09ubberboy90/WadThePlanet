@@ -14,7 +14,16 @@ logger = logging.getLogger(__name__)
 # ======================== Views ===============================================
 
 def home(request: HttpRequest) -> HttpResponse:
-    return render(request, 'planet/home.html')
+    # FIXME(Paolo): Test!
+    planet = Planet.objects.get(pk=1)
+
+    context = {
+        'planet': planet,
+        'editing_enabled': False,
+        'cam_controls_enabled': False,
+        'spin_speed': 0.15,
+    }
+    return render(request, 'planet/home.html', context=context)
 
 def test(request: HttpRequest) -> HttpResponse:
     # FIXME(Paolo): Test!

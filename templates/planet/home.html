@@ -3,15 +3,15 @@
 
 {% load staticfiles %}
 {% block splashscreen %}
-<div class="view full-page-intro">
+
+<div id="splash" class="view">
     <!-- Mask & flexbox options-->
-    <div class="mask rgba-black-light d-flex justify-content-center align-items-center">
+    <div class="mask d-flex justify-content-center align-items-center">
         <!-- Content -->
         <div class="container-fluid">
             <!--Grid row-->
             <div class="text-center white-text">
-                <h1 class="display-4 font-weight-bold">Create Yours</h1>
-                <h1 class="display-4 font-weight-bold">Now!</h1>
+                <h1 class="display-4 font-weight-bold">Create yours<br>now!</h1>
                 <button type="button" class="btn btn-elegant btn-lg waves-effect">Register
                     <a href="{% url 'home' %}"></a>
                 </button>
@@ -19,10 +19,12 @@
             <!--Grid column-->
         </div>
         <!--Grid row-->
-
     </div>
     <!-- Content -->
+    {% include 'planet/editor.html' %}
 </div>
+
+
 {% endblock splashscreen %}
 
 {% block content_block %}

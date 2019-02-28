@@ -157,11 +157,11 @@ function loadInitialTexture() {
     // then set `planetMesh.material.map.needsUpdate`.
     var ctx = textureCanvas[0].getContext("2d");
     var initialPlanetImage = $('#initial-texture');
-    ctx.drawImage(initialPlanetImage[0], 0, 0, textureCanvas.width(), textureCanvas.height());
-
-    planetMesh.material.map.needsUpdate = true;
+    $(function() { // On image loaded (document ready)
+        ctx.drawImage(initialPlanetImage[0], 0, 0, textureCanvas.width(), textureCanvas.height());
+        planetMesh.material.map.needsUpdate = true;
+    });
 }
-
 
 function setupTextureCanvas() {
     // Create and init `textureCanvas`, i.e. the Canvas that will hold the texture
@@ -373,7 +373,7 @@ function onReset() {
 
 // === Attach event handlers ===================================================
 
-$(document).ready(function () {
+$(function () { // On document ready
     setup();
     onWindowResize(); // Set canvas to correct size on startup by invoking `onWindowResize()`
     loop();
