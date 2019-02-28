@@ -118,8 +118,6 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
 ]
 
-AUTH_USER_MODEL = 'planet.PlanetUser'
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
