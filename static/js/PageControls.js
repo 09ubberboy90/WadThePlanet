@@ -24,21 +24,10 @@ $(function() {
 });
 
 
-$(function padder() {
-    var navheight = $('#navbar').outerHeight();
-    $('.main-screen').css('padding-top', navheight);
-    $('#sidebar').css('top', navheight);
-
-});
-
 $(window).resize(function () {
     if ($(window).width() >= 975) {
         $('.adder').addClass('collapse');
     } else if ($(window).width() < 975) {
         $('.adder').removeClass('collapse');
     }
-    padder();
-});
-$(".input_field").change(function () {
-    alert("This value changed");
 });
