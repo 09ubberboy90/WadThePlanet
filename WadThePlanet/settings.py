@@ -58,7 +58,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'WadThePlanet.urls'
-
+AUTH_USER_MODEL = 'planet.PlanetUser'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

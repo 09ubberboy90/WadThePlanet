@@ -15,30 +15,16 @@ class CustomUserCreationForm(forms.ModelForm):
         
         self.helper = FormHelper()
         self.helper.layout = Layout(
-                Field('username', css_class="input_field"),
-                Field('email', css_class="input_field"),
-                Field('password', css_class="input_field"),
-                Field('password_copy', css_class="input_field"),
-                Field('avatar'),
-            
+            Field('username', css_class="input_field"),
+            Field('password', css_class="input_field"),
+            Field('email', css_class="input_field"),
+            Field('password_copy', css_class="input_field"),
+            Field('avatar'),
             ButtonHolder(
                 Submit('submit', 'Submit', css_class='button white')
             )
         )
         self.helper['password'].update_attributes(min_length= 6)
-    def clean_username(self):
-        username = self.cleaned_data['username'].lower()
-        r = PlanetUser.objects.filter(username=username)
-        if r.count():
-            raise ValidationError("Username already exists")
-        return username
-
-    def clean_email(self):
-        email = self.cleaned_data['email'].lower()
-        r = PlanetUser.objects.filter(email=email)
-        if r.count():
-            raise ValidationError("Email already exists")
-        return email
 
     def clean_password_copy(self):
         password = self.cleaned_data.get('password')
@@ -60,7 +46,7 @@ class CustomUserCreationForm(forms.ModelForm):
 
     class Meta:
         model = PlanetUser
-        fields = ['email', 'avatar']
+        fields = ['email', 'avatar', 'username', 'password']
         widgets = {
             'password': forms.PasswordInput,
         }
