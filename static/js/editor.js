@@ -157,7 +157,7 @@ function loadInitialTexture() {
     // then set `planetMesh.material.map.needsUpdate`.
     var ctx = textureCanvas[0].getContext("2d");
     var initialPlanetImage = $('#initial-texture');
-    $(function() { // On image loaded (document ready)
+    $(function () { // On image loaded (document ready)
         ctx.drawImage(initialPlanetImage[0], 0, 0, textureCanvas.width(), textureCanvas.height());
         planetMesh.material.map.needsUpdate = true;
     });
@@ -336,7 +336,7 @@ function onSave() {
     $('#save').attr('disabled', '');
     showAlert('Saving...', 'alert-primary', true);
 
-    textureCanvas[0].toBlob(function(textureImageBlob) {
+    textureCanvas[0].toBlob(function (textureImageBlob) {
         // After the image has been encoded to a blob, pass it as a file to a `FormData`.
         // This will make the image appear in `request.FILES[0]` on the Django side when sent via AJAX.
         var formData = new FormData();
@@ -352,11 +352,11 @@ function onSave() {
             headers: {
                 // Set this or Django will refuse the POST request!
                 // window.csrfToken is set by the <script> tag in editor.html
-                'X-CSRFToken': window.csrfToken, 
+                'X-CSRFToken': window.csrfToken,
             },
             processData: false, // Required because we are sending a Blob and not strings
             contentType: false, // Ditto
-            success: function() {
+            success: function () {
                 showAlert('Saved!', 'alert-success');
                 $('#save').removeAttr('disabled');
 
@@ -364,7 +364,7 @@ function onSave() {
                 // reset button will restore this saved texture
                 $('#initial-texture')[0].src = URL.createObjectURL(formData.get('texture'));
             },
-            error: function() {
+            error: function () {
                 showAlert('Upload error :(', 'alert-danger');
                 $('#save').removeAttr('disabled');
             }
