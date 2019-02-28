@@ -7,15 +7,26 @@ var loadingManager, textureLoader, cubemapLoader;
 var sunLight, skyCubemap;
 var planetMesh;
 var rmbDown = false; // Right mouse button pressed?
+var clock;
 
 var textureCanvas; // JQuery selector to the <canvas> containing the painted texture
 const TEXTURE_SIZE = 2048; // In pixels, must be power-of-two
 
-var brush = {
-    size: 50, // (pixels)
-    minsize: 10,
-    maxsize: 500,
-    color: '#FFFFFF', // (hex color)
+if (!brush) {
+    var brush = {
+        size: 50, // (pixels)
+        minsize: 10,
+        maxsize: 500,
+        color: '#FFFFFF', // (hex color)
+    }
+}
+
+if (!planetEditor) {
+    var planetEditor = {
+        editingEnabled: true, // If false: disable editing and just act as a viewer
+        camControlsEnabled: true, // If false: disable camera controls
+        spinSpeed: 0.0, // If non-zero: set the planet's spinning speed (rad/s)
+    }
 }
 
 // === Setup code ==============================================================
@@ -55,21 +66,31 @@ function setup() {
     scene.add(camera);
 
     cameraControls = new THREE.OrbitControls(camera, renderer.domElement);
-    cameraControls.enablePan = false;
-    cameraControls.rotateSpeed = 0.1;
-    cameraControls.enableDamping = true;
-    cameraControls.dampingFactor = 0.1;
-    cameraControls.minDistance = 1.5;
-    cameraControls.maxDistance = 100.0;
+    cameraControls.enabled = planetEditor.camControlsEnabled;
+    if (cameraControls.enabled) {
+        cameraControls.enablePan = false;
+        cameraControls.rotateSpeed = 0.1;
+        cameraControls.enableDamping = true;
+        cameraControls.dampingFactor = 0.1;
+        cameraControls.minDistance = 1.5;
+        cameraControls.maxDistance = 100.0;
+    }
 
     // Create raycaster
     raycaster = new THREE.Raycaster();
+
+    // Create the clock used for delta times in loop()
+    clock = new THREE.Clock();
 
     // Init entities
     setupEnvironment();
     setupPlanet();
     setupTextureCanvas();
-    setupTools();
+    if (planetEditor.editingEnabled) {
+        setupTools();
+    } else {
+        $('#controls').remove();
+    }
 
     // The editor will be shown automatically when all textures are loaded
     // (see `onDoneLoading()`)
@@ -195,7 +216,11 @@ function onDoneLoading() {
 
 function loop() {
     // Process input events and render; done once per frame
+    const deltaTime = clock.getDelta();
+
     cameraControls.update();
+
+    planetMesh.rotation.y -= deltaTime * planetEditor.spinSpeed;
 
     renderer.render(scene, camera);
     requestAnimationFrame(loop); // Keep looping once per frame
@@ -354,4 +379,7 @@ $(document).ready(function () {
     loop();
 });
 $(window).on('resize', onWindowResize);
-$('#editor-container').on('mousedown', onMouseDown).on('mouseup', onMouseUp).on('mousemove', onMouseMove);
+
+if (planetEditor.editingEnabled) {
+    $('#editor-container').on('mousedown', onMouseDown).on('mouseup', onMouseUp).on('mousemove', onMouseMove);
+}

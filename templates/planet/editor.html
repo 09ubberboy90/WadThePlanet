@@ -38,5 +38,10 @@
 <script type="text/javascript">
     // See editor.js:onSave() 
     window.csrfToken = "{{ csrf_token }}";
+
+    var planetEditor = {};
+    planetEditor.editingEnabled = {{ editing_enabled|yesno:'true,false' }};
+    planetEditor.camControlsEnabled = {{ cam_controls_enabled|yesno:'true,false' }};
+    planetEditor.spinSpeed = {{ spin_speed|default:'0.0' }}
 </script>
 <script type="text/javascript" src="{% static 'js/editor.js' %}"></script>
