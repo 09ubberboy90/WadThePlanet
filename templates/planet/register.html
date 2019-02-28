@@ -1,29 +1,15 @@
-<!DOCTYPE html>
-{% extends 'planet/base.html' %}
+{% extends 'planet/logintemplate.html' %}
 
 {% load staticfiles %}
 {% load crispy_forms_tags %}
 
-{% block content_block %}
-  <form method="post" novalidate class="needs-validation">
-    {% csrf_token %}
-    <div class="form-row">
-      <div class="form-group col-md-6 mb-0">
-        {{ user_form.username| as_crispy_field}}
-      </div>
-      <div class="form-group col-md-6 mb-0">
-        {{ user_form.email| as_crispy_field }}
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group col-md-6 mb-0">
-        {{ user_form.password| as_crispy_field}}
-      </div>
-      <div class="form-group col-md-6 mb-0">
-        {{ user_form.password_copy| as_crispy_field }}
-      </div>
-    </div>
-    {{ user_form.avatar| as_crispy_field }}
-    <button type="submit" class="btn btn-primary">Sign in</button>
-  </form>
-{% endblock %}
+{% block header %}
+<h3>Register</h3>
+
+{% endblock header %}
+
+{% block body %}
+<form method="post" novalidate class="needs-validation" id="register-form" action="/register/">
+    {% crispy user_form %}
+</form>
+{% endblock body %}

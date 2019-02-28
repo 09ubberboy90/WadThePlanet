@@ -20,7 +20,6 @@
 
 .sidebar-container {
     z-index: 5;
-    padding-top: 84px;
     padding-left: 20px; 
     position: fixed;
     width: 220px;
@@ -30,6 +29,10 @@
     overflow-y: auto;
     background: rgba(0, 0, 0, .3);
     color: #fff;
+}
+
+body{
+    background-image: url("/static/textures/skybox/skybox_back6.png");
 }
 
 .main-screen {

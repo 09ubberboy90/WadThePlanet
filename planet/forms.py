@@ -2,13 +2,30 @@ from django import forms
 from django.forms import ModelForm
 from planet.models import *
 from crispy_forms.helper import FormHelper
+from crispy_forms.layout import *
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm
 
 class CustomUserCreationForm(forms.ModelForm):
     password_copy = forms.CharField(
-        label='Confirm password')
+            label='Confirm password', min_length= 6, max_length= 128,widget = forms.PasswordInput)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+                Field('username', css_class="input_field"),
+                Field('email', css_class="input_field"),
+                Field('password', css_class="input_field"),
+                Field('password_copy', css_class="input_field"),
+                Field('avatar'),
+            
+            ButtonHolder(
+                Submit('submit', 'Submit', css_class='button white')
+            )
+        )
+        self.helper['password'].update_attributes(min_length= 6)
     def clean_username(self):
         username = self.cleaned_data['username'].lower()
         r = PlanetUser.objects.filter(username=username)
@@ -42,13 +59,9 @@ class CustomUserCreationForm(forms.ModelForm):
         return user
 
     class Meta:
-        model = PlanetUser
-        fields = ['username', 'password', 'email', 'avatar']
+        model = PlanetUser,User
+        fields = ['email', 'avatar']
+        widgets = {
+            'password': forms.PasswordInput,
+        }
 
-        def __init__(self, *args, **kwargs):
-            super(UserForm, self).__init__(*args, **kwargs)
-            self.helper = FormHelper()
-            self.helper.form_id = 'UserForm'
-            self.helper.form_class = 'form-control is-valid'
-            self.helper.form_method = 'post'
-            self.helper.form_action = 'submit_survey'
