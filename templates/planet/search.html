@@ -10,7 +10,7 @@ This template presents a search box and search button within HTML form	-->
 
 {% block title %} Search {% endblock %}
 
-{% block body_block %}
+{% block padded_content_block %}
 <div> 
 	<h1>Search</h1>
 	</br>
@@ -20,10 +20,10 @@ This template presents a search box and search button within HTML form	-->
 		<br/>
 		<form class="form-inline" id="user_form" method="post" action="{% url 'search' %}">
 		{% csrf_token %}
-		<div class="form-group">
+	<!--	<div class="form-group">
 			<input class="form-control" type="text" size="50" name="query" value="" id="query" />
-		</div>
-			<button class="btn btn-primary" type="submit" name="submit" value="Search">Search</button>
+		</div> -->
+		<!--	<button class="btn btn-primary" type="submit" name="submit" value="Search">Search</button>  -->
 		</form>
 
 	<div>

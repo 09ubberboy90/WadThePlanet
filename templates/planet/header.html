@@ -15,9 +15,10 @@
         <!-- Links -->
         <div class="collapse navbar-collapse" id="menu">
             <div class="adder"></div>
-            <form class="form-inline md-form my-0 active-cyan-2 flex-grow-1">
+            <form class="form-inline md-form my-0 active-cyan-2 flex-grow-1" action="{% url 'search' %}" method="get">
                 <i class="ml-2 fas fa-search" id="searchbar" aria-hidden="true"></i>
-                <input class="form-control ml-3 flex-grow-1" id="searchbar" type="text" placeholder="Search" aria-label="Search">
+                <input class="form-control ml-3 flex-grow-1" name="query" type="text" placeholder="Search" aria-label="Search">
+				<input type="submit">
             </form>
             <!-- Right -->
             <ul class="navbar-nav nav-flex-icons ">
