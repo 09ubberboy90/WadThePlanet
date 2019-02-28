@@ -23,11 +23,11 @@ $(function() {
 
         if ($navbar.length) {
             if ($navbar.offset().top > SCROLLING_NAVBAR_OFFSET_TOP) {
-                $('.scrolling-navbar').addClass('top-nav-collapse');
-                $('.sidebar-container').css('background-color', '#1C2331');
+                $('#navbar').addClass('top-nav-collapse');
+                $('#sidebar').addClass('sidebar-collapse');
             } else {
-                $('.scrolling-navbar').removeClass('top-nav-collapse');
-                $('.sidebar-container').css('background-color', 'rgba(0,0,0,.3)');
+                $('#navbar').removeClass('top-nav-collapse');
+                $('#sidebar').removeClass('sidebar-collapse');
             }
         }
     });
