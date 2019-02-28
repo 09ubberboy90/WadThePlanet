@@ -58,3 +58,27 @@ class Planet(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+
+class SolarSystem(model.Model):
+
+    # An unique numeric id for each SolarSystem
+    id = models.AutoField(null=False, primary_key=True)
+    # foreign key to the owner
+    user = models.ForeignKey(PlanetUser)
+    # The name of the SolarSystem
+    name = models.CharField(null=False, max_length=50)
+    # Description of the SolarSystem
+    description = models.CharField(null=False, max_length=160)
+    # Score of the SolarSystem
+    score = models.IntegerField(default = 0)
+    # Number of views
+    views = models.IntegerField(default=0)
+
+
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+    def __str__(self) -> str:
+        return self.name
