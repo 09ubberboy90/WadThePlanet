@@ -43,7 +43,11 @@
             {% block body_block %}
             <div class="main-screen text-center">
                 {% block content_block %}
-                This is the content with padding
+                <div class="leftpadder">
+                    {% block padded_content_block %}
+                        This is the content with padding
+                    {% endblock %}
+                </div>
                 {% endblock %}
             </div>
             {% endblock %}
