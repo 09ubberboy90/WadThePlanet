@@ -357,6 +357,10 @@ function onSave() {
             contentType: false, // Ditto
             success: function() {
                 showAlert('Saved!', 'alert-success');
+
+                // Apply the newly-saved texture to initial-texture; this way the
+                // reset button will restore this saved texture
+                $('#initial-texture')[0].src = URL.createObjectURL(formData.get('texture'));
             },
             error: function() {
                 showAlert('Upload error :(', 'alert-danger');

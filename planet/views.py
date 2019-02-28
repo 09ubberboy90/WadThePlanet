@@ -45,9 +45,9 @@ def test(request: HttpRequest) -> HttpResponse:
         # POST or GET: launch the editor
         context = {
             'planet': planet,
-            'editing_enabled': False,
-            'cam_controls_enabled': False,
-            'spin_speed': 0.20,
+            'editing_enabled': True,
+            'cam_controls_enabled': True,
+            'spin_speed': 0.0,
         }
         return render(request, 'planet/test.html', context=context)
 
