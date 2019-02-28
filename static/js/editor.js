@@ -236,10 +236,10 @@ function onWindowResize() {
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
 
-    // Zoom out as the viewport gets more vertical
+    // Zoom out as the viewport gets more horizontal
     // This way planets will get a somewhat correct scale on both vertical
     // screens (ex. mobile phones) and horizontal ones (ex. desktops)
-    camera.position.multiplyScalar(oldAspect / camera.aspect);
+    //camera.position.multiplyScalar(camera.aspect / oldAspect);
 
     renderer.setSize(width, height);
 }
