@@ -20,16 +20,27 @@
 
 .sidebar-container {
     z-index: 5;
-    padding-left: 20px; 
-    top: 84px;
     position: fixed;
+    left: 0;
+    top: 0;
+    padding-left: 20px; 
+    padding-top: 84px;
     width: 220px;
     height: 100%;
-    left: 0;
+
     overflow-x: hidden;
     overflow-y: auto;
+
     background: rgba(0, 0, 0, .3);
     color: #fff;
+    -webkit-transition:background .5s ease-in-out;
+    -o-transition:background .5s ease-in-out;
+    transition:background .5s ease-in-out;
+}
+
+.sidebar-collapse {
+    /* Added to sidebar-container when it is to go from transparent to non-transparent */
+    background: #1C2331;
 }
 
 body {
