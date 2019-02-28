@@ -3,6 +3,7 @@ import re
 import logging
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
+from planet.webhose_search import run_query
 from planet.models import Planet
 from planet.forms import *
 from django.contrib import messages
@@ -68,3 +69,12 @@ def register(request: HttpRequest) -> HttpResponse:
 def user_login(request: HttpRequest) -> HttpResponse:
     # FIXME(Florent): Implement
     return render(request, 'planet/user_login.html')
+
+def search(request):
+	result_list = []
+	if request.method == 'GET':
+		query = request.GET['query'].strip()
+		if query:
+			# Run our Webhose search function to get the results list!
+			result_list = run_query(query)
+	return render(request, 'planet/search.html', {'result_list': result_list})

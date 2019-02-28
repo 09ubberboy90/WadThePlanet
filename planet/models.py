@@ -2,7 +2,7 @@ import logging
 import os
 import PIL
 from django.db import models
-from django.contrib.auth.models import UserManager, User
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.auth.validators import ASCIIUsernameValidator
 from WadThePlanet import settings
 from django.contrib.auth.models import User
@@ -15,19 +15,16 @@ logger = logging.getLogger(__name__)
 # ======================== Models ==============================================
 
 # Create your models here.*
+class PlanetUser(AbstractUser):
 
-
-class PlanetUser(models.Model):
-    user = models.OneToOneField(User)
     email = models.EmailField(
         verbose_name='email address',
         max_length=255)
-    identifier = models.CharField(max_length=40, unique=True)
     avatar = models.ImageField(
         upload_to='profile_images', blank=True, null=True)
 
     REQUIRED_FIELDS = ['email']
-
+    
     def __str__(self):
         return self.username
 

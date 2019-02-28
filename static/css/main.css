@@ -50,6 +50,8 @@ body {
 .main-screen {
     background: transparent;
     padding-top: 84px;
+}
+.leftpadder {
     padding-left: 220px;
 }
 
