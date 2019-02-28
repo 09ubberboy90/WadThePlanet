@@ -59,7 +59,7 @@ class CustomUserCreationForm(forms.ModelForm):
         return user
 
     class Meta:
-        model = PlanetUser,User
+        model = PlanetUser
         fields = ['email', 'avatar']
         widgets = {
             'password': forms.PasswordInput,
