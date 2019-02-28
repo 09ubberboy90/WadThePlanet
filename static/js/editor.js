@@ -333,6 +333,7 @@ function showAlert(msg, type, doesNotExpire) {
 
 function onSave() {
     // Editing is to be saved; do it via an AJAX POST request to the current URL.
+    $('#save').attr('disabled', '');
     showAlert('Saving...', 'alert-primary', true);
 
     textureCanvas[0].toBlob(function(textureImageBlob) {
@@ -357,6 +358,7 @@ function onSave() {
             contentType: false, // Ditto
             success: function() {
                 showAlert('Saved!', 'alert-success');
+                $('#save').removeAttr('disabled');
 
                 // Apply the newly-saved texture to initial-texture; this way the
                 // reset button will restore this saved texture
@@ -364,6 +366,7 @@ function onSave() {
             },
             error: function() {
                 showAlert('Upload error :(', 'alert-danger');
+                $('#save').removeAttr('disabled');
             }
         });
     }, 'image/jpeg', 0.90); // 0.90: 90% quality
