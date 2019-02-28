@@ -21,6 +21,7 @@
 .sidebar-container {
     z-index: 5;
     padding-left: 20px; 
+    top: 84px;
     position: fixed;
     width: 220px;
     height: 100%;
@@ -37,9 +38,9 @@ body {
 
 .main-screen {
     background: transparent;
+    padding-top: 84px;
     padding-left: 220px;
 }
-
 
 @media (max-width: 992px) {
     .navbar:not(.top-nav-collapse) {
