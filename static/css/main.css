@@ -31,11 +31,12 @@
     color: #fff;
 }
 
-body{
+body {
     background-image: url("/static/textures/skybox/skybox_back6.png");
 }
 
 .main-screen {
+    background: transparent;
     padding-left: 220px;
 }
 
