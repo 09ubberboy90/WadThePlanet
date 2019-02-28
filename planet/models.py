@@ -38,6 +38,9 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+    def create_superuser(self, *args, **kwargs):
+        return self.create_user(*args, **kwargs)
+
 
 class PlanetUser(AbstractUser):
     email = models.EmailField(
