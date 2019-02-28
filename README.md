@@ -1,2 +1,2 @@
 # WadThePlanet
-Facebook but with planet and 3d
+It's like Facebook, but with more planets.
