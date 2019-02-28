@@ -68,3 +68,12 @@ def register(request: HttpRequest) -> HttpResponse:
 def user_login(request: HttpRequest) -> HttpResponse:
     # FIXME(Florent): Implement
     return render(request, 'planet/user_login.html')
+
+def search(request):
+	result_list = []
+	if request.method == 'POST':
+		query = request.POST['query'].strip()
+		if query:
+			# Run our Webhose search function to get the results list!
+			result_list = run_query(query)
+	return render(request, 'rango/search.html', {'result_list': result_list})
