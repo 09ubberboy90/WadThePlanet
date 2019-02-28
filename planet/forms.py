@@ -43,7 +43,7 @@ class CustomUserCreationForm(forms.ModelForm):
 
     class Meta:
         model = PlanetUser
-        fields = ['username', 'password', 'email', 'avatar']
+        fields = ['email', 'avatar']
 
         def __init__(self, *args, **kwargs):
             super(UserForm, self).__init__(*args, **kwargs)

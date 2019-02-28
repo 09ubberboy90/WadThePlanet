@@ -2,7 +2,7 @@ import logging
 import os
 import PIL
 from django.db import models
-from django.contrib.auth.models import BaseUserManager, AbstractUser
+from django.contrib.auth.models import UserManager, User
 from django.contrib.auth.validators import ASCIIUsernameValidator
 from WadThePlanet import settings
 from django.contrib.auth.models import User
@@ -50,8 +50,8 @@ class Planet(models.Model):
             if width != self.TEXTURE_SIZE or height != self.TEXTURE_SIZE:
                 # Rescale image to correct size and save
                 logger.debug(f'Planet{self.id}: Image has wrong size {width}x{height},'
-                             f'resizing it to {TEXTURE_SIZE}x{TEXTURE_SIZE}')
-                pil_img.resize(self.TEXTURE_SIZE, self.TEXTURE_SIZE)
+                             f'resizing it to {self.TEXTURE_SIZE}x{self.TEXTURE_SIZE}')
+                pil_img.resize((self.TEXTURE_SIZE, self.TEXTURE_SIZE), resample=PIL.Image.BICUBIC)
                 pil_img.save(self.texture.path, quality=90, optimize=True)
 
     def __str__(self) -> str:
