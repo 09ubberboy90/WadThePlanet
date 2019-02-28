@@ -75,8 +75,6 @@ class SolarSystem(model.Model):
     # Number of views
     views = models.IntegerField(default=0)
 
-
-
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
