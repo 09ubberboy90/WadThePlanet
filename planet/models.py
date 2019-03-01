@@ -26,9 +26,31 @@ class PlanetUser(AbstractUser):
     REQUIRED_FIELDS = ['email']
     username_validator = ASCIIUsernameValidator()
 
-    
+
     def __str__(self):
         return self.username
+
+
+class SolarSystem(models.Model):
+
+    # An unique numeric id for each SolarSystem
+    id = models.AutoField(null=False, primary_key=True)
+    # foreign key to the owner
+    user = models.ForeignKey(PlanetUser)
+    # The name of the SolarSystem
+    name = models.CharField(null=False, max_length=50)
+    # Description of the SolarSystem
+    description = models.CharField(max_length=160)
+    # Score of the SolarSystem
+    score = models.IntegerField(default = 0)
+    # Number of views
+    views = models.IntegerField(default=0)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class Planet(models.Model):
@@ -39,8 +61,14 @@ class Planet(models.Model):
     id = models.AutoField(null=False, primary_key=True)
     # The name of the planet
     name = models.CharField(null=False, max_length=50)
+    # foreign key to the owner
+    user = models.ForeignKey(PlanetUser)
+    # foreign key to the solarsystem it belongs to
+    solarSystem = models.ForeignKey(SolarSystem)
     # The planet's texture (as painted by the user).
     texture = models.ImageField(null=False, upload_to='planets')
+    # Score of the planet
+    score = models.IntegerField(default = 0)
 
     def save(self, *args, **kwargs):
         # Overridden save() method that resizes the uploaded `texture` if required
