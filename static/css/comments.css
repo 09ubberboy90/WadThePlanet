@@ -1,0 +1,19 @@
+#comment-container {
+    background: #FFFFFF;
+}
+
+@media only screen and (min-width: 975px) {
+    /* Pad comments according to left sidebar only if viewport is bigg enough to
+    actually show the sidebar */
+    #comment-container {
+        padding-left: 240px;
+    }
+}
+
+
+#send-btn-container {
+    /* Quick fix for the "send" button not being aligned correctly */
+    bottom: 0;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
