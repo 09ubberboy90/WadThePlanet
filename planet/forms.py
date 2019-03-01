@@ -97,12 +97,12 @@ class CommentForm(forms.ModelForm):
         self.helper.layout = Layout(
             Row(
                 Field('comment', id='comment',
-                    wrapper_class='col-md-10'),
+                    wrapper_class='col-8'),
                 Field('rating', id='rating',
-                    wrapper_class='col-md-1'),
+                    wrapper_class='col-2'),
                 FormActions(
                     Submit('send', 'Send', id='send', css_class='btn-sm'),
-                    css_class='send-btn-container col-pd-1',
-                )
+                    css_class='send-btn-container col-2',
+                ),
             )
         )
