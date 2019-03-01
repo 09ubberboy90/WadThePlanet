@@ -24,7 +24,7 @@ class PlanetUser(AbstractUser):
         upload_to='profile_images', blank=True, null=True)
 
     REQUIRED_FIELDS = ['email']
-    
+
     def __str__(self):
         return self.username
 
@@ -38,7 +38,7 @@ class SolarSystem(models.Model):
     # The name of the SolarSystem
     name = models.CharField(null=False, max_length=50)
     # Description of the SolarSystem
-    description = models.CharField(null=False, max_length=160)
+    description = models.CharField(max_length=160)
     # Score of the SolarSystem
     score = models.IntegerField(default = 0)
     # Number of views
@@ -65,10 +65,6 @@ class Planet(models.Model):
     solarSystem = models.ForeignKey(SolarSystem)
     # The planet's texture (as painted by the user).
     texture = models.ImageField(null=False, upload_to='planets')
-    # The radius of the planet
-    radius = models.IntegerField(default=3.14)
-    # Number of rings around the planet
-    rings = models.IntegerField(default=0)
     # Score of the planet
     score = models.IntegerField(default = 0)
 
