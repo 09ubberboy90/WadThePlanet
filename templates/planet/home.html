@@ -10,12 +10,14 @@
         <!-- Content -->
         <div class="container-fluid">
             <!--Grid row-->
+            {% if not user.is_authenticated %}
             <div class="text-center white-text">
                 <h1 class="display-4 font-weight-bold">Create yours<br>now!</h1>
                 <button type="button" class="btn btn-elegant btn-lg waves-effect">Register
-                    <a href="{% url 'home' %}"></a>
+                    <a href="{% url 'register' %}"></a>
                 </button>
             </div>
+            {% endif %}
             <!--Grid column-->
         </div>
         <!--Grid row-->
