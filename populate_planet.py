@@ -7,28 +7,38 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "WadThePlanet.settings")
 import django
 django.setup()
 from planet.models import PlanetUser, Planet, SolarSystem
+
+#Copy the files over to the media destination
+#to avoid deleting pictures when deleting database
+import shutil
 self_path = os.path.abspath(os.path.dirname(__file__))
+src = os.path.join(self_path,'_populationmedia/')
+dest = os.path.join(self_path,'media/planets/')
+src_files = os.listdir(src)
+for file_name in src_files:
+    full_file_name = os.path.join(src, file_name)
+    if (os.path.isfile(full_file_name)):
+        shutil.copy(full_file_name, dest)
+
+
+
 
 def populate():
 
-
-
-
-
     planets1 = [ {"name": "planet1",
-                  "texture": os.path.join(self_path,'media/_population_pictures/texture1.jpeg')},
+                  "texture": os.path.join(dest,'texture1.jpeg')},
 
                 {"name": "planet2",
-                 "texture": os.path.join(self_path,'media/_population_pictures/texture2.jpeg')},
+                 "texture": os.path.join(dest,'texture2.jpeg')},
     ]
 
     planets2 = [{"name": "planet3",
-                 "texture": os.path.join(self_path,'media/_population_pictures/texture3.jpeg')},
+                 "texture": os.path.join(dest,'texture3.jpeg')},
 
     ]
 
     planets3 = [{"name": "planet4",
-                 "texture": os.path.join(self_path,'media/_population_pictures/texture4.jpeg')},
+                 "texture": os.path.join(dest,'texture4.jpeg')},
     ]
 
 
@@ -59,7 +69,7 @@ def populate():
              "eva": {"solarSys": SolarSystem3},}
 
 
-
+    #populate the database
     for user, solarsystems in users.items():
         u = add_user(user)
         for solarsystem in solarsystems["solarSys"]:
@@ -69,7 +79,7 @@ def populate():
 
 
 
-
+#helper functions
 def add_user(username):
     email = str(username + "@hotmail.com")
     password = "".join(random.choice(string.ascii_lowercase) for i in range(10))
