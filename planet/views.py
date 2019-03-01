@@ -17,7 +17,8 @@ logger = logging.getLogger(__name__)
 
 def home(request: HttpRequest) -> HttpResponse:
     # FIXME(Paolo): Test!
-    planet = Planet.objects.get(pk=1)
+    #planet = Planet.objects.get(pk=1)
+    planet = Planet.objects.get_or_create(name="planet2")[0]
 
     context = {
         'planet': planet,
@@ -36,13 +37,13 @@ def test(request: HttpRequest) -> HttpResponse:
         # FIXME(Paolo): Resize image if needed, reject wrongly-sized images!
         logger.debug(f'Planet{planet.id}: saving texture...')
         try:
-            planet.texture.save(f'{planet.id}.jpg', request.FILES['texture'])  # See the AJAX request in editor.js:onSave() 
+            planet.texture.save(f'{planet.id}.jpg', request.FILES['texture'])  # See the AJAX request in editor.js:onSave()
             planet.save()
             logger.debug(f'Planet{planet.id}: texture saved')
             return HttpResponse('saved')
         except Exception as e:
             logger.error(f'Planet{planet.id}: error saving texture: {repr(e)}')
-            return HttpResponseBadRequest('error') 
+            return HttpResponseBadRequest('error')
     else:
         # POST or GET: launch the editor
         context = {
