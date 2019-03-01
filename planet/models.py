@@ -11,8 +11,13 @@ from django.contrib.auth.models import User
 # ======================== Utilities ===========================================
 
 logger = logging.getLogger(__name__)
-
 # ======================== Models ==============================================
+
+
+def content_file_name(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (instance.username, ext)
+    return os.path.join('profile_images/', filename)
 
 # Create your models here.*
 class PlanetUser(AbstractUser):
@@ -21,15 +26,17 @@ class PlanetUser(AbstractUser):
         verbose_name='email address',
         max_length=255)
     avatar = models.ImageField(
-        upload_to='profile_images', blank=True, null=True)
-
+        upload_to=content_file_name, blank=True, null=True)
     REQUIRED_FIELDS = ['email']
     username_validator = ASCIIUsernameValidator()
-
-
     def __str__(self):
         return self.username
 
+    @property
+    def avatar_path(self):
+        if self.avatar and hasattr(self.avatar, 'url'):
+            logger.warning(self.avatar.url)
+            return self.avatar.url
 
 class SolarSystem(models.Model):
 

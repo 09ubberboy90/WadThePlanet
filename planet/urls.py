@@ -13,7 +13,7 @@ urlpatterns = [
 	url(r'^search/$', views.search, name='search'),
 
     # url(r'^contact/', views.contact, name='contact'),
-    # url(r'^logout/$', views.user_logout, name='logout'),
+    url(r'^logout/$', views.user_logout, name='logout'),
 
     # url(r'^(?P<username_slug>[\w\-]+)/$',
     #     views.account, name='account'),

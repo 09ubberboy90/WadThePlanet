@@ -12,7 +12,6 @@ class RegistrationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Field('username', css_class="input_field"),
@@ -40,7 +39,7 @@ class RegistrationForm(forms.ModelForm):
             raise ValidationError("Email already exists")
         return email
 
-    def clean_password_copy(self):
+    def clean_password(self):
         password = self.cleaned_data.get('password')
         password_copy = self.cleaned_data.get('password_copy')
 
@@ -51,9 +50,9 @@ class RegistrationForm(forms.ModelForm):
 
     def save(self, commit=True):
         user = PlanetUser.objects.create_user(
-            self.cleaned_data['username'],
-            email = self.cleaned_data['email'],
-            password = self.cleaned_data['password'],
+            self.clean_username(),
+            email = self.clean_email(),
+            password = self.clean_password(),
             avatar = self.cleaned_data['avatar']
         )
         return user

@@ -8,6 +8,9 @@ from planet.models import Planet, Comment, PlanetUser
 from planet.forms import LoggingForm, RegistrationForm, CommentForm
 from django.contrib import messages, auth
 from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
+
 
 # ======================== Utilities ===========================================
 
@@ -112,10 +115,19 @@ def user_login(request: HttpRequest) -> HttpResponse:
 
 
 def search(request):
-    result_list = []
-    if request.method == 'GET':
-        query = request.GET['query'].strip()
-        if query:
-            # Run our Webhose search function to get the results list!
-            result_list = run_query(query)
-    return render(request, 'planet/search.html', {'result_list': result_list})
+	result_list = []
+	if request.method == 'GET':
+		query = request.GET['query'].strip()
+		if query:
+			# Run our Webhose search function to get the results list!
+			result_list = run_query(query)
+	return render(request, 'planet/search.html', {'result_list': result_list})
+
+
+@login_required
+def user_logout(request):
+    # Since we know the user is logged in, we can now just log them out.
+    logout(request)
+    # Take the user back to the homepage.
+    return redirect('home')
+
