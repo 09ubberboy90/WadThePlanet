@@ -91,5 +91,10 @@ class Comment(models.Model):
     CHOICES = [(n, f'[{"*" * n}]') for n in range(6)]
 
     planet = models.ForeignKey(Planet)
+    user = models.ForeignKey(PlanetUser)
     comment = models.CharField(max_length=200)
     rating = models.IntegerField(choices=CHOICES)
+
+    class Meta:
+        # Disallow multiple comments on a planet from the same user
+        unique_together = ('planet', 'user')

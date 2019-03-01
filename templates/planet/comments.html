@@ -9,4 +9,8 @@
         <!-- Note: layout is defined in forms.py, when setting up CommentForm.helper -->
         {% crispy comment_form %}
     </form>
+    {% for comment in comments %}
+        {{ comment.comment }} - {{ comment.rating }}
+        <br>
+    {% endfor %}
 </div>

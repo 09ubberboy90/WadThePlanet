@@ -4,7 +4,7 @@ import logging
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from planet.webhose_search import run_query
-from planet.models import Planet
+from planet.models import Planet, Comment, PlanetUser
 from planet.forms import LoggingForm, RegistrationForm, CommentForm
 from django.contrib import messages, auth
 from django.shortcuts import redirect
@@ -32,6 +32,7 @@ def home(request: HttpRequest) -> HttpResponse:
 
 def view_planet(request: HttpRequest) -> HttpResponse:
     # FIXME(Paolo): Test!
+    user = PlanetUser.objects.get(pk=1)
     planet = Planet.objects.get(pk=1)
 
     if request.method == 'POST':
@@ -39,6 +40,7 @@ def view_planet(request: HttpRequest) -> HttpResponse:
         form = CommentForm(request.POST)
 
         comment = form.save(commit=False)
+        comment.user = user
         comment.planet = planet
         comment.save()  # Commit to DB
     else:
@@ -46,6 +48,7 @@ def view_planet(request: HttpRequest) -> HttpResponse:
 
     context = {
         'comment_form': form,
+        'comments': Comment.objects.filter(user=user, planet=planet),
     }
     return render(request, 'planet/test.html', context=context)
 
