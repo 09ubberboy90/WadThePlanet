@@ -3,6 +3,7 @@ from django.forms import ModelForm
 from planet.models import *
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import *
+from crispy_forms.bootstrap import FormActions
 from django.core.exceptions import ValidationError
 
 class RegistrationForm(forms.ModelForm):
@@ -73,15 +74,7 @@ class LoggingForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
         self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Field('username', css_class="input_field"),
-            Field('password', css_class="input_field"),
-            ButtonHolder(
-                Submit('submit', 'Submit', css_class='button white')
-            )
-        )
 
     def clean_username(self):
         username = self.cleaned_data.get('username').lower()
@@ -91,3 +84,25 @@ class LoggingForm(forms.Form):
         password = self.cleaned_data.get('password')
         return password
 
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['comment', 'rating']
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Row(
+                Field('comment', id='comment',
+                    wrapper_class='col-md-10'),
+                Field('rating', id='rating',
+                    wrapper_class='col-md-1'),
+                FormActions(
+                    Submit('send', 'Send', id='send', css_class='btn-sm'),
+                    css_class='send-btn-container col-pd-1',
+                )
+            )
+        )

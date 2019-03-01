@@ -85,3 +85,11 @@ class Planet(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+class Comment(models.Model):
+    # A list of (number, '[' + '*' repeated "number" times + ']' pairs)
+    CHOICES = [(n, f'[{"*" * n}]') for n in range(6)]
+
+    planet = models.ForeignKey(Planet)
+    comment = models.CharField(max_length=200)
+    rating = models.IntegerField(choices=CHOICES)

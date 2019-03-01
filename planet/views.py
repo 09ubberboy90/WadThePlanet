@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from planet.webhose_search import run_query
 from planet.models import Planet
-from planet.forms import *
+from planet.forms import LoggingForm, RegistrationForm, CommentForm
 from django.contrib import messages, auth
 from django.shortcuts import redirect
 
@@ -14,6 +14,7 @@ from django.shortcuts import redirect
 logger = logging.getLogger(__name__)
 
 # ======================== Views ===============================================
+
 
 def home(request: HttpRequest) -> HttpResponse:
     # FIXME(Paolo): Test!
@@ -28,7 +29,28 @@ def home(request: HttpRequest) -> HttpResponse:
     }
     return render(request, 'planet/home.html', context=context)
 
-def test(request: HttpRequest) -> HttpResponse:
+
+def view_planet(request: HttpRequest) -> HttpResponse:
+    # FIXME(Paolo): Test!
+    planet = Planet.objects.get(pk=1)
+
+    if request.method == 'POST':
+        # POST: upload the posted comment
+        form = CommentForm(request.POST)
+
+        comment = form.save(commit=False)
+        comment.planet = planet
+        comment.save()  # Commit to DB
+    else:
+        form = CommentForm()
+
+    context = {
+        'comment_form': form,
+    }
+    return render(request, 'planet/test.html', context=context)
+
+
+def edit_planet(request: HttpRequest) -> HttpResponse:
     # FIXME(Paolo): Test!
     planet = Planet.objects.get(pk=1)
     if request.method == 'POST':
@@ -37,7 +59,8 @@ def test(request: HttpRequest) -> HttpResponse:
         # FIXME(Paolo): Resize image if needed, reject wrongly-sized images!
         logger.debug(f'Planet{planet.id}: saving texture...')
         try:
-            planet.texture.save(f'{planet.id}.jpg', request.FILES['texture'])  # See the AJAX request in editor.js:onSave()
+            # See the AJAX request in editor.js:onSave()
+            planet.texture.save(f'{planet.id}.jpg', request.FILES['texture'])
             planet.save()
             logger.debug(f'Planet{planet.id}: texture saved')
             return HttpResponse('saved')
@@ -78,16 +101,18 @@ def user_login(request: HttpRequest) -> HttpResponse:
                 auth.login(request, user)
                 return redirect('home')
             else:
-                render(request, 'planet/user_login.html', {'user_form': f, 'error': True})
+                render(request, 'planet/user_login.html',
+                       {'user_form': f, 'error': True})
     else:
         f = LoggingForm()
-    return render(request, 'planet/user_login.html',{'user_form': f, 'error': False})
+    return render(request, 'planet/user_login.html', {'user_form': f, 'error': False})
+
 
 def search(request):
-	result_list = []
-	if request.method == 'GET':
-		query = request.GET['query'].strip()
-		if query:
-			# Run our Webhose search function to get the results list!
-			result_list = run_query(query)
-	return render(request, 'planet/search.html', {'result_list': result_list})
+    result_list = []
+    if request.method == 'GET':
+        query = request.GET['query'].strip()
+        if query:
+            # Run our Webhose search function to get the results list!
+            result_list = run_query(query)
+    return render(request, 'planet/search.html', {'result_list': result_list})
