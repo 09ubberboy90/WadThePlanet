@@ -31,6 +31,7 @@ urlpatterns = [
     #     name='edit_planet'),
 
     # FIXME(Paolo): Test!
-    url(r'^test$', views.test, name='test'),
+    url(r'^test$', views.edit_planet, name='test'),
+    url(r'^view$', views.view_planet, name='view_planet'),
 	
 ]

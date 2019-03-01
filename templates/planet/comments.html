@@ -1,0 +1,12 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/comments.css' %}">
+
+<!-- FIXME(PAOLO): correct endpoint (/username/solarsystem/planet) -->
+<div id="comment-container" class="container-fluid ml-0">
+    <form id="comment-form" action="{% url 'view_planet' %}" method="POST" novalidate>
+        <!-- Note: layout is defined in forms.py, when setting up CommentForm.helper -->
+        {% crispy comment_form %}
+    </form>
+</div>

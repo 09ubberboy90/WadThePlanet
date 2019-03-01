@@ -8,6 +8,7 @@ import django
 django.setup()
 from planet.models import PlanetUser, Planet, SolarSystem
 
+
 #Copy the files over to the media destination
 #to avoid deleting pictures when deleting database
 import shutil
@@ -26,19 +27,19 @@ for file_name in src_files:
 def populate():
 
     planets1 = [ {"name": "planet1",
-                  "texture": os.path.join(dest,'texture1.jpeg')},
+                  "texture": 'planets/texture1.jpeg'},
 
                 {"name": "planet2",
-                 "texture": os.path.join(dest,'texture2.jpeg')},
+                 "texture": 'planets/texture2.jpeg'},
     ]
 
     planets2 = [{"name": "planet3",
-                 "texture": os.path.join(dest,'texture3.jpeg')},
+                 "texture": 'planets/texture3.jpeg'},
 
     ]
 
     planets3 = [{"name": "planet4",
-                 "texture": os.path.join(dest,'texture4.jpeg')},
+                 "texture": 'planets/texture4.jpeg'},
     ]
 
 
@@ -106,5 +107,4 @@ def add_solarSys(user, name, description='', score=0, views=0):
 
 #start execution here
 if __name__ == '__main__':
-    print("Starting Rango population script...")
     populate()
