@@ -107,5 +107,4 @@ def add_solarSys(user, name, description='', score=0, views=0):
 
 #start execution here
 if __name__ == '__main__':
-    print("Starting Rango population script...")
     populate()
