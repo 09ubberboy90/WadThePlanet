@@ -6,7 +6,8 @@ from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from planet.webhose_search import run_query
 from planet.models import Planet
 from planet.forms import *
-from django.contrib import messages
+from django.contrib import messages, auth
+from django.shortcuts import redirect
 
 # ======================== Utilities ===========================================
 
@@ -55,20 +56,31 @@ def test(request: HttpRequest) -> HttpResponse:
 
 def register(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
-        f = CustomUserCreationForm(request.POST)
+        f = RegistrationForm(request.POST)
         if f.is_valid():
             f.save()
             messages.success(request, 'Account created successfully')
-            return redirect('register')
-
+            return redirect('home')
     else:
-        f = CustomUserCreationForm()
+        f = RegistrationForm()
     return render(request, 'planet/register.html', {'user_form': f})
 
 
 def user_login(request: HttpRequest) -> HttpResponse:
-    # FIXME(Florent): Implement
-    return render(request, 'planet/user_login.html')
+    if request.method == 'POST':
+        f = LoggingForm(request.POST)
+        if f.is_valid():
+            username = f.clean_username()
+            password = f.clean_password()
+            user = auth.authenticate(username=username, password=password)
+            if user:
+                auth.login(request, user)
+                return redirect('home')
+            else:
+                render(request, 'planet/user_login.html', {'user_form': f, 'error': True})
+    else:
+        f = LoggingForm()
+    return render(request, 'planet/user_login.html',{'user_form': f, 'error': False})
 
 def search(request):
 	result_list = []

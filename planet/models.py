@@ -24,6 +24,8 @@ class PlanetUser(AbstractUser):
         upload_to='profile_images', blank=True, null=True)
 
     REQUIRED_FIELDS = ['email']
+    username_validator = ASCIIUsernameValidator()
+
 
     def __str__(self):
         return self.username
