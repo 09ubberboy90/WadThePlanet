@@ -7,6 +7,8 @@ from crispy_forms.bootstrap import FormActions
 from django.core.exceptions import ValidationError
 
 class RegistrationForm(forms.ModelForm):
+    username = forms.CharField(
+        label='Username', min_length=6, max_length=32, validators=[name_validator], help_text=('Required. 32 characters or fewer. Letters and digits only.'))
     password_copy = forms.CharField(
             label='Confirm password', min_length= 6, max_length= 128,widget = forms.PasswordInput)
 
@@ -59,14 +61,14 @@ class RegistrationForm(forms.ModelForm):
 
     class Meta:
         model = PlanetUser
-        fields = ['email', 'avatar', 'username', 'password']
+        fields = ['email', 'avatar', 'password']
         widgets = {
             'password': forms.PasswordInput,
         }
 
 class LoggingForm(forms.Form):
     username = forms.CharField(
-        label='Username', min_length=6, max_length=128, validators=[PlanetNameValidator()])
+        label='Username', min_length=6, max_length=128, validators=[name_validator])
 
     password = forms.CharField(
         label='Password', min_length=6, max_length=128, widget=forms.PasswordInput)
