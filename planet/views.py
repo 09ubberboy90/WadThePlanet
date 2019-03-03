@@ -179,7 +179,7 @@ def edit_planet(request: HttpRequest, username: str, systemname: str, planetname
 
 def create_system(request: HttpRequest, username: str) -> HttpResponse:
     if request.user.username != username:
-        return HttpResponseForbidden(f'You not to be logged in as {username}')
+        return HttpResponseForbidden(f'You need to be logged in as {username}')
 
     if request.method == 'POST':
         form = SolarSystemForm(request.user)
@@ -190,7 +190,7 @@ def create_system(request: HttpRequest, username: str) -> HttpResponse:
             return redirect('view_system')
     else:
         form = SolarSystemForm(request.user)
-    return render(request, 'planet/create_system.html', {'form': form})
+    return render(request, 'planet/create_system.html', {'form': form, 'username': username})
 
 
 def create_planet(request: HttpRequest, username: str, systemname: str) -> HttpResponse:
