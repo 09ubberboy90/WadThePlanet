@@ -90,6 +90,8 @@ def populate():
             for planet in solarsystem["planets"]:
                 add_planet(planet["name"], u, s, planet["texture"])
 
+    create_super_user("superuser")
+
 
 
 #helper functions
@@ -115,6 +117,10 @@ def add_solarSys(user, name, description='', score=0, views=0):
     solarSys.views = views
     solarSys.save()
     return solarSys
+
+def create_super_user(username):
+    email = str(username + "@hotmail.com")
+    u = PlanetUser.objects.create_superuser(username=username, email=email, password="superuser")
 
 
 #start execution here
