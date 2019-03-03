@@ -23,7 +23,6 @@ def home(request: HttpRequest) -> HttpResponse:
     # FIXME(Paolo): Test!
     #planet = Planet.objects.get(pk=1)
     planet = Planet.objects.get_or_create(name="planet2")[0]
-    print(request.user.is_authenticated)
     context = {
         'planet': planet,
         'editing_enabled': False,
@@ -34,7 +33,9 @@ def home(request: HttpRequest) -> HttpResponse:
 
 
 def view_user(request: HttpRequest, username: str) -> HttpResponse:
-    pass
+    user = PlanetUser.objects.get(username=username)
+    return render(request, 'planet/view_user.html', {'username': user})
+
 
 def edit_user(request: HttpRequest, username: str) -> HttpResponse:
     pass
@@ -134,8 +135,7 @@ def user_login(request: HttpRequest) -> HttpResponse:
     else:
         f = LoggingForm()
     return render(request, 'planet/user_login.html', {'user_form': f})
-
-
+    
 def search(request):
 #	result_list = []
 #	if request.method == 'GET':
@@ -149,7 +149,6 @@ def search(request):
     
 @login_required
 def user_logout(request):
-    print(request.user.username)
     # Since we know the user is logged in, we can now just log them out.
     logout(request)
     # Take the user back to the homepage.
