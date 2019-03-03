@@ -4,13 +4,35 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/comments.css' %}">
 
 <!-- FIXME(PAOLO): correct endpoint (/username/solarsystem/planet) -->
-<div id="comment-container" class="container-fluid ml-0">
+<div id="comment-container" class="card container-fluid ml-0">
     <form id="comment-form" action="{% url 'view_planet' %}" method="POST" novalidate>
         <!-- Note: layout is defined in forms.py, when setting up CommentForm.helper -->
         {% crispy comment_form %}
     </form>
+
     {% for comment in comments %}
-        {{ comment.comment }} - {{ comment.rating }}
-        <br>
+        <div class="card">
+            <div class="card-body row align-items-center">
+
+                <div class="col-3 d-flex align-items-center">
+                    {% if user.avatar %}
+                        <img src="{{ comment.user.avatar.url }}" alt="{{ comment.user.name }}'s avatar"
+                            class="img-thumbnail user-avatar">
+                    {% else %}
+                        <i class="fas fa-user-astronaut text-primary user-avatar"></i>
+                    {% endif %}
+                    <strong class="user-name">{{ comment.user.username }}</strong>
+                </div>
+
+                <div class="col-2">
+                    {{ comment.rating }}
+                </div>
+
+                <div class="col-7">
+                    {{ comment.comment }}
+                </div>
+
+            </div>
+        </div>
     {% endfor %}
 </div>

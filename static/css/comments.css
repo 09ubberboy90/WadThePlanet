@@ -1,5 +1,6 @@
 #comment-container {
     background: #FFFFFF;
+    padding-bottom: 3em;
 }
 
 @media only screen and (min-width: 975px) {
@@ -10,10 +11,19 @@
     }
 }
 
-
 #send-btn-container {
     /* Quick fix for the "send" button not being aligned correctly */
     bottom: 0;
     margin-bottom: 0;
     padding-bottom: 0;
+}
+
+.user-name {
+    margin-left: 1em;
+}
+
+.user-avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 48px; /* (Only applies to fa-astronaut, not to <img> tags) */
 }
