@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden ,HttpResponseNotFound
 from planet.webhose_search import run_query
 from planet.models import Planet, Comment, PlanetUser, SolarSystem
-from planet.forms import LoggingForm, RegistrationForm, CommentForm, SolarSystemForm
+from planet.forms import LoggingForm, RegistrationForm, CommentForm, SolarSystemForm, EditUserForm
 from django.contrib import messages, auth
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
@@ -39,7 +39,34 @@ def view_user(request: HttpRequest, username: str) -> HttpResponse:
 
 
 def edit_user(request: HttpRequest, username: str) -> HttpResponse:
-    pass
+    '''
+    Edits request.user.
+    GET: Render the editing form
+    POST: Apply the edited fields
+    '''
+    if username != request.user.username:
+        return HttpResponseForbidden(f'You need to log in as {username} to edit his profile')
+
+    if request.method == 'POST':
+        form = EditUserForm(request.POST, user_id=request.user.id)
+        if form.is_valid():
+            # Change only the data that was input by the user
+            if form.cleaned_data['username']:
+                request.user.username = form.cleaned_data['username']
+            if form.cleaned_data['password']:
+                # NOTE: If you don't set_password, it gets saved as plaintext!!
+                request.user.set_password(form.cleaned_data['password'])
+            if form.cleaned_data['avatar']:
+                user.avatar = form.cleaned_data['avatar']
+            request.user.save()
+    else:
+        form = EditUserForm(user_id=request.user.id)
+
+    context = {
+        'user_form': form,
+    }
+    return render(request, 'planet/edit_user.html', context)
+
 
 def view_system(request: HttpRequest, username: str, systemname: str) -> HttpResponse:
         '''
