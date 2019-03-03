@@ -5,10 +5,16 @@
 
 <!-- FIXME(PAOLO): correct endpoint (/username/solarsystem/planet) -->
 <div id="comment-container" class="card container-fluid ml-0">
-    <form id="comment-form" action="{% url 'view_planet' %}" method="POST" novalidate>
-        <!-- Note: layout is defined in forms.py, when setting up CommentForm.helper -->
-        {% crispy comment_form %}
-    </form>
+    {% if comment_form %}
+        <!-- User is logged in, show comment form -->
+        <form id="comment-form" action="{% url 'view_planet' %}" method="POST" novalidate>
+            <!-- Note: layout is defined in forms.py, when setting up CommentForm.helper -->
+            {% crispy comment_form %}
+        </form>
+    {% else %}
+        <strong>Please log in to leave a rating</strong>
+        <br>
+    {% endif %}
 
     {% for comment in comments %}
         <div class="card">

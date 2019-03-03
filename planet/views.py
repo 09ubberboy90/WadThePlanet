@@ -34,25 +34,33 @@ def home(request: HttpRequest) -> HttpResponse:
 
 
 def view_planet(request: HttpRequest) -> HttpResponse:
-    # FIXME(Paolo): Test!
-    user = PlanetUser.objects.get(pk=1)
-    planet = Planet.objects.get(pk=1)
-
-    if request.method == 'POST':
-        # POST: upload the posted comment
-        form = CommentForm(request.POST)
-
-        comment = form.save(commit=False)
-        comment.user = user
-        comment.planet = planet
-        comment.save()  # Commit to DB
-    else:
-        form = CommentForm()
+    planet = Planet.objects.get(pk=1) # FIXME(Paolo): Get planet based on url
 
     context = {
-        'comment_form': form,
-        'comments': Comment.objects.filter(user=user, planet=planet),
+        'comments': Comment.objects.filter(planet=planet),
+        'planet': planet,
+        'cam_controls_enabled': True,  # (see editor.html)
     }
+
+    if request.user.is_authenticated:
+        # Display and handle comment form only if an user is logged in
+        if request.method == 'POST':
+            # POST: upload the posted comment
+            form = CommentForm(request.POST)
+
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.planet = planet
+            comment.save()  # Commit to DB
+        else:
+            # GET: Display an empty comment form
+            form = CommentForm()
+
+        context['comment_form'] = form
+    else:
+        # No comment form for logged-out users
+        context['comment_form'] = None
+
     return render(request, 'planet/test.html', context=context)
 
 
@@ -119,13 +127,13 @@ def search(request):
 #	if request.method == 'GET':
 #		query = request.GET['query'].strip()
 #		if query:
-			# Run our Webhose search function to get the results list!
+            # Run our Webhose search function to get the results list!
 #			result_list = run_query(query)
 
-	result_list = run_query(request.GET['query'].strip())
-	return render(request, 'planet/search.html', {'result_list': result_list})
-	
-	
+    result_list = run_query(request.GET['query'].strip())
+    return render(request, 'planet/search.html', {'result_list': result_list})
+    
+    
 
 
 @login_required
