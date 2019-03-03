@@ -7,25 +7,23 @@ from django.contrib.auth.validators import ASCIIUsernameValidator
 from WadThePlanet import settings
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
+import re
+from django.core.exceptions import ValidationError
 
 
 # ======================== Utilities ===========================================
 
 logger = logging.getLogger(__name__)
 
-class PlanetNameValidator(RegexValidator):
-    DISALLOWED_NAMES = ['admin', 'about', 'contact', 'login', 'logout', 'register', 'search', 'hall-of-fame']
-    '''A list of disallowed names for users/systems/planets.'''
 
-    def __init__(self):
-        regex = '^'
-        regex += '(?!' + '|'.join(self.DISALLOWED_NAMES) + ')'  # Check that none of DISALLOWED_NAMES matches
-        regex += r'|([A-Za-z0-9]+)$'
-        super().__init__(regex=regex,
-            message='Names should be alphanumeric, excluding some reserved words')
 
 # ======================== Models ==============================================
-
+def name_validator(val):
+    DISALLOWED_NAMES = ['admin', 'about', 'contact', 'login',
+                        'logout', 'register', 'search', 'hall-of-fame']
+    if re.match('^(?!' + '|'.join(DISALLOWED_NAMES) + ')'+r'|([A-Za-z0-9]+)$',val):
+        raise ValidationError(
+            'Names should be alphanumeric, excluding some reserved words')
 
 def content_file_name(instance, filename):
     ext = filename.split('.')[-1]
@@ -41,8 +39,6 @@ class PlanetUser(AbstractUser):
     avatar = models.ImageField(
         upload_to=content_file_name, blank=True, null=True)
     REQUIRED_FIELDS = ['email']
-
-    username_validator = PlanetNameValidator()
 
     def __str__(self):
         return self.username
@@ -82,7 +78,7 @@ class Planet(models.Model):
     # An unique numeric id for each planet
     id = models.AutoField(null=False, primary_key=True)
     # The name of the planet
-    name = models.CharField(null=False, max_length=50, validators=[PlanetNameValidator()])
+    name = models.CharField(null=False, max_length=50, validators=[name_validator])
     # foreign key to the owner
     user = models.ForeignKey(PlanetUser)
     # foreign key to the solarsystem it belongs to
