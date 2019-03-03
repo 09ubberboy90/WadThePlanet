@@ -8,9 +8,17 @@
             <div class="col-3">
                 <a href="../{{system.user }}/{{system}}">{{system.name}}</a>
             </div>
+            {% if page == 'leaderboard' %}
             <div class="col-3">
                 User : <a href="../{{system.user}}">{{system.user}}</a>
             </div>
+            {% elif user.is_authenticated%}
+            {% if user.username == username %}
+            <div class="col-3">
+                Visibility : {{system.visibility}}
+            </div>
+            {% endif %}
+            {% endif %}
             <div class="col-3">
                 Score : {{system.score}}
             </div>
