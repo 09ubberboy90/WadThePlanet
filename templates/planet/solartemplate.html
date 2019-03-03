@@ -1,0 +1,20 @@
+{% for system in solars %}
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-3">
+                <i class="fas fa-sun text-dark"></i>
+            </div>
+            <div class="col-3">
+                <a href="../{{system.user }}/{{system}}">{{system.name}}</a>
+            </div>
+            <div class="col-3">
+                User : <a href="../{{system.user}}">{{system.user}}</a>
+            </div>
+            <div class="col-3">
+                Score : {{system.score}}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}

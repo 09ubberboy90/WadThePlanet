@@ -6,11 +6,14 @@ from crispy_forms.layout import *
 from crispy_forms.bootstrap import FormActions
 from django.core.exceptions import ValidationError
 
+
 class RegistrationForm(forms.ModelForm):
     username = forms.CharField(
-        label='Username', min_length=6, max_length=32, help_text=('Required. 32 characters or fewer. Letters and digits only.'))
+        label='Username', min_length=6, max_length=32,
+            validators=[name_validator],
+            help_text=('Required. 32 characters or fewer. Letters and digits only. Excludes some reserved words.'))
     password_copy = forms.CharField(
-            label='Confirm password', min_length= 6, max_length= 128,widget = forms.PasswordInput)
+        label='Confirm password', min_length=6, max_length=128, widget=forms.PasswordInput)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -25,7 +28,7 @@ class RegistrationForm(forms.ModelForm):
                 Submit('submit', 'Submit', css_class='button white')
             )
         )
-        self.helper['password'].update_attributes(min_length= 6)
+        self.helper['password'].update_attributes(min_length=6)
 
     def clean_username(self):
         username = self.cleaned_data['username'].lower()
@@ -54,8 +57,8 @@ class RegistrationForm(forms.ModelForm):
         user = PlanetUser.objects.create_user(
             self.cleaned_data['username'],
             email=self.cleaned_data['email'],
-            password = self.cleaned_data['password'],
-            avatar = self.cleaned_data['avatar']
+            password=self.cleaned_data['password'],
+            avatar=self.cleaned_data['avatar']
         )
         return user
 
@@ -66,13 +69,15 @@ class RegistrationForm(forms.ModelForm):
             'password': forms.PasswordInput,
         }
 
+
 class LeaderboardForm(forms.Form):
-    sort = [('score','Likes'),('id','New'),('name','Alphabetical')]
-    choice = forms.ChoiceField(choices = sort)
+    sort = [('score', 'Likes'), ('id', 'New'), ('name', 'Alphabetical')]
+    choice = forms.ChoiceField(choices=sort)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+
 
 class LoggingForm(forms.Form):
     username = forms.CharField(
@@ -100,6 +105,7 @@ class LoggingForm(forms.Form):
         password = self.cleaned_data.get('password')
         return password
 
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
@@ -112,9 +118,9 @@ class CommentForm(forms.ModelForm):
         self.helper.layout = Layout(
             Row(
                 Field('comment', id='comment',
-                    wrapper_class='col-8'),
+                      wrapper_class='col-8'),
                 Field('rating', id='rating',
-                    wrapper_class='col-2'),
+                      wrapper_class='col-2'),
                 ButtonHolder(
                     Submit('send', 'Send', id='send', css_class='btn-sm'),
                     css_class='send-btn-container col-2 pb-3 align-self-end',
@@ -122,15 +128,18 @@ class CommentForm(forms.ModelForm):
             )
         )
 
+
 class SolarSystemForm(forms.ModelForm):
-    name = forms.CharField(min_length=6, max_length=50, help_text="Name of the SolarSystem: ")
-    description = forms.CharField(max_length=160, help_text="Description of the SolarSystem")
+    name = forms.CharField(min_length=6, max_length=50,
+                            help_text="Name of the SolarSystem: ")
+    description = forms.CharField(max_length=160,
+                            help_text="Description of the SolarSystem")
     visibility = forms.BooleanField(label='Make public')
     #visibility = forms.BooleanField(initial = True)
 
     class Meta:
         model = SolarSystem
-        fields = [ 'user', 'score', 'views', 'visibility']
+        fields = ['user', 'score', 'views', 'visibility']
 
     def __init__(self, user, *args, **kwargs):
         super(SolarSystemForm, self).__init__(*args, **kwargs)
@@ -148,14 +157,16 @@ class SolarSystemForm(forms.ModelForm):
 
 class EditUserForm(forms.Form):
     username = forms.CharField(label='Change username', min_length=6, max_length=32,
-        help_text=('32 characters or fewer. Letters and digits only.'),
-        required=False)
+                               validators=[name_validator],
+                               help_text=(
+                                   'Required. 32 characters or fewer. Letters and digits only. Excludes some reserved words.'),
+                               required=False)
     password = forms.CharField(label='Change password', min_length=6, max_length=128,
-        widget=forms.PasswordInput, required=False)
+                               widget=forms.PasswordInput, required=False)
     password_copy = forms.CharField(label='Confirm changed password', min_length=6, max_length=128,
-        widget=forms.PasswordInput, required=False)
+                                    widget=forms.PasswordInput, required=False)
     avatar = forms.ImageField(label='Change avatar',
-        required=False)
+                              required=False)
 
     def __init__(self, *args, user_id, **kwargs):
         super().__init__(*args, **kwargs)
@@ -169,7 +180,7 @@ class EditUserForm(forms.Form):
                 Submit('submit', 'Edit', css_class='button white')
             )
         )
-        self.helper['password'].update_attributes(min_length= 6)
+        self.helper['password'].update_attributes(min_length=6)
         self.user_id = user_id
 
     def clean_username(self):

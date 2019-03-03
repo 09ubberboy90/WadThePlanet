@@ -20,7 +20,11 @@ This template presents a search box and search button within HTML form	-->
 		<h3>Results</h3>
 		<!-- Display search results in an ordered list -->
 		<div class="list-group">
+		
+		
 		{% for result in result_list %}
+		
+			<!-- User accounts -->
 			{% if result.username %}
 			<div class="list-group-item">
 				<h4 class="list-group-item-heading">
@@ -28,6 +32,7 @@ This template presents a search box and search button within HTML form	-->
 				</h4>
 			</div>
 					
+			<!-- Solar systems -->
 			{% elif result.description %} 
 
 			<div class="list-group-item">
@@ -36,6 +41,7 @@ This template presents a search box and search button within HTML form	-->
 				</h4>
 			</div>
 			
+			<!-- Planets -->
 			{% elif result.texture %} 
 
 			<div class="list-group-item">

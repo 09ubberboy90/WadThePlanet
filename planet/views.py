@@ -37,14 +37,20 @@ def leaderboard(request: HttpRequest) -> HttpResponse:
         if form.is_valid():
             result = form.cleaned_data['choice']
             if result == "name":
-                planets = Planet.objects.order_by(result)
+                planets = Planet.objects.exclude(visibility=False).order_by(result)
+                solars = SolarSystem.objects.exclude(
+                    visibility=False).order_by(result)
             else:
-                planets = Planet.objects.order_by(result)[::-1]
+                planets = Planet.objects.exclude(visibility=False).order_by(result)[::-1]
+
+                solars = SolarSystem.objects.exclude(visibility=False).order_by(result)[::-1]
     else:
         form = LeaderboardForm()
-        planets = Planet.objects.order_by('id')
+        solars = SolarSystem.objects.exclude(visibility=False).order_by('name')
+        planets = Planet.objects.exclude(visibility=False).order_by('name')
     context['form'] = form
     context['planets'] = planets
+    context['solars'] = solars
     return render(request, 'planet/leaderboard.html',context= context)
 
 def view_user(request: HttpRequest, username: str) -> HttpResponse:
