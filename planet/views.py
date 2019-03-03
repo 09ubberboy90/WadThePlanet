@@ -2,7 +2,7 @@ import base64
 import re
 import logging
 from django.shortcuts import render
-from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
+from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from planet.webhose_search import run_query
 from planet.models import Planet, Comment, PlanetUser
 from planet.forms import LoggingForm, RegistrationForm, CommentForm
@@ -81,6 +81,9 @@ def edit_planet(request: HttpRequest, username: str, systemname: str, planetname
     POST: Post the modified planet texture (done via AJAX from editor.js)
     '''
     planet = Planet.objects.get(name=planetname, user__username=username, solarSystem__name=systemname)
+
+    if planet.user != request.user:
+        return HttpResponseForbidden(f'You must be logged in as {planet.user.username} to edit this planet!')
 
     if request.method == 'POST':
         # POST: upload the newly-edited image
