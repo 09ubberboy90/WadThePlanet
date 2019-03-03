@@ -35,13 +35,6 @@
 <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r83/three.min.js'></script>
 <script type="text/javascript" src="{% static 'js/OrbitControls.js' %}"></script>
 
-<script type="text/javascript">
-    // See editor.js:onSave() 
-    window.csrfToken = "{{ csrf_token }}";
-
-    var planetEditor = {};
-    planetEditor.editingEnabled = {{ editing_enabled|yesno:'true,false' }};
-    planetEditor.camControlsEnabled = {{ cam_controls_enabled|yesno:'true,false' }};
-    planetEditor.spinSpeed = {{ spin_speed|default:'0.0' }}
-</script>
+<!-- NOTE: Some parameters may need to be set; defined `var editor = {}, brush = {}`.
+     See editor.js -->
 <script type="text/javascript" src="{% static 'js/editor.js' %}"></script>

@@ -48,7 +48,6 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
     context = {
         'comments': Comment.objects.filter(planet=planet),
         'planet': planet,
-        'cam_controls_enabled': True,  # (see editor.html)
     }
 
     if request.user.is_authenticated:
@@ -70,10 +69,10 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
         # No comment form for logged-out users
         context['comment_form'] = None
 
-    return render(request, 'planet/test.html', context=context)
+    return render(request, 'planet/view_planet.html', context=context)
 
 def edit_planet(request: HttpRequest, username: str, systemname: str, planetname: str) -> HttpResponse:
-    planet = Planet.objects.get(name=planetname, user__username=username, system__name=systemname)
+    planet = Planet.objects.get(name=planetname, user__username=username, solarSystem__name=systemname)
 
     if request.method == 'POST':
         # POST: upload the newly-edited image
@@ -93,11 +92,8 @@ def edit_planet(request: HttpRequest, username: str, systemname: str, planetname
         # POST or GET: launch the editor
         context = {
             'planet': planet,
-            'editing_enabled': True,
-            'cam_controls_enabled': True,
-            'spin_speed': 0.0,
         }
-        return render(request, 'planet/test.html', context=context)
+        return render(request, 'planet/edit_planet.html', context=context)
 
 def create_system(request: HttpRequest, username: str) -> HttpResponse:
     pass
