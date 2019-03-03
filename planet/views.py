@@ -5,11 +5,7 @@ from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden ,HttpResponseNotFound
 from planet.webhose_search import run_query
 from planet.models import Planet, Comment, PlanetUser, SolarSystem
-<<<<<<< HEAD
 from planet.forms import LoggingForm, RegistrationForm, CommentForm, SolarSystemForm
-=======
-from planet.forms import LoggingForm, RegistrationForm, CommentForm
->>>>>>> 0ca3aa440455ab80fe51b8ae6bd83c6985f1f055
 from django.contrib import messages, auth
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
