@@ -1,6 +1,15 @@
 {% extends 'planet/base.html' %}
 {% load crispy_forms_tags %}
 {% block padded_content_block %}
+<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" data-toggle="pill" href="#planets" role="tab" aria-controls="planet" aria-selected="true">Planet</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="pill" href="#solar_systems" role="tab" aria-controls="solar_systems"
+            aria-selected="false">Solar Systems</a>
+    </li>
+</ul>
 <form method="post">
     {% csrf_token %}
     <div class="d-flex">
@@ -13,43 +22,49 @@
     </div>
 
 </form>
-<div class="card">
-    <div class="card-body">
-        <div class="row">
-            <div class="col-3">
-                Planet Name
-            </div>
-            <div class="col-3">
-                Owner
-            </div>
-            <div class="col-3">
-                Solar System
-            </div>
-            <div class="col-3">
-                Score
-            </div>
-        </div>
-    </div>
-</div>
-<br>
-{% for planet in planets %}
-<div class="card">
-    <div class="card-body">
-        <div class="row">
-            <div class="col-3">
-                {{planet.name}}
-            </div>
-            <div class="col-3">
-                {{planet.user}}
-            </div>
-            <div class="col-3">
-                {{planet.solarSystem}}
-            </div>
-            <div class="col-3">
-                {{planet.score}}
+<div class="tab-content">
+
+<div class="tab-pane fade show active" id="planets" role="tabpanel" aria-labelledby="planets">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-3">
+                    Planet Name
+                </div>
+                <div class="col-3">
+                    Owner
+                </div>
+                <div class="col-3">
+                    Solar System
+                </div>
+                <div class="col-3">
+                    Score
+                </div>
             </div>
         </div>
     </div>
+    <br>
+    {% include planet/planettemplate.html %}
 </div>
-{% endfor %}
+<div class="tab-pane fade" id='solar_systems' role="tabpanel" aria-labelledby="solar_system">
+<div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-4">
+                    Solar-System
+                </div>
+                <div class="col-4">
+                    Solar-System name
+                </div>
+                <div class="col-4">
+                    Score
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    {% include planet/solartemplate.html %}
+</div>
+
+</div>
 {% endblock %}

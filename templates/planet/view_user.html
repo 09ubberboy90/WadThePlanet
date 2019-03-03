@@ -19,26 +19,7 @@
     </div>
 </div>
 <br>
-{% for planet in planets %}
-<div class="card">
-    <div class="card-body">
-        <div class="row">
-            <div class="col-3">
-                <img id="initial-texture" src="{{ MEDIA_URL }}{{ planet.texture }}" heigth='68' width='68'/>
-            </div>
-            <div class="col-3">
-                Name : {{planet.name}}
-            </div>
-            <div class="col-3">
-                Solar System : {{planet.solarSystem}}
-            </div>
-            <div class="col-3">
-                Score : {{planet.score}}
-            </div>
-        </div>
-    </div>
-</div>
-{% endfor %}
+{% include planet/planettemplate.html %}
 <br>
 <div class="card">
     <div class="card-body d-flex justify-content-start">
@@ -46,24 +27,5 @@
     </div>
 </div>
 <br>
-{% for system in solar %}
-<div class="card">
-    <div class="card-body">
-        <div class="row">
-            <div class="col-3">
-                <i class="fas fa-sun text-dark"></i>
-            </div>
-            <div class="col-3">
-                {{system.name}}
-            </div>
-            <div class="col-3">
-                Visibility : {{system.visibility}}
-            </div>
-            <div class="col-3">
-                Score : {{system.score}}
-            </div>
-        </div>
-    </div>
-</div>
-{% endfor %}
+{% include planet/solartemplate.html %}
 {% endblock padded_content_block %}
