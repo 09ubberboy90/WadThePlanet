@@ -44,7 +44,7 @@ def populate():
                  "texture": 'planets/texture4.jpeg'},
     ]
 	
-	moon = [{"name": "Moon", "texture": 'planets/texture1.jpeg'},"visibility": False]
+    moon = [{"name": "Moon", "texture": 'planets/texture1.jpeg',"visibility": False}]
 
     SolarSystem1 = [{
                     "name": "FirstSolarSystem",
@@ -70,11 +70,11 @@ def populate():
     HiddenSystem = [{
                     "name": "hiddenSolarSystem",
                     "description": "Cannot find in search",
-                    "planets": Moon,
+                    "planets": moon,
 					"visibility":False,
                     },
     ]
-    ]
+    
 
     users = {"geir": {"solarSys": SolarSystem1},
              "petter": {"solarSys": SolarSystem2},
