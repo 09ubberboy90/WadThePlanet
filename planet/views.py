@@ -2,7 +2,7 @@ import base64
 import re
 import logging
 from django.shortcuts import render
-from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
+from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden ,HttpResponseNotFound
 from planet.webhose_search import run_query
 from planet.models import Planet, Comment, PlanetUser
 from planet.forms import LoggingForm, RegistrationForm, CommentForm
@@ -10,6 +10,7 @@ from django.contrib import messages, auth
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+from django.http import Http404
 
 
 # ======================== Utilities ===========================================
@@ -30,7 +31,10 @@ def home(request: HttpRequest) -> HttpResponse:
 
 
 def view_user(request: HttpRequest, username: str) -> HttpResponse:
-    user = PlanetUser.objects.get(username=username)
+    try:
+        user = PlanetUser.objects.get(username=username)
+    except PlanetUser.DoesNotExist:
+        raise Http404(username)
     return render(request, 'planet/view_user.html', {'username': user})
 
 
@@ -38,7 +42,11 @@ def edit_user(request: HttpRequest, username: str) -> HttpResponse:
     pass
 
 def view_system(request: HttpRequest, username: str, systemname: str) -> HttpResponse:
-    pass
+    try:
+        user = PlanetUser.objects.get(username=username)
+        #FiXME : Implement me
+    except PlanetUser.DoesNotExist:
+        raise Http404()
 
 def view_planet(request: HttpRequest, username: str, systemname: str, planetname: str) -> HttpResponse:
     '''
@@ -46,7 +54,10 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
     GET: Render editor.html in readonly mode, render comments.html
     POST: Post the given comment form
     '''
-    planet = Planet.objects.get(name=planetname, user__username=username, solarSystem__name=systemname)
+    try:
+        planet = Planet.objects.get(name=planetname, user__username=username, solarSystem__name=systemname)
+    except Planet.DoesNotExist:
+        raise Http404()
 
     if planet.user != request.user and not planet.visibility:
         return HttpResponseForbidden(f'This planet is hidden')
