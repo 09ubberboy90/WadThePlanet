@@ -43,8 +43,8 @@ def populate():
     planets3 = [{"name": "planet4",
                  "texture": 'planets/texture4.jpeg'},
     ]
-
-
+	
+	moon = [{"name": "Moon", "texture": 'planets/texture1.jpeg'},"visibility": False]
 
     SolarSystem1 = [{
                     "name": "FirstSolarSystem",
@@ -66,10 +66,20 @@ def populate():
                     "planets": planets3,
                     },
     ]
+	
+    HiddenSystem = [{
+                    "name": "hiddenSolarSystem",
+                    "description": "Cannot find in search",
+                    "planets": Moon,
+					"visibility":False,
+                    },
+    ]
+    ]
 
     users = {"geir": {"solarSys": SolarSystem1},
              "petter": {"solarSys": SolarSystem2},
-             "eva": {"solarSys": SolarSystem3},}
+             "eva": {"solarSys": SolarSystem3},
+			 "crow": {"solarSys": HiddenSystem},}
 
 
     #populate the database
