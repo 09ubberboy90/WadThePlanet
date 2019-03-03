@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 
 class RegistrationForm(forms.ModelForm):
     username = forms.CharField(
-        label='Username', min_length=6, max_length=32, validators=[name_validator], help_text=('Required. 32 characters or fewer. Letters and digits only.'))
+        label='Username', min_length=6, max_length=32, help_text=('Required. 32 characters or fewer. Letters and digits only.'))
     password_copy = forms.CharField(
             label='Confirm password', min_length= 6, max_length= 128,widget = forms.PasswordInput)
 
@@ -68,7 +68,7 @@ class RegistrationForm(forms.ModelForm):
 
 class LoggingForm(forms.Form):
     username = forms.CharField(
-        label='Username', min_length=6, max_length=128, validators=[name_validator])
+        label='Username', min_length=6, max_length=32)
 
     password = forms.CharField(
         label='Password', min_length=6, max_length=128, widget=forms.PasswordInput)
@@ -92,7 +92,18 @@ class LoggingForm(forms.Form):
     def clean_password(self):
         password = self.cleaned_data.get('password')
         return password
+class AvatarForm(forms.Form):
+    avatar = models.ImageField(
+        upload_to=content_file_name, blank=True, null=True)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            ButtonHolder(
+                Submit('submit', 'Submit', css_class='button white')
+            )
 
+        )
 
 class CommentForm(forms.ModelForm):
     class Meta:

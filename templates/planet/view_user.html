@@ -1,0 +1,15 @@
+{% extends 'planet/base.html' %}
+{% load staticfiles %}
+
+{% block padded_content_block %}
+    <div class="text-light">
+        Account name : {{username.username}} </br>
+        Email : {{username.email}}
+        {% if username.avatar %}
+            </br><img src="{{ user.avatar.url }}" class="img-fluid" width="200">
+        {% endif %}
+        {% if username.username == user.username %}
+            <a href="{% url 'edit_user' user %}" class="btn btn-dark" role="button">Edit</a>
+        {% endif %}
+    </div>
+{% endblock padded_content_block %}
