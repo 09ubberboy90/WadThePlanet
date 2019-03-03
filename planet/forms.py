@@ -39,7 +39,7 @@ class RegistrationForm(forms.ModelForm):
             raise ValidationError("Email already exists")
         return email
 
-    def clean_password(self):
+    def clean_password_copy(self):
         password = self.cleaned_data.get('password')
         password_copy = self.cleaned_data.get('password_copy')
 
@@ -50,9 +50,9 @@ class RegistrationForm(forms.ModelForm):
 
     def save(self, commit=True):
         user = PlanetUser.objects.create_user(
-            self.clean_username(),
-            email = self.clean_email(),
-            password = self.clean_password(),
+            self.cleaned_data['username'],
+            email=self.cleaned_data['email'],
+            password = self.cleaned_data['password'],
             avatar = self.cleaned_data['avatar']
         )
         return user
@@ -74,6 +74,14 @@ class LoggingForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.layout = Layout(
+            'username',
+            'password',
+            ButtonHolder(
+                Submit('submit', 'Submit', css_class='button white')
+            )
+
+        )
 
     def clean_username(self):
         username = self.cleaned_data.get('username').lower()
@@ -99,9 +107,9 @@ class CommentForm(forms.ModelForm):
                     wrapper_class='col-8'),
                 Field('rating', id='rating',
                     wrapper_class='col-2'),
-                FormActions(
+                ButtonHolder(
                     Submit('send', 'Send', id='send', css_class='btn-sm'),
-                    css_class='send-btn-container col-2',
+                    css_class='send-btn-container col-2 pb-3 align-self-end',
                 ),
             )
         )
