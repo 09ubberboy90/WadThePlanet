@@ -20,6 +20,12 @@
         </div>
     </div>
 
+    <div id="info" class="text-light">
+        <strong>{{ planet.name }}</strong>
+        <br>
+        Created by <a href="{% url 'view_user' planet.user.username %}">{{ planet.user.username }}</a>
+    </div>
+
     <!-- editor.js will append the THREE.js WebGL canvas here -->
 </div>
 
