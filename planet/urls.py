@@ -18,8 +18,8 @@ urlpatterns = [
     # /<username>/*
     url(r'^(?P<username>[A-Za-z0-9]+)/edit/$',
         views.edit_user, name='edit_user'),
-    url(r'^(?P<username>[A-Za-z0-9]+)/create-systemname/$',
-        views.create_system, name='create_systemname'),
+    url(r'^(?P<username>[A-Za-z0-9]+)/create-system/$',
+        views.create_system, name='create_system'),
     url(r'^(?P<username>[A-Za-z0-9]+)/$',
         views.view_user, name='view_user'),
 
@@ -27,7 +27,7 @@ urlpatterns = [
     url(r'^(?P<username>[A-Za-z0-9]+)/(?P<systemname>[A-Za-z0-9]+)/create-planet/$',
         views.create_planet, name='create_planet'),
     url(r'^(?P<username>[A-Za-z0-9]+)/(?P<systemname>[A-Za-z0-9]+)/$',
-        views.view_system, name='view_systemname'),
+        views.view_system, name='view_system'),
 
     # /<username>/<systemname>/<planetname>
     url(r'^(?P<username>[A-Za-z0-9]+)/(?P<systemname>[A-Za-z0-9]+)/(?P<planetname>[A-Za-z0-9]+)/edit/$',
