@@ -1,0 +1,18 @@
+{% extends 'planet/base.html' %}
+{% load static %}
+
+{% block title_block %}
+    {{ planet.name }}
+{% endblock %}
+
+{% block body_block %}
+    <script type="text/javascript">
+        var planetEditor = {};
+        planetEditor.editingEnabled = false;
+        planetEditor.camControlsEnabled = true;
+        planetEditor.spinSpeed = 0.0;
+    </script>
+
+    {% include 'planet/editor.html' %}
+    {% include 'planet/comments.html' %}
+{% endblock %}

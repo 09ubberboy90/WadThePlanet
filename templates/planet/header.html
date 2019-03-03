@@ -26,11 +26,14 @@
                 {% if user.is_authenticated %}
                 {% if user.avatar %}
                 <li class="nav-item my-1 pt-1 align-self-center" >
-                    <img src="{{ user.avatar.url }}" class="img-fluid" width="45">
+                    <a href="{% url 'view_user' user.username %}">
+                        <img src="{{ user.avatar.url }}" class="img-fluid" width="45">
+                    </a>
                 </li>
                 {% else %}
                 <li class="nav-item">
                     <i class="fas fa-user-astronaut fa-2x mx-4 my-2 pt-1" id="astronaut"></i>
+                    <a href="{% url 'register' %}" class="btn btn-dark" role="button">Register</a>
                 </li>
                 {% endif %}
                 <li class="nav-item">

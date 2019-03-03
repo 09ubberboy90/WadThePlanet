@@ -1,0 +1,20 @@
+{% extends 'planet/base.html' %}
+{% load static %}
+
+{% block title_block %}
+    Edit: {{ planet.name }}
+{% endblock %}
+
+{% block body_block %}
+    <script type="text/javascript">
+        // See editor.js:onSave() 
+        window.csrfToken = "{{ csrf_token }}";
+
+        var planetEditor = {};
+        planetEditor.editingEnabled = true; // < (!)
+        planetEditor.camControlsEnabled = true;
+        planetEditor.spinSpeed = 0.0;
+    </script>
+
+    {% include 'planet/editor.html' %}
+{% endblock %}
