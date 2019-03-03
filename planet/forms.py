@@ -66,7 +66,7 @@ class RegistrationForm(forms.ModelForm):
 
 class LoggingForm(forms.Form):
     username = forms.CharField(
-        label='Username', min_length=6, max_length=128)
+        label='Username', min_length=6, max_length=128, validators=[PlanetNameValidator()])
 
     password = forms.CharField(
         label='Password', min_length=6, max_length=128, widget=forms.PasswordInput)
