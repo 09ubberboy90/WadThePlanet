@@ -1,0 +1,8 @@
+{% load crispy_forms_field %}
+<!-- A custom HTML template for rendering Comment.rating as a five-star selector -->
+
+<div class="form-group">
+  <div class="star-container">
+    {% crispy_field field 'class' 'custom-control-input' %}
+  </div>
+</div>
