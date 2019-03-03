@@ -4,7 +4,7 @@ import logging
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden ,HttpResponseNotFound
 from planet.webhose_search import run_query
-from planet.models import Planet, Comment, PlanetUser
+from planet.models import Planet, Comment, PlanetUser, SolarSystem
 from planet.forms import LoggingForm, RegistrationForm, CommentForm
 from django.contrib import messages, auth
 from django.shortcuts import redirect
@@ -56,6 +56,7 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
     '''
     try:
         planet = Planet.objects.get(name=planetname, user__username=username, solarSystem__name=systemname)
+        solarSystem = SolarSystem.objects.get(name=systemname)
     except Planet.DoesNotExist:
         raise Http404()
 
