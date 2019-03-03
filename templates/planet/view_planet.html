@@ -7,9 +7,6 @@
 
 {% block body_block %}
     <script type="text/javascript">
-        // See editor.js:onSave() 
-        window.csrfToken = "{{ csrf_token }}";
-
         var planetEditor = {};
         planetEditor.editingEnabled = false;
         planetEditor.camControlsEnabled = true;
