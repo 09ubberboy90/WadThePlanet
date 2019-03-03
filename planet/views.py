@@ -230,15 +230,9 @@ def user_login(request: HttpRequest) -> HttpResponse:
         f = LoggingForm()
     return render(request, 'planet/user_login.html', {'user_form': f})
 
-def search(request):
-#	result_list = []
-#	if request.method == 'GET':
-#		query = request.GET['query'].strip()
-#		if query:
-            # Run our Webhose search function to get the results list!
-#			result_list = run_query(query)
+def search(request, count=100):
 
-    result_list = run_query(request.GET['query'].strip())
+    result_list = run_query(request.GET['query'].strip(), count)
     return render(request, 'planet/search.html', {'result_list': result_list})
 
 @login_required
