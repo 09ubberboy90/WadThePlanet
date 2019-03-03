@@ -9,37 +9,35 @@ import urllib.request
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "planet.settings")
 django.setup()
-
-
-def query(search_terms, results=10):
-
-#	print(all_planets, all_systems, all_users)
-	print(all_planets)
-	return search_terms
 	
-	
-def run_query(search_terms, results=10):
+def run_query(search_terms, returns=10):
 
-	all_planets = Planet.objects.all()
-	all_systems = SolarSystem.objects.all()
-	all_users = PlanetUser.objects.all()
+	#Find planets that are visible and contain search term in their name
+	found_planets = Planet.objects.all().exclude(visibility=False).filter(name__contains=search_terms)
+	#Find solar systems that with search term in the name
+	found_systems = SolarSystem.objects.all().exclude(visibility=False).filter(name__contains=search_terms)
+	#Find search term in solar system description
+	system_descriptions= SolarSystem.objects.all().exclude(visibility=False).filter(description__contains=search_terms)
+
+	#Find matching user names, except super user
+	found_users = PlanetUser.objects.all().exclude(username="superuser").filter(username__contains=search_terms)
+	
+	#Combine solar systems name and description and remove duplicates
+	found_systems.union(system_descriptions).distinct()
 
 	results = []
 	
-	all_planets = all_planets.exclude(visibility=False).filter(name__contains=search_terms)
-	all_systems = all_systems.exclude(visibility=False).filter(name__contains=search_terms)
-	all_users = all_users.exclude(username="admin").filter(username__contains=search_terms)
 	
-	for planet in all_planets:
+	for item in found_planets:
+		results.append(item)
 		
-		results.append(planet)
+	for item in found_systems:
+		results.append(item)
 		
-	for system in all_systems:
+	for item in found_users:
+		results.append(item)
 		
-		results.append(system)
-		
-	for user in all_users:
-		
-		results.append(user)
+	if len(results) > returns:
+		result = results[0:returns]
 		
 	return (results)

@@ -59,12 +59,13 @@ class SolarSystem(models.Model):
     name = models.CharField(null=False, max_length=50)
     # Description of the SolarSystem
     description = models.CharField(max_length=160)
+	# Privacy setting of planet. Visibility True - visible to all users
+    visibility = models.BooleanField(default = True)
     # Score of the SolarSystem
     score = models.IntegerField(default = 0)
     # Number of views
     views = models.IntegerField(default=0)
-	# Privacy setting of planet. Visibility True - visible to all users
-    visibility = models.BooleanField(default = True)
+
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -80,17 +81,19 @@ class Planet(models.Model):
     # An unique numeric id for each planet
     id = models.AutoField(null=False, primary_key=True)
     # The name of the planet
-    name = models.CharField(null=False, max_length=50, validators=[name_validator])
+   # name = models.CharField(null=False, max_length=50, validators=[name_validator])
+    name = models.CharField(null=False, max_length=50,)
     # foreign key to the owner
     user = models.ForeignKey(PlanetUser)
     # foreign key to the solarsystem it belongs to
     solarSystem = models.ForeignKey(SolarSystem)
     # The planet's texture (as painted by the user).
     texture = models.ImageField(null=False, upload_to='planets')
-    # Score of the planet
-    score = models.IntegerField(default = 0)
 	# Privacy setting of planet. Visibility True - visible to all users
     visibility = models.BooleanField(default = True)
+    # Score of the planet
+    score = models.IntegerField(default = 0)
+
 
     def save(self, *args, **kwargs):
         # Overridden save() method that resizes the uploaded `texture` if required
