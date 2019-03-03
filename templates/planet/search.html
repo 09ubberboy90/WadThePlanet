@@ -2,7 +2,7 @@
 
 <!-- Agnes
 This template presents a search box and search button within HTML form	--> 
-	
+    
 {% extends 'planet/base.html' %}
 
 {% load staticfiles %}
@@ -11,50 +11,80 @@ This template presents a search box and search button within HTML form	-->
 {% block title %} Search {% endblock %}
 
 {% block padded_content_block %}
-<div> 
+{% csrf_token %}
+<div class="card bg-primary">
+    <h2 class="card-header">Results</h2>
 
-	{% csrf_token %}
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Planets</h4>
+            {% if planets %}
+                <ul class="list-group">
+                {% for planet in planets %}
+                    <li class="list-group-item">
+                        <a href="{% url 'view_planet' planet.user.username planet.solarSystem.name planet.name %}" class="col-6">
+                            <strong>{{ planet.name }}</strong>
+                        </a>
+                        <a href="{% url 'view_system' planet.user.username planet.solarSystem.name %}" class="col-3 text-secondary">
+                            @{{ planet.solarSystem.name }}
+                        </a>
+                        <a href="{% url 'view_user' planet.user.username %}" class="col-3 text-secondary">
+                            by {{ planet.user.username }}
+                        </a>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                No planets matching query.
+            {% endif%}
+        </div>
+    </div>
 
-	<div>
-		{% if result_list %}
-		<h3>Results</h3>
-		<!-- Display search results in an ordered list -->
-		<div class="list-group">
-		
-		
-		{% for result in result_list %}
-		
-			<!-- User accounts -->
-			{% if result.username %}
-			<div class="list-group-item">
-				<h4 class="list-group-item-heading">
-					<a href="../{{result }}">{{result}}</a>
-				</h4>
-			</div>
-					
-			<!-- Solar systems -->
-			{% elif result.description %} 
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Systems</h4>
+            {% if systems %}
+                <ul class="list-group">
+                {% for system in systems %}
+                    <li class="list-group-item">
+                        <a href="{% url 'view_system' system.user.username system.name %}" class="col-6">
+                            {{ system.name }}
+                        </a>
+                        <a href="{% url 'view_user' system.user.username %}" class="col-6 text-secondary">
+                            by {{ system.user.username }}
+                        </a>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                No systems matching query.
+            {% endif%}
+        </div>
+    </div>
 
-			<div class="list-group-item">
-				<h4 class="list-group-item-heading">
-					<a href="../{{result.user }}/{{result}}">{{result}}</a>
-				</h4>
-			</div>
-			
-			<!-- Planets -->
-			{% elif result.texture %} 
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Users</h4>
+            {% if users %}
+            <ul class="list-group">
+                {% for user in users %}
+                <li class="list-group-item">
+                    <a href="{% url 'view_user' user.username %}">
+                    {% if user.avatar %}
+                        <img src="{{ user.avatar.url }}" class="img-fluid" width="45">
+                    {% else %}
+                        <i class="fas fa-user-astronaut fa-2x mx-4 my-2 pt-1"></i>
+                    {% endif %}
+                    {{ user.username }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+                No users matching query.
+            {% endif%}
+        </div>
+    </div>
 
-			<div class="list-group-item">
-				<h4 class="list-group-item-heading">
-					<a href="../{{result.user }}/{{result.solarSystem}}/{{result}}">{{result}}</a>
-				</h4>
-			</div>
-			{% endif %}
-		{% endfor %}
-		</div>
-	{% else %}
-	<h3> No results </h3>
-	{% endif %}
-	</div>
 </div>
 {% endblock %}
