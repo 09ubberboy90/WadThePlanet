@@ -2,14 +2,19 @@ import base64
 import re
 import logging
 from django.shortcuts import render
-from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
+from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden ,HttpResponseNotFound
 from planet.webhose_search import run_query
 from planet.models import Planet, Comment, PlanetUser, SolarSystem
+<<<<<<< HEAD
 from planet.forms import LoggingForm, RegistrationForm, CommentForm, SolarSystemForm
+=======
+from planet.forms import LoggingForm, RegistrationForm, CommentForm
+>>>>>>> 0ca3aa440455ab80fe51b8ae6bd83c6985f1f055
 from django.contrib import messages, auth
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+from django.http import Http404
 
 
 # ======================== Utilities ===========================================
@@ -30,7 +35,10 @@ def home(request: HttpRequest) -> HttpResponse:
 
 
 def view_user(request: HttpRequest, username: str) -> HttpResponse:
-    user = PlanetUser.objects.get(username=username)
+    try:
+        user = PlanetUser.objects.get(username=username)
+    except PlanetUser.DoesNotExist:
+        raise Http404(username)
     return render(request, 'planet/view_user.html', {'username': user})
 
 
@@ -43,6 +51,11 @@ def view_system(request: HttpRequest, username: str, systemname: str) -> HttpRes
         '''
         system = SolarSystem.objects.get(name=systemname, user__username=username)
         planets = Planet.objects.filter(solarSystem__name=systemname)
+        try:
+            user = PlanetUser.objects.get(username=username)
+            #FiXME : Implement me
+        except PlanetUser.DoesNotExist:
+            raise Http404()
         return render(request, 'planet/view_system.html', {'system': system, 'planets': planets })
 
 
@@ -52,7 +65,11 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
     GET: Render editor.html in readonly mode, render comments.html
     POST: Post the given comment form
     '''
-    planet = Planet.objects.get(name=planetname, user__username=username, solarSystem__name=systemname)
+    try:
+        planet = Planet.objects.get(name=planetname, user__username=username, solarSystem__name=systemname)
+        solarSystem = SolarSystem.objects.get(name=systemname)
+    except Planet.DoesNotExist:
+        raise Http404()
 
     if planet.user != request.user and not planet.visibility:
         return HttpResponseForbidden(f'This planet is hidden')
@@ -65,13 +82,35 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
     if request.user.is_authenticated:
         # Display and handle comment form only if an user is logged in
         if request.method == 'POST':
+
+			#Placeholder for modifying comments ratings
+            preexisting_rating = 0
+
             # POST: upload the posted comment
             form = CommentForm(request.POST)
+            preexisting = Comment.objects.filter(planet=planet, user=request.user)
+
+			#If there is already a comment for this planet with this user name, modify existing comment
+            if preexisting.count() > 0:
+                form.instance = preexisting[0]
+				#Remember old comment's rating
+                preexisting_rating = preexisting[0].rating
 
             comment = form.save(commit=False)
             comment.user = request.user
             comment.planet = planet
+
             comment.save()  # Commit to DB
+
+			#Add comment score to planet score
+            planet.score += comment.rating - preexisting_rating
+            planet.save()
+
+			#Add comment score to solar system score
+            solarSystem.score += comment.rating - preexisting_rating
+            solarSystem.save()
+
+
         else:
             # GET: Display an empty comment form
             form = CommentForm()
