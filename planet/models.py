@@ -6,11 +6,24 @@ from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.auth.validators import ASCIIUsernameValidator
 from WadThePlanet import settings
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 
 
 # ======================== Utilities ===========================================
 
 logger = logging.getLogger(__name__)
+
+class PlanetNameValidator(RegexValidator):
+    DISALLOWED_NAMES = ['admin', 'about', 'contact', 'login', 'logout', 'register', 'search', 'hall-of-fame']
+    '''A list of disallowed names for users/systems/planets.'''
+
+    def __init__(self):
+        regex = '^'
+        regex += '(?!' + '|'.join(self.DISALLOWED_NAMES) + ')'  # Check that none of DISALLOWED_NAMES matches
+        regex += r'|([A-Za-z0-9]+)$'
+        super().__init__(regex=regex,
+            message='Names should be alphanumeric, excluding some reserved words')
+
 # ======================== Models ==============================================
 
 
@@ -28,7 +41,9 @@ class PlanetUser(AbstractUser):
     avatar = models.ImageField(
         upload_to=content_file_name, blank=True, null=True)
     REQUIRED_FIELDS = ['email']
-    username_validator = ASCIIUsernameValidator()
+
+    username_validator = PlanetNameValidator()
+
     def __str__(self):
         return self.username
 
@@ -67,7 +82,7 @@ class Planet(models.Model):
     # An unique numeric id for each planet
     id = models.AutoField(null=False, primary_key=True)
     # The name of the planet
-    name = models.CharField(null=False, max_length=50)
+    name = models.CharField(null=False, max_length=50, validators=[PlanetNameValidator()])
     # foreign key to the owner
     user = models.ForeignKey(PlanetUser)
     # foreign key to the solarsystem it belongs to
@@ -94,13 +109,13 @@ class Planet(models.Model):
         return self.name
 
 class Comment(models.Model):
-    # A list of (number, '[' + '*' repeated "number" times + ']' pairs)
-    CHOICES = [(n, f'[{"*" * n}]') for n in range(6)]
+    # A list of (number, choice to show to the user) pair for ratings
+    CHOICES = [(0, 'No rating')] + [(n, f'{"🟊" * n}{"☆" * (5 - n)}') for n in range(1, 6)]
 
     planet = models.ForeignKey(Planet)
     user = models.ForeignKey(PlanetUser)
-    comment = models.CharField(max_length=200)
-    rating = models.IntegerField(choices=CHOICES)
+    comment = models.CharField(max_length=200, null=False)
+    rating = models.IntegerField(choices=CHOICES, null=False)
 
     class Meta:
         # Disallow multiple comments on a planet from the same user
