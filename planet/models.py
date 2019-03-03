@@ -52,6 +52,8 @@ class SolarSystem(models.Model):
     score = models.IntegerField(default = 0)
     # Number of views
     views = models.IntegerField(default=0)
+	# Privacy setting of planet. Visibility True - visible to all users
+    visibility = models.BooleanField(default = True)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -76,6 +78,8 @@ class Planet(models.Model):
     texture = models.ImageField(null=False, upload_to='planets')
     # Score of the planet
     score = models.IntegerField(default = 0)
+	# Privacy setting of planet. Visibility True - visible to all users
+    visibility = models.BooleanField(default = True)
 
     def save(self, *args, **kwargs):
         # Overridden save() method that resizes the uploaded `texture` if required

@@ -26,9 +26,20 @@ def run_query(search_terms, results=10):
 
 	results = []
 	
-	all_planets = all_planets.filter(name__contains=search_terms)
+	all_planets = all_planets.exclude(visibility=False).filter(name__contains=search_terms)
+	all_systems = all_systems.exclude(visibility=False).filter(name__contains=search_terms)
+	all_users = all_users.exclude(username="admin").filter(username__contains=search_terms)
 	
 	for planet in all_planets:
 		
 		results.append(planet)
+		
+	for system in all_systems:
+		
+		results.append(system)
+		
+	for user in all_users:
+		
+		results.append(user)
+		
 	return (results)
