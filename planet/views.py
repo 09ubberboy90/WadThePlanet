@@ -4,7 +4,7 @@ import logging
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from planet.webhose_search import run_query
-from planet.models import Planet, Comment, PlanetUser
+from planet.models import Planet, Comment, PlanetUser, SolarSystem
 from planet.forms import LoggingForm, RegistrationForm, CommentForm
 from django.contrib import messages, auth
 from django.shortcuts import redirect
@@ -47,6 +47,7 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
     POST: Post the given comment form
     '''
     planet = Planet.objects.get(name=planetname, user__username=username, solarSystem__name=systemname)
+    solarSystem = SolarSystem.objects.get(name=systemname)
 
     if planet.user != request.user and not planet.visibility:
         return HttpResponseForbidden(f'This planet is hidden')
@@ -65,7 +66,18 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
             comment = form.save(commit=False)
             comment.user = request.user
             comment.planet = planet
+
             comment.save()  # Commit to DB
+			
+			#Add comment score to planet score
+            planet.score += comment.rating
+            planet.save()
+			
+			#Add comment score to solar system score
+            solarSystem.score += comment.rating
+            solarSystem.save()
+			
+			
         else:
             # GET: Display an empty comment form
             form = CommentForm()
