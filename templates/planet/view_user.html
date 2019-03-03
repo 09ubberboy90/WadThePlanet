@@ -2,14 +2,68 @@
 {% load staticfiles %}
 
 {% block padded_content_block %}
-    <div class="text-light">
-        Account name : {{username.username}} </br>
-        Email : {{username.email}}
-        {% if username.avatar %}
-            </br><img src="{{ user.avatar.url }}" class="img-fluid" width="200">
-        {% endif %}
-        {% if username.username == user.username %}
-            <a href="{% url 'edit_user' user %}" class="btn btn-dark" role="button">Edit</a>
-        {% endif %}
+<div class="text-light">
+    Account name : {{username.username}} </br>
+    Email : {{username.email}}
+    {% if username.avatar %}
+        </br><img src="{{ user.avatar.url }}" class="img-fluid" width="200">
+    {% endif %}
+    {% if username.username == user.username %}
+        <br><a href="{% url 'edit_user' user %}" class="btn btn-dark" role="button">Edit</a>
+    {% endif %}
+</div>
+<br>
+<div class="card">
+    <div class="card-body d-flex justify-content-start">
+        Planet List
     </div>
+</div>
+<br>
+{% for planet in planets %}
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-3">
+                <img id="initial-texture" src="{{ MEDIA_URL }}{{ planet.texture }}" heigth='68' width='68'/>
+            </div>
+            <div class="col-3">
+                Name : {{planet.name}}
+            </div>
+            <div class="col-3">
+                Solar System : {{planet.solarSystem}}
+            </div>
+            <div class="col-3">
+                Score : {{planet.score}}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+<br>
+<div class="card">
+    <div class="card-body d-flex justify-content-start">
+        Solar Sytem list
+    </div>
+</div>
+<br>
+{% for system in solar %}
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-3">
+                <i class="fas fa-sun text-dark"></i>
+            </div>
+            <div class="col-3">
+                {{system.name}}
+            </div>
+            <div class="col-3">
+                Visibility : {{system.visibility}}
+            </div>
+            <div class="col-3">
+                Score : {{system.score}}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
 {% endblock padded_content_block %}

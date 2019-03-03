@@ -66,6 +66,14 @@ class RegistrationForm(forms.ModelForm):
             'password': forms.PasswordInput,
         }
 
+class LeaderboardForm(forms.Form):
+    sort = [('score','Likes'),('id','New'),('name','Alphabetical')]
+    choice = forms.ChoiceField(choices = sort)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+
 class LoggingForm(forms.Form):
     username = forms.CharField(
         label='Username', min_length=6, max_length=32)

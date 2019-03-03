@@ -1,0 +1,55 @@
+{% extends 'planet/base.html' %}
+{% load crispy_forms_tags %}
+{% block padded_content_block %}
+<form method="post">
+    {% csrf_token %}
+    <div class="d-flex">
+        <div class="flex-grow-1 align-self-center">
+            {{ form.choice|as_crispy_field }}
+        </div>
+        <div class="align-self-end pb-2">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+
+</form>
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-3">
+                Planet Name
+            </div>
+            <div class="col-3">
+                Owner
+            </div>
+            <div class="col-3">
+                Solar System
+            </div>
+            <div class="col-3">
+                Score
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+{% for planet in planets %}
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-3">
+                {{planet.name}}
+            </div>
+            <div class="col-3">
+                {{planet.user}}
+            </div>
+            <div class="col-3">
+                {{planet.solarSystem}}
+            </div>
+            <div class="col-3">
+                {{planet.score}}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
