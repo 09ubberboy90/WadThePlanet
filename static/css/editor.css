@@ -1,0 +1,41 @@
+#editor-container {
+    height: 100vh;
+    background: black;
+}
+
+#editor-container #spinner {
+    position: relative;
+    top: 45vh;
+    width: 10vh;
+    height: 10vh;
+}
+
+#editor-container #initial-texture {
+    /* initial-texture is hidden */
+    visibility: hidden;
+    display: none;
+}
+
+#editor-container #controls {
+    display: none; /* "Save/cancel" bar and toolbar are initially hidden */
+}
+
+#controls #toolbar {
+    position: absolute;
+    top: 30%;
+    right: 2%;
+}
+
+#controls #savebar {
+    position: absolute;
+    bottom: 10%;
+    right: 2%;
+}
+
+#alertbar {
+    position: fixed;
+    left: 300px;
+    right: 300px;
+    height: 6mm;
+    bottom: 6mm;
+}
