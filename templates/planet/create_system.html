@@ -4,12 +4,12 @@
 {% load crispy_forms_tags %}
 
 {% block header %}
-<h3>Register</h3>
+<h3>Create solar system</h3>
 
 {% endblock header %}
 
 {% block body %}
-<form method="post" novalidate class="needs-validation" id="register-form" action="{% url 'register' %}">
+<form method="post" novalidate class="needs-validation" id="register-form" action="/create_system/">
     {% crispy user_form %}
 </form>
 {% endblock body %} 

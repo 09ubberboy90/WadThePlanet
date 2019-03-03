@@ -4,12 +4,13 @@
 {% load crispy_forms_tags %}
 
 {% block header %}
-<h3>Register</h3>
+<h3>Edit {{ request.user.username }}</h3>
 
 {% endblock header %}
 
 {% block body %}
-<form method="post" novalidate class="needs-validation" id="register-form" action="{% url 'register' %}">
+<form method="post" novalidate class="needs-validation" id="edit-user-form"
+    action="{% url 'edit_user' request.user.username %}">
     {% crispy user_form %}
 </form>
 {% endblock body %} 

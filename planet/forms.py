@@ -90,7 +90,6 @@ class LoggingForm(forms.Form):
             ButtonHolder(
                 Submit('submit', 'Submit', css_class='button white')
             )
-
         )
 
     def clean_username(self):
@@ -100,11 +99,12 @@ class LoggingForm(forms.Form):
     def clean_password(self):
         password = self.cleaned_data.get('password')
         return password
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['comment', 'rating']
-        
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -121,3 +121,53 @@ class CommentForm(forms.ModelForm):
                 ),
             )
         )
+
+class SolarSystemForm(forms.ModelForm):
+    name = forms.CharField(min_length=6, max_length=50, help_text="Name of the SolarSystem: ")
+    description = forms.CharField(max_length=160, help_text="Description of the SolarSystem")
+    #visibility = forms.BooleanField(initial = True)
+
+    class Meta:
+        model = SolarSystem
+        fields = ['name', 'description', 'score', 'views', 'visibility']
+
+    def __init__(self, user, *args, **kwargs):
+        super(SolarSystemForm, self).__init__(*args, **kwargs)
+        self.fields['user'].queryset = PlanetUser.objects.filter(user=user)
+
+class EditUserForm(forms.Form):
+    username = forms.CharField(label='Change username', min_length=6, max_length=32,
+        help_text=('32 characters or fewer. Letters and digits only.'),
+        required=False)
+    password = forms.CharField(label='Change password', min_length=6, max_length=128,
+        widget=forms.PasswordInput, required=False)
+    password_copy = forms.CharField(label='Confirm changed password', min_length=6, max_length=128,
+        widget=forms.PasswordInput, required=False)
+    avatar = forms.ImageField(label='Change avatar',
+        required=False)
+
+    def __init__(self, *args, user_id, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Field('username'),
+            Field('password'),
+            Field('password_copy'),
+            Field('avatar'),
+            ButtonHolder(
+                Submit('submit', 'Edit', css_class='button white')
+            )
+        )
+        self.helper['password'].update_attributes(min_length= 6)
+        self.user_id = user_id
+
+    def clean_username(self):
+        username = self.cleaned_data['username'].lower()
+        existing_user = PlanetUser.objects.filter(username=username)
+        if existing_user.count() > 0 and existing_user[0].id != self.user_id:
+            # Trying to rename a user to another user that already exists
+            raise ValidationError("Username already exists")
+        return username
+
+    def clean_password_copy(self):
+        return RegistrationForm.clean_password_copy(self)
