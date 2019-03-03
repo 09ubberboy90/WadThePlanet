@@ -4,7 +4,7 @@ import logging
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden ,HttpResponseNotFound
 from planet.webhose_search import run_query
-from planet.models import Planet, Comment, PlanetUser
+from planet.models import Planet, Comment, PlanetUser, SolarSystem
 from planet.forms import LoggingForm, RegistrationForm, CommentForm,LeaderboardForm
 from django.contrib import messages, auth
 from django.shortcuts import redirect
@@ -50,9 +50,12 @@ def leaderboard(request: HttpRequest) -> HttpResponse:
 def view_user(request: HttpRequest, username: str) -> HttpResponse:
     try:
         user = PlanetUser.objects.get(username=username)
+        planets = Planet.objects.filter(user__username=username)
+        solar = SolarSystem.objects.filter(user__username=username)
     except PlanetUser.DoesNotExist:
         raise Http404(username)
-    return render(request, 'planet/view_user.html', {'username': user})
+    context = {'username': user,'planets':planets,'solar':solar}
+    return render(request, 'planet/view_user.html', context)
 
 
 def edit_user(request: HttpRequest, username: str) -> HttpResponse:
