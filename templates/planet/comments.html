@@ -6,8 +6,9 @@
 <!-- FIXME(PAOLO): correct endpoint (/username/solarsystem/planet) -->
 <div id="comment-container" class="card container-fluid ml-0">
     {% if comment_form %}
-        <!-- User is logged in, show comment form -->
-        <form id="comment-form" action="{% url 'view_planet' %}" method="POST" novalidate>
+        <!-- User is logged in, show comment form
+             NOTE: A blank action signifies "submit to this same URL" -->
+        <form id="comment-form" method="POST" novalidate action="">
             <!-- Note: layout is defined in forms.py, when setting up CommentForm.helper -->
             {% crispy comment_form %}
         </form>

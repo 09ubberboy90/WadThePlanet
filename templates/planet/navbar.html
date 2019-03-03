@@ -6,11 +6,6 @@
                     <i class="fa fa-home" aria-hidden="true"></i> Homepage
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'test' %}">
-                    <i class="fas fa-globe-europe"></i></i> Planet View
-                </a>
-            </li>
             {% if not user.is_authenticated %}
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'register' %}">

@@ -33,8 +33,17 @@ def home(request: HttpRequest) -> HttpResponse:
     return render(request, 'planet/home.html', context=context)
 
 
-def view_planet(request: HttpRequest) -> HttpResponse:
-    planet = Planet.objects.get(pk=1) # FIXME(Paolo): Get planet based on url
+def view_user(request: HttpRequest, username: str) -> HttpResponse:
+    pass
+
+def edit_user(request: HttpRequest, username: str) -> HttpResponse:
+    pass
+
+def view_system(request: HttpRequest, username: str, systemname: str) -> HttpResponse:
+    pass
+
+def view_planet(request: HttpRequest, username: str, systemname: str, planetname: str) -> HttpResponse:
+    planet = Planet.objects.get(name=planetname, user__username=username, solarSystem__name=systemname)
 
     context = {
         'comments': Comment.objects.filter(planet=planet),
@@ -63,10 +72,9 @@ def view_planet(request: HttpRequest) -> HttpResponse:
 
     return render(request, 'planet/test.html', context=context)
 
+def edit_planet(request: HttpRequest, username: str, systemname: str, planetname: str) -> HttpResponse:
+    planet = Planet.objects.get(name=planetname, user__username=username, system__name=systemname)
 
-def edit_planet(request: HttpRequest) -> HttpResponse:
-    # FIXME(Paolo): Test!
-    planet = Planet.objects.get(pk=1)
     if request.method == 'POST':
         # POST: upload the newly-edited image
         # Expects a {data: "<base64-encoded image from Canvas>"} in the POST request
@@ -90,6 +98,12 @@ def edit_planet(request: HttpRequest) -> HttpResponse:
             'spin_speed': 0.0,
         }
         return render(request, 'planet/test.html', context=context)
+
+def create_system(request: HttpRequest, username: str) -> HttpResponse:
+    pass
+
+def create_planet(request: HttpRequest, username: str, systemname: str) -> HttpResponse:
+    pass
 
 
 def register(request: HttpRequest) -> HttpResponse:
@@ -137,9 +151,6 @@ def search(request):
     result_list = run_query(request.GET['query'].strip())
     return render(request, 'planet/search.html', {'result_list': result_list})
     
-    
-
-
 @login_required
 def user_logout(request):
     print(request.user.username)
