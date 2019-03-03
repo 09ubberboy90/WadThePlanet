@@ -1,5 +1,5 @@
 $(function() {
-    // Hide sidebar depending on size
+    // Add elements to top bar if sidebar is collapsed (and vice versa)
     $(window).resize(function () {
         if ($(window).width() >= 975) {
             $('.adder').addClass('collapse');

@@ -16,21 +16,32 @@
         <div class="collapse navbar-collapse" id="menu">
             <div class="adder"></div>
             <form class="form-inline md-form my-0 active-cyan-2 flex-grow-1" action="{% url 'search' %}" method="get">
-                <i class="ml-2 fas fa-search" id="searchbar" aria-hidden="true"></i>
                 <input class="form-control ml-3 flex-grow-1" name="query" type="text" placeholder="Search" aria-label="Search">
-				<input type="submit">
+                <button class="search-btn btn btn-dark" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
             </form>
             <!-- Right -->
             <ul class="navbar-nav nav-flex-icons ">
+                {% if user.is_authenticated %}
+                <li class="nav-item my-1 pt-1 align-self-center" >
+                    <img src="{{ user.avatar.url |default_if_none:'/static/images/default-avatar.png' }}" class="img-fluid" width="45">
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'logout' %}" class="btn btn-dark" role="button">Logout</a>
+                </li>
+
+                {% else %}
                 <li class="nav-item">
                     <i class="fas fa-user-astronaut fa-2x mx-4 my-2 pt-1" id="astronaut"></i>
                 </li>
                 <li class="nav-item">
-                    <button class="btn btn-dark" type="submit">Login</button>
-                    <button class="btn btn-dark" type="submit">Register</button>
+                    <a href="{% url 'login' %}" class="btn btn-dark" role="button">Login</a>
+                    <a href="{% url 'register' %}" class="btn btn-dark" role="button">Register</a>
                 </li>
-            </ul>
 
+                {% endif %}
+            </ul>
         </div>
 
     </div>

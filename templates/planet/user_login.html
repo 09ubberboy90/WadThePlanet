@@ -1,4 +1,19 @@
-<!DOCTYPE html>
-{% extends 'planet/base.html' %}
+{% extends 'planet/logintemplate.html' %}
 
 {% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block header %}
+<h3>Login</h3>
+{% endblock header %}
+
+{% block body %}
+<form method="post" novalidate class="needs-validation" id="login-form" action="/login/">
+    {% crispy user_form %}
+</form>
+{% if error %}
+    <div>
+        The username and password doesn't match
+    </div>
+{% endif %}
+{% endblock body %}
