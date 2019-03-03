@@ -115,13 +115,17 @@ def user_login(request: HttpRequest) -> HttpResponse:
 
 
 def search(request):
-	result_list = []
-	if request.method == 'GET':
-		query = request.GET['query'].strip()
-		if query:
+#	result_list = []
+#	if request.method == 'GET':
+#		query = request.GET['query'].strip()
+#		if query:
 			# Run our Webhose search function to get the results list!
-			result_list = run_query(query)
+#			result_list = run_query(query)
+
+	result_list = run_query(request.GET['query'].strip())
 	return render(request, 'planet/search.html', {'result_list': result_list})
+	
+	
 
 
 @login_required
