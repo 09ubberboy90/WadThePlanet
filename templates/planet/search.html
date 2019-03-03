@@ -2,7 +2,6 @@
 
 <!-- Agnes
 This template presents a search box and search button within HTML form	--> 
-
 	
 {% extends 'planet/base.html' %}
 
@@ -13,17 +12,8 @@ This template presents a search box and search button within HTML form	-->
 
 {% block padded_content_block %}
 <div> 
-	<h1>Results - {{keyword}}</h1>
-	<div>
-	
-		<br/>
-	<!--	<form class="form-inline" id="user_form" method="post" action="{% url 'search' %}"> -->
-		{% csrf_token %}
-	<!--	<div class="form-group">
-			<input class="form-control" type="text" size="50" name="query" value="" id="query" />
-		</div> -->
-		<!--	<button class="btn btn-primary" type="submit" name="submit" value="Search">Search</button>  -->
-		</form>
+
+	{% csrf_token %}
 
 	<div>
 		{% if result_list %}
@@ -31,15 +21,33 @@ This template presents a search box and search button within HTML form	-->
 		<!-- Display search results in an ordered list -->
 		<div class="list-group">
 		{% for result in result_list %}
+			{% if result.username %}
 			<div class="list-group-item">
 				<h4 class="list-group-item-heading">
-					<a href="{{ result.link }}">{{ result.name }}</a>
-					</h4>
-					<p class="list-group-item-text">{{ result.summary }}</p>
-		
+					<a href="../{{result }}">{{result}}</a>
+				</h4>
 			</div>
+					
+			{% elif result.description %} 
+
+			<div class="list-group-item">
+				<h4 class="list-group-item-heading">
+					<a href="../{{result.user }}/{{result}}">{{result}}</a>
+				</h4>
+			</div>
+			
+			{% elif result.texture %} 
+
+			<div class="list-group-item">
+				<h4 class="list-group-item-heading">
+					<a href="../{{result.user }}/{{result.solarSystem}}/{{result}}">{{result}}</a>
+				</h4>
+			</div>
+			{% endif %}
 		{% endfor %}
 		</div>
+	{% else %}
+	<h3> No results </h3>
 	{% endif %}
 	</div>
 </div>
