@@ -25,9 +25,6 @@ def home(request: HttpRequest) -> HttpResponse:
     planet = Planet.objects.get_or_create(name="planet2")[0]
     context = {
         'planet': planet,
-        'editing_enabled': False,
-        'cam_controls_enabled': False,
-        'spin_speed': 0.15,
     }
     return render(request, 'planet/home.html', context=context)
 
@@ -44,6 +41,11 @@ def view_system(request: HttpRequest, username: str, systemname: str) -> HttpRes
     pass
 
 def view_planet(request: HttpRequest, username: str, systemname: str, planetname: str) -> HttpResponse:
+    '''
+    View a specific planet.
+    GET: Render editor.html in readonly mode, render comments.html
+    POST: Post the given comment form
+    '''
     planet = Planet.objects.get(name=planetname, user__username=username, solarSystem__name=systemname)
 
     context = {
@@ -73,6 +75,11 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
     return render(request, 'planet/view_planet.html', context=context)
 
 def edit_planet(request: HttpRequest, username: str, systemname: str, planetname: str) -> HttpResponse:
+    '''
+    Edit a specific planet.
+    GET: Render editor.html in read + write mode
+    POST: Post the modified planet texture (done via AJAX from editor.js)
+    '''
     planet = Planet.objects.get(name=planetname, user__username=username, solarSystem__name=systemname)
 
     if request.method == 'POST':
