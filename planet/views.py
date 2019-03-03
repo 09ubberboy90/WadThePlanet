@@ -59,9 +59,9 @@ def view_user(request: HttpRequest, username: str) -> HttpResponse:
         user = PlanetUser.objects.get(username=username)
         planets = Planet.objects.filter(user__username=username)
         solar = SolarSystem.objects.filter(user__username=username)
-    except PlanetUser.DoesNotExist:
+    except (PlanetUser.DoesNotExist,Planet.DoesNotExist,SolarSystem.DoesNotExist):
         raise Http404(username)
-    context = {'username': user, 'planets': planets, 'solars': solar, 'page':'view', 'username' : username}
+    context = {'username': user, 'planets': planets, 'solars': solar, 'page':'view'}
     return render(request, 'planet/view_user.html', context)
 
 

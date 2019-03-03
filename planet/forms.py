@@ -72,7 +72,7 @@ class RegistrationForm(forms.ModelForm):
 
 class LeaderboardForm(forms.Form):
     sort = [('score', 'Likes'), ('id', 'New'), ('name', 'Alphabetical')]
-    choice = forms.ChoiceField(choices=sort)
+    choice = forms.ChoiceField(choices=sort,label='')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
