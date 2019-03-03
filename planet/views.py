@@ -187,10 +187,10 @@ def create_system(request: HttpRequest, username: str) -> HttpResponse:
             system = form.save(commit=False)
             system.user = request.user
             system.save()
-            return HttpResponse('saved')
+            return redirect('view_system')
     else:
         form = SolarSystemForm(request.user)
-    return render(request, 'planet/view_system.html', {'form': form})
+    return render(request, 'planet/create_system.html', {'form': form})
 
 
 def create_planet(request: HttpRequest, username: str, systemname: str) -> HttpResponse:
