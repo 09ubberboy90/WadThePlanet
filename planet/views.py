@@ -48,6 +48,9 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
     '''
     planet = Planet.objects.get(name=planetname, user__username=username, solarSystem__name=systemname)
 
+    if planet.user != request.user and not planet.visibility:
+        return HttpResponseForbidden(f'This planet is hidden')
+
     context = {
         'comments': Comment.objects.filter(planet=planet),
         'planet': planet,
