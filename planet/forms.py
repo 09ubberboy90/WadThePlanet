@@ -92,19 +92,6 @@ class LoggingForm(forms.Form):
     def clean_password(self):
         password = self.cleaned_data.get('password')
         return password
-class AvatarForm(forms.Form):
-    avatar = models.ImageField(
-        upload_to=content_file_name, blank=True, null=True)
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            ButtonHolder(
-                Submit('submit', 'Submit', css_class='button white')
-            )
-
-        )
-
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
