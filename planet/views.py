@@ -209,18 +209,20 @@ def create_system(request: HttpRequest, username: str) -> HttpResponse:
         return HttpResponseForbidden(f'You need to be logged in as {username}')
 
     if request.method == 'POST':
-        form = SolarSystemForm(request.user)
-        print(form.is_valid())
-        if form.is_valid():
+        form = SolarSystemForm(request.POST)
 
+        if form.is_valid():
             system = form.save(commit=False)
             system.user = request.user
+            system.views = 0
             system.save()
-
-            return redirect('home')
-
+            return redirect('view_system', username=username, systemname=system.name)
+        else:
+            messages.error(request, 'Username and Password do not match')
+            print(form.errors)
     else:
-        form = SolarSystemForm(request.user)
+        form = SolarSystemForm()
+
     return render(request, 'planet/create_system.html', {'form': form, 'username': username})
 
 
@@ -278,3 +280,9 @@ def user_logout(request):
     logout(request)
     # Take the user back to the homepage.
     return redirect('home')
+
+def about(request):
+	return render(request, 'planet/about.html')
+	
+def contact(request):
+	return render(request, 'planet/contact.html')

@@ -131,19 +131,19 @@ class CommentForm(forms.ModelForm):
 
 class SolarSystemForm(forms.ModelForm):
     name = forms.CharField(min_length=6, max_length=50,
-                            help_text="Name of the SolarSystem: ")
+                           help_text="Name of the SolarSystem: ")
     description = forms.CharField(max_length=160,
                             help_text="Description of the SolarSystem")
-    visibility = forms.BooleanField(label='Make public')
+    visibility = forms.BooleanField(label='Make public', required=False)
     #visibility = forms.BooleanField(initial = True)
 
     class Meta:
         model = SolarSystem
-        fields = ['user', 'score', 'views', 'visibility']
+        fields = ['name', 'description', 'visibility']
 
-    def __init__(self, user, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(SolarSystemForm, self).__init__(*args, **kwargs)
-        self.user = user
+
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Field('name', css_class="input_field"),

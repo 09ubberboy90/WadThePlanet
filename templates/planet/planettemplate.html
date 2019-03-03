@@ -6,13 +6,13 @@
                 <img id="initial-texture" src="{{ MEDIA_URL }}{{ planet.texture }}" heigth='68' width='68'/>
             </div>
             <div class="col-3">
-                Name : <a href="../{{planet.user }}/{{planet.solarSystem}}/{{planet}}">{{planet.name}}</a>
+                <a href="../{{planet.user }}/{{planet.solarSystem}}/{{planet}}">{{planet.name}}</a>
             </div>
             <div class="col-3">
-                Solar System : <a href="../{{planet.solarSystem.user }}/{{planet.solarSystem}}">{{planet.solarSystem}}</a>
+                <a href="../{{planet.user }}/{{planet.solarSystem}}">{{planet.solarSystem}}</a>
             </div>
             <div class="col-3">
-                Score : {{planet.score}}
+                {{planet.score}}
             </div>
         </div>
     </div>
