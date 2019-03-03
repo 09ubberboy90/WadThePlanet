@@ -278,3 +278,9 @@ def user_logout(request):
     logout(request)
     # Take the user back to the homepage.
     return redirect('home')
+
+def about(request):
+	return render(request, 'planet/about.html')
+	
+def contact(request):
+	return render(request, 'planet/contact.html')
