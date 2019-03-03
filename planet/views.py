@@ -51,6 +51,7 @@ def leaderboard(request: HttpRequest) -> HttpResponse:
     context['form'] = form
     context['planets'] = planets
     context['solars'] = solars
+    context['page'] = 'leaderboard'
     return render(request, 'planet/leaderboard.html',context= context)
 
 def view_user(request: HttpRequest, username: str) -> HttpResponse:
@@ -60,7 +61,7 @@ def view_user(request: HttpRequest, username: str) -> HttpResponse:
         solar = SolarSystem.objects.filter(user__username=username)
     except PlanetUser.DoesNotExist:
         raise Http404(username)
-    context = {'username': user,'planets':planets,'solar':solar}
+    context = {'username': user, 'planets': planets, 'solars': solar, 'page':'view', 'username' : username}
     return render(request, 'planet/view_user.html', context)
 
 
