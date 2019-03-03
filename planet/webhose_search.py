@@ -10,7 +10,7 @@ import urllib.request
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "planet.settings")
 django.setup()
 	
-def run_query(search_terms, returns=10):
+def run_query(search_terms, count):
 
 	#Find planets that are visible and contain search term in their name
 	found_planets = Planet.objects.all().exclude(visibility=False).filter(name__contains=search_terms)
@@ -37,7 +37,7 @@ def run_query(search_terms, returns=10):
 	for item in found_users:
 		results.append(item)
 		
-	if len(results) > returns:
-		result = results[0:returns]
+	if len(results) > count:
+		result = results[0:count]
 		
 	return (results)

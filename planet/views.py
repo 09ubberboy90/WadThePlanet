@@ -230,8 +230,8 @@ def user_login(request: HttpRequest) -> HttpResponse:
         f = LoggingForm()
     return render(request, 'planet/user_login.html', {'user_form': f})
 
+	#Search term and number of results to display
 def search(request, count=100):
-
     result_list = run_query(request.GET['query'].strip(), count)
     return render(request, 'planet/search.html', {'result_list': result_list})
 
