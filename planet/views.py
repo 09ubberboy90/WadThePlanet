@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden ,HttpResponseNotFound
 from planet.webhose_search import run_query
 from planet.models import Planet, Comment, PlanetUser
-from planet.forms import LoggingForm, RegistrationForm, CommentForm
+from planet.forms import LoggingForm, RegistrationForm, CommentForm,LeaderboardForm
 from django.contrib import messages, auth
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
@@ -29,6 +29,23 @@ def home(request: HttpRequest) -> HttpResponse:
     }
     return render(request, 'planet/home.html', context=context)
 
+
+def leaderboard(request: HttpRequest) -> HttpResponse:
+    context = {}
+    if request.method == 'POST':
+        form = LeaderboardForm(request.POST)
+        if form.is_valid():
+            result = form.cleaned_data['choice']
+            if result == "name":
+                planets = Planet.objects.order_by(result)
+            else:
+                planets = Planet.objects.order_by(result)[::-1]
+    else:
+        form = LeaderboardForm()
+        planets = Planet.objects.order_by('id')
+    context['form'] = form
+    context['planets'] = planets
+    return render(request, 'planet/leaderboard.html',context= context)
 
 def view_user(request: HttpRequest, username: str) -> HttpResponse:
     try:
@@ -129,25 +146,25 @@ def create_planet(request: HttpRequest, username: str, systemname: str) -> HttpR
 
 def register(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
-        f = RegistrationForm(request.POST)
-        if f.is_valid():
-            f.save()
-            username=f.cleaned_data['username']
-            password=f.cleaned_data['password']
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username=form.cleaned_data['username']
+            password=form.cleaned_data['password']
             user = auth.authenticate(username=username, password=password)
             auth.login(request, user)
             return redirect('home')
     else:
-        f = RegistrationForm()
-    return render(request, 'planet/register.html', {'user_form': f})
+        form = RegistrationForm()
+    return render(request, 'planet/register.html', {'user_form': form})
 
 
 def user_login(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
-        f = LoggingForm(request.POST)
-        if f.is_valid():
-            username = f.clean_username()
-            password = f.clean_password()
+        form = LoggingForm(request.POST)
+        if form.is_valid():
+            username = form.clean_username()
+            password = form.clean_password()
             user = auth.authenticate(username=username, password=password)
             if user:
                 auth.login(request, user)
@@ -155,10 +172,10 @@ def user_login(request: HttpRequest) -> HttpResponse:
             else:
                 messages.error(request, 'Username and Password do not match')
                 render(request, 'planet/user_login.html',
-                       {'user_form': f})
+                       {'user_form': form})
     else:
-        f = LoggingForm()
-    return render(request, 'planet/user_login.html', {'user_form': f})
+        form = LoggingForm()
+    return render(request, 'planet/user_login.html', {'user_form': form})
     
 def search(request):
 #	result_list = []
