@@ -9,7 +9,7 @@
 {% endblock header %}
 
 {% block body %}
-<form method="post" novalidate class="needs-validation" id="register-form" action="/create_system/">
+<form method="post" novalidate class="needs-validation" id="system-form" action="{% url 'create_system' username %}">
     {% crispy user_form %}
 </form>
-{% endblock body %} 
+{% endblock body %}

@@ -66,6 +66,14 @@ class RegistrationForm(forms.ModelForm):
             'password': forms.PasswordInput,
         }
 
+class LeaderboardForm(forms.Form):
+    sort = [('score','Likes'),('id','New'),('name','Alphabetical')]
+    choice = forms.ChoiceField(choices = sort)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+
 class LoggingForm(forms.Form):
     username = forms.CharField(
         label='Username', min_length=6, max_length=32)
@@ -121,11 +129,20 @@ class SolarSystemForm(forms.ModelForm):
 
     class Meta:
         model = SolarSystem
-        fields = ['name', 'description', 'score', 'views', 'visibility']
+        fields = [ 'user', 'score', 'views', 'visibility']
 
     def __init__(self, user, *args, **kwargs):
         super(SolarSystemForm, self).__init__(*args, **kwargs)
-        self.fields['user'].queryset = PlanetUser.objects.filter(user=user)
+        self.user = user
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Field('name', css_class="input_field"),
+            Field('description', css_class="input_field"),
+            Field('visibility'),
+            ButtonHolder(
+                Submit('submit', 'Submit', css_class='button white')
+            )
+        )
 
 class EditUserForm(forms.Form):
     username = forms.CharField(label='Change username', min_length=6, max_length=32,
