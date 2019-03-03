@@ -76,7 +76,18 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
             comment = form.save(commit=False)
             comment.user = request.user
             comment.planet = planet
+
             comment.save()  # Commit to DB
+			
+			#Add comment score to planet score
+            planet.score += comment.rating
+            planet.save()
+			
+			#Add comment score to solar system score
+            solarSystem.score += comment.rating
+            solarSystem.save()
+			
+			
         else:
             # GET: Display an empty comment form
             form = CommentForm()
