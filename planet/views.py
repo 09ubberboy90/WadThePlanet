@@ -38,13 +38,20 @@ def leaderboard(request: HttpRequest) -> HttpResponse:
             result = form.cleaned_data['choice']
             if result == "name":
                 planets = Planet.objects.exclude(visibility=False).order_by(result)
+                solars = SolarSystem.objects.exclude(
+                    visibility=False).order_by(result)
             else:
                 planets = Planet.objects.exclude(visibility=False).order_by(result)[::-1]
+
+                solars = SolarSystem.objects.exclude(visibility=False).order_by(result)[::-1]
     else:
         form = LeaderboardForm()
-        planets = Planet.objects.exclude(visibility=False).order_by('id')
+        solars = SolarSystem.objects.exclude(visibility=False).order_by('name')
+        planets = Planet.objects.exclude(visibility=False).order_by('name')
     context['form'] = form
     context['planets'] = planets
+    context['solars'] = solars
+    context['page'] = 'leaderboard'
     return render(request, 'planet/leaderboard.html',context= context)
 
 def view_user(request: HttpRequest, username: str) -> HttpResponse:
@@ -54,7 +61,7 @@ def view_user(request: HttpRequest, username: str) -> HttpResponse:
         solar = SolarSystem.objects.filter(user__username=username)
     except PlanetUser.DoesNotExist:
         raise Http404(username)
-    context = {'username': user,'planets':planets,'solar':solar}
+    context = {'username': user, 'planets': planets, 'solars': solar, 'page':'view', 'username' : username}
     return render(request, 'planet/view_user.html', context)
 
 
@@ -203,11 +210,15 @@ def create_system(request: HttpRequest, username: str) -> HttpResponse:
 
     if request.method == 'POST':
         form = SolarSystemForm(request.user)
+        print(form.is_valid())
         if form.is_valid():
+
             system = form.save(commit=False)
             system.user = request.user
             system.save()
-            return redirect('view_system')
+
+            return redirect('home')
+
     else:
         form = SolarSystemForm(request.user)
     return render(request, 'planet/create_system.html', {'form': form, 'username': username})

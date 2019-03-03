@@ -1,4 +1,4 @@
-{% for system in solar %}
+{% for system in solars %}
 <div class="card">
     <div class="card-body">
         <div class="row">
@@ -6,11 +6,19 @@
                 <i class="fas fa-sun text-dark"></i>
             </div>
             <div class="col-3">
-                {{system.name}}
+                <a href="../{{system.user }}/{{system}}">{{system.name}}</a>
             </div>
+            {% if page == 'leaderboard' %}
+            <div class="col-3">
+                User : <a href="../{{system.user}}">{{system.user}}</a>
+            </div>
+            {% elif user.is_authenticated%}
+            {% if user.username == username %}
             <div class="col-3">
                 Visibility : {{system.visibility}}
             </div>
+            {% endif %}
+            {% endif %}
             <div class="col-3">
                 Score : {{system.score}}
             </div>
