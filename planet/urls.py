@@ -5,14 +5,14 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
-    # url(r'^about/$', views.about, name='about'),
+    url(r'^about/$', views.about, name='about'),
     url(r'^leaderboard/$', views.leaderboard, name='leaderboard'),
 
     url(r'^register/$', views.register, name='register'),
     url(r'^login/$', views.user_login, name='login'),
     url(r'^search/$', views.search, name='search'),
 
-    # url(r'^contact/', views.contact, name='contact'),
+    url(r'^contact/', views.contact, name='contact'),
     url(r'^logout/$', views.user_logout, name='logout'),
 
     # /<username>/*
