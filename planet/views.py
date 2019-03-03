@@ -23,7 +23,7 @@ def home(request: HttpRequest) -> HttpResponse:
     # FIXME(Paolo): Test!
     #planet = Planet.objects.get(pk=1)
     planet = Planet.objects.get_or_create(name="planet2")[0]
-
+    print(request.user.is_authenticated)
     context = {
         'planet': planet,
         'editing_enabled': False,
@@ -89,7 +89,10 @@ def register(request: HttpRequest) -> HttpResponse:
         f = RegistrationForm(request.POST)
         if f.is_valid():
             f.save()
-            messages.success(request, 'Account created successfully')
+            username=f.cleaned_data['username']
+            password=f.cleaned_data['password']
+            user = auth.authenticate(username=username, password=password)
+            auth.login(request, user)
             return redirect('home')
     else:
         f = RegistrationForm()
@@ -107,11 +110,12 @@ def user_login(request: HttpRequest) -> HttpResponse:
                 auth.login(request, user)
                 return redirect('home')
             else:
+                messages.error(request, 'Username and Password do not match')
                 render(request, 'planet/user_login.html',
-                       {'user_form': f, 'error': True})
+                       {'user_form': f})
     else:
         f = LoggingForm()
-    return render(request, 'planet/user_login.html', {'user_form': f, 'error': False})
+    return render(request, 'planet/user_login.html', {'user_form': f})
 
 
 def search(request):
@@ -130,6 +134,7 @@ def search(request):
 
 @login_required
 def user_logout(request):
+    print(request.user.username)
     # Since we know the user is logged in, we can now just log them out.
     logout(request)
     # Take the user back to the homepage.
