@@ -24,9 +24,15 @@
             <!-- Right -->
             <ul class="navbar-nav nav-flex-icons ">
                 {% if user.is_authenticated %}
+                {% if user.avatar %}
                 <li class="nav-item my-1 pt-1 align-self-center" >
-                    <img src="{{ user.avatar.url | default_if_none:'/static/images/default-avatar.png' }}" class="img-fluid" width="45">
+                    <img src="{{ user.avatar.url }}" class="img-fluid" width="45">
                 </li>
+                {% else %}
+                <li class="nav-item">
+                    <i class="fas fa-user-astronaut fa-2x mx-4 my-2 pt-1" id="astronaut"></i>
+                </li>
+                {% endif %}
                 <li class="nav-item">
                     <a href="{% url 'logout' %}" class="btn btn-dark" role="button">Logout</a>
                 </li>
