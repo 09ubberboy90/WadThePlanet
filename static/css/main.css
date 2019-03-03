@@ -10,6 +10,10 @@
     color: white;
 }
 
+.error{
+    color: red;
+}
+
 #brand2 {
     color: #909090;
 }

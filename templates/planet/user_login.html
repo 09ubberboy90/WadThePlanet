@@ -11,9 +11,17 @@
 <form method="post" novalidate class="needs-validation" id="login-form" action="/login/">
     {% crispy user_form %}
 </form>
-{% if error %}
-    <div>
-        The username and password doesn't match
-    </div>
+{% if messages %}
+{% for message in messages %}
+<div {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+    {{ message }}
+</div>
+{% endfor %}
 {% endif %}
 {% endblock body %}
+{% block footer %}
+    Don't Have an account : </br>
+    <div class="buttonHolder"> 
+    <a href="{% url 'register' %}" class="btn btn-primary" role="button">Register</a>
+    </div>
+{% endblock footer %}

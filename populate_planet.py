@@ -1,3 +1,4 @@
+ 
 #!/usr/bin/env python3
 
 import random
@@ -44,7 +45,7 @@ def populate():
                  "texture": 'planets/texture4.jpeg'},
     ]
 	
-    moon = [{"name": "Moon", "texture": 'planets/texture1.jpeg',"visibility": False}]
+    moon = [{"name": "Moon", "texture": 'planets/texture1.jpeg',}]
 
     SolarSystem1 = [{
                     "name": "FirstSolarSystem",
@@ -71,7 +72,7 @@ def populate():
                     "name": "hiddenSolarSystem",
                     "description": "Cannot find in search",
                     "planets": moon,
-					"visibility":False,
+	#				"visibility":True
                     },
     ]
     
