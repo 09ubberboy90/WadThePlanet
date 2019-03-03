@@ -45,7 +45,8 @@ def populate():
                  "texture": 'planets/texture4.jpeg'},
     ]
 	
-    moon = [{"name": "Moon", "texture": 'planets/texture1.jpeg',}]
+    moon = [{"name": "Moon", "texture": 'planets/texture1.jpeg',}
+	]
 
     SolarSystem1 = [{
                     "name": "FirstSolarSystem",
@@ -71,10 +72,7 @@ def populate():
     HiddenSystem = [{
                     "name": "hiddenSolarSystem",
                     "description": "Cannot find in search",
-                    "planets": moon,
-	#				"visibility":True
-                    },
-    ]
+                    "planets": moon,            },   ]
     
 
     users = {"geir": {"solarSys": SolarSystem1},
@@ -104,9 +102,10 @@ def add_user(username):
     return user
 
 
-def add_planet(name, user, solarSys, texture, score=0):
+def add_planet(name, user, solarSys, texture, score=0, visibility=True):
     planet = Planet.objects.get_or_create(name=name, user=user,solarSystem=solarSys,texture=texture)[0]
     planet.score = score
+    planet.visibility = visibility
     planet.save()
     return planet
 
