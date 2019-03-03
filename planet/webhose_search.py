@@ -38,6 +38,6 @@ def run_query(search_terms, count):
 		results.append(item)
 		
 	if len(results) > count:
-		result = results[0:count]
+		results = results[0:count]
 		
 	return (results)
