@@ -43,8 +43,8 @@ def populate():
     planets3 = [{"name": "planet4",
                  "texture": 'planets/texture4.jpeg'},
     ]
-
-
+	
+    moon = [{"name": "Moon", "texture": 'planets/texture1.jpeg',"visibility": False}]
 
     SolarSystem1 = [{
                     "name": "FirstSolarSystem",
@@ -66,10 +66,20 @@ def populate():
                     "planets": planets3,
                     },
     ]
+	
+    HiddenSystem = [{
+                    "name": "hiddenSolarSystem",
+                    "description": "Cannot find in search",
+                    "planets": moon,
+					"visibility":False,
+                    },
+    ]
+    
 
     users = {"geir": {"solarSys": SolarSystem1},
              "petter": {"solarSys": SolarSystem2},
-             "eva": {"solarSys": SolarSystem3},}
+             "eva": {"solarSys": SolarSystem3},
+			 "crow": {"solarSys": HiddenSystem},}
 
 
     #populate the database
@@ -79,6 +89,8 @@ def populate():
             s = add_solarSys(u, solarsystem["name"], solarsystem["description"])
             for planet in solarsystem["planets"]:
                 add_planet(planet["name"], u, s, planet["texture"])
+
+    create_super_user("superuser")
 
 
 
@@ -105,6 +117,10 @@ def add_solarSys(user, name, description='', score=0, views=0):
     solarSys.views = views
     solarSys.save()
     return solarSys
+
+def create_super_user(username):
+    email = str(username + "@hotmail.com")
+    u = PlanetUser.objects.create_superuser(username=username, email=email, password="superuser")
 
 
 #start execution here
