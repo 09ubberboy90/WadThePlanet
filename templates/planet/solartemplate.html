@@ -1,4 +1,4 @@
-{% for system in solar %}
+{% for system in solars %}
 <div class="card">
     <div class="card-body">
         <div class="row">
@@ -7,6 +7,9 @@
             </div>
             <div class="col-3">
                 {{system.name}}
+            </div>
+            <div class="col-3">
+                User : {{system.user}}
             </div>
             <div class="col-3">
                 Score : {{system.score}}
