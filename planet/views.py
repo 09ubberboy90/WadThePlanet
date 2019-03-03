@@ -203,11 +203,15 @@ def create_system(request: HttpRequest, username: str) -> HttpResponse:
 
     if request.method == 'POST':
         form = SolarSystemForm(request.user)
+        print(form.is_valid())
         if form.is_valid():
+
             system = form.save(commit=False)
             system.user = request.user
             system.save()
-            return redirect('view_system')
+
+            return redirect('home')
+
     else:
         form = SolarSystemForm(request.user)
     return render(request, 'planet/create_system.html', {'form': form, 'username': username})

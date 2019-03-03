@@ -125,6 +125,7 @@ class CommentForm(forms.ModelForm):
 class SolarSystemForm(forms.ModelForm):
     name = forms.CharField(min_length=6, max_length=50, help_text="Name of the SolarSystem: ")
     description = forms.CharField(max_length=160, help_text="Description of the SolarSystem")
+    visibility = forms.BooleanField(label='Make public')
     #visibility = forms.BooleanField(initial = True)
 
     class Meta:
@@ -143,6 +144,7 @@ class SolarSystemForm(forms.ModelForm):
                 Submit('submit', 'Submit', css_class='button white')
             )
         )
+
 
 class EditUserForm(forms.Form):
     username = forms.CharField(label='Change username', min_length=6, max_length=32,
