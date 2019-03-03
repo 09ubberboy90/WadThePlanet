@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+{% extends 'planet/base.html' %}
+{% load staticfiles %}
+
+
+{% block title_block %}
+    {{ system.name }}
+{% endblock %}
+
+{% block padded_content_block %}
+    <div class="card">
+
+        <h2>{{system.name}}</h2> </br>
+        Description : {{system.description}} </br>
+
+        Planets: </br>
+          {% if planets %}
+            {% for planet in planets %}
+              {% if planet.name %}
+                <a href="../../{{planet.user }}/{{planet.solarSystem}}/{{planet}}">{{planet}}</a>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+
+    </div>
+{% endblock padded_content_block %}

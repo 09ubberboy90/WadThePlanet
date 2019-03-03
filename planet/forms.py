@@ -96,7 +96,7 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['comment', 'rating']
-        
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -113,3 +113,21 @@ class CommentForm(forms.ModelForm):
                 ),
             )
         )
+
+
+
+
+
+
+class SolarSystemForm(forms.ModelForm):
+    name = forms.CharField(min_length=6, max_length=50, help_text="Name of the SolarSystem: ")
+    description = forms.CharField(max_length=160, help_text="Description of the SolarSystem")
+    #visibility = forms.BooleanField(initial = True)
+
+    class Meta:
+        model = SolarSystem
+        fields = ['name', 'description', 'score', 'views', 'visibility']
+
+    def __init__(self, user, *args, **kwargs):
+        super(SolarSystemForm, self).__init__(*args, **kwargs)
+        self.fields['user'].queryset = PlanetUser.objects.filter(user=user)

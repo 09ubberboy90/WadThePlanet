@@ -4,8 +4,8 @@ import logging
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from planet.webhose_search import run_query
-from planet.models import Planet, Comment, PlanetUser
-from planet.forms import LoggingForm, RegistrationForm, CommentForm
+from planet.models import Planet, Comment, PlanetUser, SolarSystem
+from planet.forms import LoggingForm, RegistrationForm, CommentForm, SolarSystemForm
 from django.contrib import messages, auth
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
@@ -38,7 +38,13 @@ def edit_user(request: HttpRequest, username: str) -> HttpResponse:
     pass
 
 def view_system(request: HttpRequest, username: str, systemname: str) -> HttpResponse:
-    pass
+        '''
+        View a specific solar system
+        '''
+        system = SolarSystem.objects.get(name=systemname, user__username=username)
+        planets = Planet.objects.filter(solarSystem__name=systemname)
+        return render(request, 'planet/view_system.html', {'system': system, 'planets': planets })
+
 
 def view_planet(request: HttpRequest, username: str, systemname: str, planetname: str) -> HttpResponse:
     '''
@@ -110,7 +116,20 @@ def edit_planet(request: HttpRequest, username: str, systemname: str, planetname
         return render(request, 'planet/edit_planet.html', context=context)
 
 def create_system(request: HttpRequest, username: str) -> HttpResponse:
-    pass
+    if request.user.username != username:
+        return HttpResponseForbidden(f'You not to be logged in as {username}')
+
+    if request.method == 'POST':
+        form = SolarSystemForm(request.user)
+        if form.is_valid():
+            system = form.save(commit=False)
+            system.user = request.user
+            system.save()
+            return HttpResponse('saved')
+    else:
+        form = SolarSystemForm(request.user)
+    return render(request, 'planet/view_system.html', {'form': form})
+
 
 def create_planet(request: HttpRequest, username: str, systemname: str) -> HttpResponse:
     pass
@@ -148,7 +167,7 @@ def user_login(request: HttpRequest) -> HttpResponse:
     else:
         f = LoggingForm()
     return render(request, 'planet/user_login.html', {'user_form': f})
-    
+
 def search(request):
 #	result_list = []
 #	if request.method == 'GET':
@@ -159,11 +178,10 @@ def search(request):
 
     result_list = run_query(request.GET['query'].strip())
     return render(request, 'planet/search.html', {'result_list': result_list})
-    
+
 @login_required
 def user_logout(request):
     # Since we know the user is logged in, we can now just log them out.
     logout(request)
     # Take the user back to the homepage.
     return redirect('home')
-
