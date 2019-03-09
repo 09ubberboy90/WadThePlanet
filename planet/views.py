@@ -46,8 +46,10 @@ def leaderboard(request: HttpRequest) -> HttpResponse:
                 solars = SolarSystem.objects.exclude(visibility=False).order_by(result)[::-1]
     else:
         form = LeaderboardForm()
-        solars = SolarSystem.objects.exclude(visibility=False).order_by('name')
-        planets = Planet.objects.exclude(visibility=False).order_by('name')
+        solars = SolarSystem.objects.exclude(
+            visibility=False).order_by('score')[::-1]
+        planets = Planet.objects.exclude(
+            visibility=False).order_by('score')[::-1]
     context['form'] = form
     context['planets'] = planets
     context['solars'] = solars
@@ -64,7 +66,7 @@ def view_user(request: HttpRequest, username: str) -> HttpResponse:
     context = {'username': user, 'planets': planets, 'solars': solar, 'page':'view'}
     return render(request, 'planet/view_user.html', context)
 
-
+@login_required
 def edit_user(request: HttpRequest, username: str) -> HttpResponse:
     '''
     Edits request.user.

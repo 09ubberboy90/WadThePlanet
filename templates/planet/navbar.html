@@ -1,11 +1,13 @@
 <nav class="sidebar-container navbar-dark collapse d-lg-block" id="sidebar">
     <div class="sidebar-left">
         <ul class="navbar-nav">
+            {% if user.is_authenticated %}
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'view_user' user.username%}">
                     <i class="fas fa-user"></i> My Account
                 </a>
             </li>
+            {% endif %}
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'home' %}">
                     <i class="fa fa-home" aria-hidden="true"></i> Homepage
@@ -18,12 +20,12 @@
             </li>
 			<li class="nav-item">
                 <a class="nav-link" href="{% url 'about' %}">
-                    <i class="fab fa-rebel" aria-hidden="true"></i> About us
+                    <i class="fas fa-users" aria-hidden="true"></i> About us
                 </a>
             </li>
 			<li class="nav-item">
                 <a class="nav-link" href="{% url 'contact' %}">
-                    <i class="fab fa-rebel" aria-hidden="true"></i> Contact us
+                    <i class="fas fa-envelope" aria-hidden="true"></i> Contact us
                 </a>
             </li>
         </ul>

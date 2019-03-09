@@ -3,6 +3,8 @@
 
 import random
 import string
+from PIL import Image, ImageDraw
+
 
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "WadThePlanet.settings")
@@ -25,72 +27,109 @@ for file_name in src_files:
         shutil.copy(full_file_name, dest)
 
 
+def populate_old():
 
-
-def populate():
-
-    planets1 = [ {"name": "planet1",
-                  "texture": 'planets/texture1.jpeg'},
+    planets1 = [{"name": "planet1",
+                 "texture": 'planets/texture1.jpeg'},
 
                 {"name": "planet2",
                  "texture": 'planets/texture2.jpeg'},
-    ]
+                ]
 
     planets2 = [{"name": "planet3",
                  "texture": 'planets/texture3.jpeg'},
 
-    ]
+                ]
 
     planets3 = [{"name": "planet4",
                  "texture": 'planets/texture4.jpeg'},
-    ]
-	
-    moon = [{"name": "Moon", "texture": 'planets/texture1.jpeg',}
-	]
+                ]
+
+    moon = [{"name": "Moon", "texture": 'planets/texture1.jpeg', }
+            ]
 
     SolarSystem1 = [{
                     "name": "FirstSolarSystem",
                     "description": "Cool solarsys",
                     "planets": planets1,
                     },
-    ]
+                    ]
 
     SolarSystem2 = [{
                     "name": "SecondSolarSystem",
                     "description": "Cooler solarsys",
                     "planets": planets2,
                     },
-    ]
+                    ]
 
     SolarSystem3 = [{
                     "name": "ThirdSolarSystem",
                     "description": "Coolest solarsys",
                     "planets": planets3,
                     },
-    ]
-	
+                    ]
+
     HiddenSystem = [{
                     "name": "hiddenSolarSystem",
                     "description": "Cannot find in search",
-                    "planets": moon,            },   ]
-    
+                    "planets": moon, }, ]
 
-    users = {"geir": {"solarSys": SolarSystem1},
+    users = {"geirtyy": {"solarSys": SolarSystem1},
              "petter": {"solarSys": SolarSystem2},
-             "eva": {"solarSys": SolarSystem3},
-			 "crow": {"solarSys": HiddenSystem},}
-
+             "evatyy": {"solarSys": SolarSystem3},
+             "crowtyy": {"solarSys": HiddenSystem}, }
 
     #populate the database
     for user, solarsystems in users.items():
         u = add_user(user)
         for solarsystem in solarsystems["solarSys"]:
-            s = add_solarSys(u, solarsystem["name"], solarsystem["description"])
+            s = add_solarSys(
+                u, solarsystem["name"], solarsystem["description"])
             for planet in solarsystem["planets"]:
                 add_planet(planet["name"], u, s, planet["texture"])
 
     create_super_user("superuser")
 
+
+def populate(number):
+    populate_old()
+    counter = 5
+    for t in range(number):
+        username = "".join(random.choice(string.ascii_lowercase) for i in range(6,15))
+        print("Generating Solar systems and planet for user : " + username)
+        u = add_user(username)
+        for i in range(random.randint(2,5)):
+            SolarSystemName = "SolarSystem"+str(counter)
+            SolarSystemDescription = "".join(random.choice(string.ascii_lowercase) for i in range(100))
+            s = add_solarSys(u, SolarSystemName, SolarSystemDescription)
+            for planet in range(random.randint(2,5)):
+                planetName = "planet"+str(counter)
+                counter+=1
+                add_planet(planetName, u, s, generate_texture(planetName),counter%20!=0)
+
+def generate_texture(name):
+    img = Image.new('RGB', (2048, 2048), (  
+        random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
+    draw = ImageDraw.Draw(img)
+    draw.rectangle((random.randint(0, 2048), random.randint(0, 2048), random.randint(
+        0, 2048), random.randint(0, 2048)), fill=(
+        random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
+    draw.pieslice((random.randint(0, 2048), random.randint(0, 2048), random.randint(
+        0, 2048), random.randint(0, 2048)), random.randint(0, 360), random.randint(0, 360), fill=(
+        random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
+    draw.ellipse((random.randint(0, 2048), random.randint(0, 2048), random.randint(
+        0, 2048), random.randint(0, 2048)), fill=(
+        random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
+    pos = []
+    for i in range(random.randint(3,10)):
+        pos.append((random.randint(0, 2048), random.randint(0, 2048)))
+    draw.polygon(pos, fill=(
+        random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
+    path = os.path.dirname(os.path.abspath(__file__)) + '/media/planets/'+name+'.png'
+    if os.path.exists(path):
+        os.remove(path)
+    img.save(path,'PNG')
+    return path
 
 
 #helper functions
@@ -102,9 +141,9 @@ def add_user(username):
     return user
 
 
-def add_planet(name, user, solarSys, texture, score=0, visibility=True):
+def add_planet(name, user, solarSys, texture, visibility=True):
     planet = Planet.objects.get_or_create(name=name, user=user,solarSystem=solarSys,texture=texture)[0]
-    planet.score = score
+    planet.score = random.randint(0,50000)
     planet.visibility = visibility
     planet.save()
     return planet
@@ -114,7 +153,7 @@ def add_solarSys(user, name, description='', score=0, views=0):
     solarSys = SolarSystem.objects.get_or_create(user=user, name=name)[0]
     solarSys.description = description
     solarSys.score = score
-    solarSys.views = views
+    solarSys.views = random.randint(0, 50000)
     solarSys.save()
     return solarSys
 
@@ -124,5 +163,6 @@ def create_super_user(username):
 
 
 #start execution here
+
 if __name__ == '__main__':
-    populate()
+    populate(5)
