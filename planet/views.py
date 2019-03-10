@@ -105,17 +105,15 @@ def edit_user(request: HttpRequest, username: str) -> HttpResponse:
         return HttpResponseForbidden(f'You need to log in as {username} to edit his profile')
 
     if request.method == 'POST':
-        form = EditUserForm(request.POST, user_id=request.user.id)
+        form = EditUserForm(request.POST, request.FILES, user_id=request.user.id)
         if form.is_valid():
+            f = form.save()
             # Change only the data that was input by the user
-            if form.cleaned_data['username']:
-                request.user.username = form.cleaned_data['username']
-            if form.cleaned_data['password']:
-                # NOTE: If you don't set_password, it gets saved as plaintext!!
-                request.user.set_password(form.cleaned_data['password'])
-            if form.cleaned_data['avatar']:
-                user.avatar = form.cleaned_data['avatar']
-            request.user.save()
+            f.save()
+            if(form.cleaned_data['username']):
+                return redirect('view_user', form.cleaned_data['username'])
+            else:
+                return redirect('view_user' ,request.user.username)
     else:
         form = EditUserForm(user_id=request.user.id)
 

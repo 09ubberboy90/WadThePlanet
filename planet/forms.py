@@ -229,3 +229,17 @@ class EditUserForm(forms.Form):
 
     def clean_password_copy(self):
         return RegistrationForm.clean_password_copy(self)
+
+    def save(self, commit=False):
+        print(self.user_id)
+        user = PlanetUser.objects.get(id = self.user_id)
+        if self.cleaned_data['username']:
+            user.username = self.cleaned_data['username']
+        if self.cleaned_data['password']:
+            # NOTE: If you don't set_password, it gets saved as plaintext!!
+            user.set_password(self.cleaned_data['password'])
+        if self.cleaned_data['avatar']:
+            user.avatar = self.cleaned_data['avatar']
+        return user
+
+    

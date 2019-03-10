@@ -27,7 +27,7 @@
                     {% if user.avatar %}
                         <li class="nav-item my-1 pt-1 align-self-center">
                             <a href="{% url 'view_user' user.username %}">
-                                <img src="{{ user.avatar.url }}" class="img-fluid" width="45">
+                                <img src="{{ user.avatar.url }}" width="45" height="45">
                             </a>
                         </li>
                     {% else %}

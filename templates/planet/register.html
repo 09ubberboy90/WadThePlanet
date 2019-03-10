@@ -9,7 +9,7 @@
 {% endblock header %}
 
 {% block body %}
-<form method="POST" novalidate class="needs-validation" id="register-form" action="{% url 'register' %}" enctype="multipart/form-data"">
+<form method="POST" novalidate class="needs-validation" id="register-form" action="{% url 'register' %}" enctype="multipart/form-data">
     {% crispy user_form %}
 </form>
 {% endblock body %} 
