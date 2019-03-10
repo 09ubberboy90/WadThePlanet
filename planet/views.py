@@ -201,19 +201,17 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
 
     if request.user.is_authenticated:
         # Display and handle comment form only if an user is logged in
-        if request.method == 'POST':
-
-            #Placeholder for modifying comments ratings
-            preexisting_rating = 0
-            # POST: upload the posted comment
+        if request.method == 'POST':  # POST: upload the posted comment
             form = CommentForm(request.POST)
-            preexisting = Comment.objects.filter(planet=planet, user=request.user)
 
             #If there is already a comment for this planet with this user name, modify existing comment
+            preexisting_rating = 0
+            preexisting = Comment.objects.filter(planet=planet, user=request.user)
             if preexisting.count() > 0:
                 form.instance = preexisting[0]
                 #Remember old comment's rating
                 preexisting_rating = preexisting[0].rating
+
             if form.is_valid():
                 comment = form.save(request.user,planet)
                 comment.save()  # Commit to DB
