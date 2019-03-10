@@ -9,15 +9,14 @@
 
 {% block padded_content_block %}
     <div class="card">
-
-        <h2>{{system.name}}</h2> </br>
+        <h2>{{system.name}}</h2>
+        Owner : <a href="{% url 'view_user' system.user %}">{{system.user}}</a>
         Description : {{system.description}} </br>
-
         Planets: </br>
           {% if planets %}
             {% for planet in planets %}
               {% if planet.name %}
-                <a href="../../{{planet.user }}/{{planet.solarSystem}}/{{planet}}">{{planet}}</a>
+                <a href="{% url 'view_planet' system.user.username system.name planet.name %}">{{planet.name}}</a>
               {% endif %}
             {% endfor %}
           {% endif %}

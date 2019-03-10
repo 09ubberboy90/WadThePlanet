@@ -6,10 +6,10 @@
                 <img id="initial-texture" src="{{ MEDIA_URL }}{{ planet.texture }}" heigth='68' width='68'/>
             </div>
             <div class="col-3">
-                <a href="../{{planet.user }}/{{planet.solarSystem}}/{{planet}}">{{planet.name}}</a>
+                <a href="{% url 'view_planet' planet.solarSystem.user.username planet.solarSystem.name planet.name %}">{{ planet.name }}</a>
             </div>
             <div class="col-3">
-                <a href="../{{planet.user }}/{{planet.solarSystem}}">{{planet.solarSystem}}</a>
+                <a href="{% url 'view_system' planet.solarSystem.user.username planet.solarSystem.name %}">{{ planet.solarSystem.name }}</a>
             </div>
             <div class="col-3">
                 {{planet.score}}

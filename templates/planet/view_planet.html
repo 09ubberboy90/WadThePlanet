@@ -14,5 +14,13 @@
     </script>
 
     {% include 'planet/editor.html' %}
+
+    {% if request.user == planet.user %}
+    <a href="{% url 'edit_planet' planet.solarSystem.user.username planet.solarSystem.name planet.name %}"
+       id="edit-btn" class="btn btn-primary">
+        Edit
+    </a>
+    {% endif %}
+
     {% include 'planet/comments.html' %}
 {% endblock %}

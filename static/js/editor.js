@@ -202,6 +202,9 @@ function setupTools() {
     sizepicker.on('change input', function () {
         brush.size = $(this).val();
     });
+
+    // Hide the planet info
+    $('#info').remove();
 }
 
 function onDoneLoading() {
