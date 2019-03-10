@@ -262,24 +262,13 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
             form = CommentForm(request.POST)
 
             #If there is already a comment for this planet with this user name, modify existing comment
-            preexisting_rating = 0
             preexisting = Comment.objects.filter(planet=planet, user=request.user)
             if preexisting.count() > 0:
                 form.instance = preexisting[0]
-                #Remember old comment's rating
-                preexisting_rating = preexisting[0].rating
 
             if form.is_valid():
                 comment = form.save(request.user,planet)
-                comment.save()  # Commit to DB
-
-                #Add comment score to planet score
-                planet.score += comment.rating - preexisting_rating
-                planet.save()
-
-                #Add comment score to solar system score
-                solarSystem.score += comment.rating - preexisting_rating
-                solarSystem.save()
+                comment.save()  # Commit to DB. This will also modify the ratings for the parent solar system and planet.
 
         else:
             # GET: Display an empty comment form

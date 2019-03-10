@@ -31,7 +31,7 @@ def name_validator(name: str):
 
 def content_file_name(instance, filename):
     ext = filename.split('.')[-1]
-    filename = "%s.%s" % (instance.username, ext)
+    filename = f'{instance.username}.{ext}'
     return os.path.join('profile_images/', filename)
 
 # ======================== Models ==============================================
@@ -130,3 +130,29 @@ class Comment(models.Model):
     class Meta:
         # Disallow multiple comments on a planet from the same user
         unique_together=('planet', 'user')
+
+    def save(self, *args, **kwargs):
+        '''
+        Save the comment, recalculating the score of the parent planet and solar
+        system as needed.
+        '''
+        try:
+            # Get the comment with our same primary key; it will be the previous
+            # version of this comment, containing the previous rating
+            prev_comment = Comment.objects.get(pk=self.pk)
+            prev_rating = prev_comment.rating
+        except Comment.DoesNotExist:
+            # There was no previous comment; assume a previous value of 0 = no rating
+            prev_rating = 0
+
+        #Add comment score to planet score
+        self.planet.score += self.rating - prev_rating
+        self.planet.save()
+
+        #Add comment score to solar system score
+        self.planet.solarSystem.score += self.rating - prev_rating
+        self.planet.solarSystem.save()
+
+        # Apply the changes to the DB row
+        super().save(*args, **kwargs)
+        return self
