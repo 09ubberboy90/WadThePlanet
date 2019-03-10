@@ -71,8 +71,6 @@ class SolarSystem(models.Model):
     visibility=models.BooleanField(default=True)
     # Score of the SolarSystem
     score=models.IntegerField(default=0)
-    # Number of views
-    views=models.IntegerField(default=0)
 
 
     def save(self, *args, **kwargs):

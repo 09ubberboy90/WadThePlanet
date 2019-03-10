@@ -17,6 +17,7 @@ from django.http import Http404
 # ======================== Utilities ===========================================
 
 logger = logging.getLogger(__name__)
+HOST = 'http://wdp.pythonanywhere.com/'
 
 # ======================== Views ===============================================
 
@@ -153,6 +154,7 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
     context = {
         'comments': Comment.objects.filter(planet=planet),
         'planet': planet,
+        'this_page': HOST + request.path, # Required by social media buttons
     }
 
     if request.user.is_authenticated:
@@ -252,18 +254,20 @@ def create_system(request: HttpRequest, username: str) -> HttpResponse:
     return render(request, 'planet/create_system.html', {'form': form, 'username': username})
 
 
+@login_required
 def create_planet(request: HttpRequest, username: str, systemname: str) -> HttpResponse:
-
     if request.method == 'POST':
         form = PlanetForm(request.POST)
         if form.is_valid():
+            system = SolarSystem.objects.get(user__username=username, name=systemname)
             planet = form.save(commit=False)
             planet.user = request.user
-            planet.solarSystem = SolarSystem.objects.get(name=systemname)
+            planet.solarSystem = system
             planet.texture = form.generate_texture(planet.name)
             planet.score = 0
             planet.save()
-            return redirect('view_planet', username=request.user.username, systemname=planet.solarSystem.name, planetname=planet.name)
+            return redirect('view_planet',
+                username=system.user.username, systemname=planet.solarSystem.name, planetname=planet.name)
         else:
             messages.error(request, 'Username and Password do not match')
             print(form.errors)

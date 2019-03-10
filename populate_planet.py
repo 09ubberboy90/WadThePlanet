@@ -151,11 +151,10 @@ def add_planet(name, user, solarSys, texture, visibility=True):
     return planet
 
 
-def add_solarSys(user, name, description='', score=0, views=0):
+def add_solarSys(user, name, description='', score=0):
     solarSys = SolarSystem.objects.get_or_create(user=user, name=name)[0]
     solarSys.description = description
     solarSys.score = score
-    solarSys.views = random.randint(0, 50000)
     solarSys.save()
     return solarSys
 
