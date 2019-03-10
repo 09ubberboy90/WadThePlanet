@@ -4,59 +4,22 @@
 
 
 {% block title_block %}
-{{ system.name }}
+    {{ system.name }}
 {% endblock %}
 
 {% block padded_content_block %}
-<div class="card">
-    <div class="card-body">
+    <div class="card">
         <h1>{{system.name}}</h1>
-        <div class="row">
-            {% if system.user.avatar %}
-            <div class="col-lg-4 justify-content-center d-flex align-items-center ">
-                </br><img src="{{ system.user.avatar.url }}" class="img-responsive collapse-content" width="200">
-            </div>
-            {% if system.user == user%}
-            <div class="col-lg-6 col-md-10">
-            {% else %}
-            <div class="col-8 col-md-12">
-            {% endif %}
-            {% elif system.user == user%}
-            <div class="col-10">
-            {% else %}
-            <div class="col-12">
-            {% endif %}
-                <div class="row">
-                    <div class='col-4'>
-                        <div class="row d-flex align-items-center justify-content-center">
-                            <h4>Owner : </h4>
-                        </div>
-                        <div class="row d-flex align-items-center justify-content-center">
-                            <a href="{% url 'view_user' system.user %}">{{system.user}}</a></h4>
-                        </div>
-                    </div>
-                    <div class="col-8">
-                        <div class="row d-flex align-items-center justify-content-center">
-                            <h4>Description : </h4>
-                        </div>
-                        <div class="row d-flex align-items-center justify-content-center flex-wrap">
-                            {{system.description}}
-                        </div>
-                    </div>
-                </div>
-                
-            </div>
-            {% if system.user == user %}
-                <div class="col-2">
-                    <br><a href="{% url 'edit_user' user %}" class="btn btn-primary" role="button">Edit</a>
-                    <br><a href="{% url 'delete_user' user %}" class="btn btn-danger" role="button">Delete</a>
-                    <br><a href="{% url 'create_planet' user system.name%}" class="btn btn-primary flex-wrap" role="button">Create planet</a>
-                </div>
-                {% endif %}
-        </div>
+        <h4>Owner : </h4> <a href="{% url 'view_user' system.user %}">{{system.user}}</a> </br>
+        <h4>Description : </h4>{{system.description}} </br></br>
+        <h4>Planets: </h4>
+          {% if planets %}
+            {% for planet in planets %}
+              {% if planet.name %}
+                <a href="{% url 'view_planet' system.user.username system.name planet.name %}">{{planet.name}}, score: {{planet.score}}</a>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+
     </div>
-    <br>
-    </div>
-    <br>
-    {% include 'planet/planettemplate.html' %}
 {% endblock padded_content_block %}
