@@ -15,13 +15,16 @@
             <input id="brush-size-picker" type="number"/>
         </div>
         <div id="savebar" class="btn-group">
+            <a class="btn btn-warning" href="{% url 'view_planet' planet.solarSystem.user.username planet.solarSystem.name planet.name %}">Done editing</a>
             <button id="save" class="btn btn-primary" onclick="onSave()">Save</button>
             <button id="reset" class="btn btn-danger" onclick="onReset()">Reset</button>
         </div>
     </div>
 
     <div id="info" class="text-light">
-        <strong>{{ planet.name }}</strong>
+        <a href="{% url 'view_planet' planet.solarSystem.user.username planet.solarSystem.name planet.name %}">
+            <strong>{{ planet.name }}</strong>
+        </a>
         <br>
         Created by <a href="{% url 'view_user' planet.user.username %}">{{ planet.user.username }}</a>
     </div>

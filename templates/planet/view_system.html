@@ -16,7 +16,7 @@
           {% if planets %}
             {% for planet in planets %}
               {% if planet.name %}
-                <a href="../../{{planet.user }}/{{planet.solarSystem}}/{{planet}}">{{planet}}</a>
+                <a href="{% url 'view_planet' system.user.username system.name planet.name %}">{{planet.name}}</a>
               {% endif %}
             {% endfor %}
           {% endif %}

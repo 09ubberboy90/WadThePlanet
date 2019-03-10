@@ -22,13 +22,15 @@
             <div class="card-body row align-items-center">
 
                 <div class="col-3 d-flex align-items-center">
-                    {% if user.avatar %}
-                        <img src="{{ comment.user.avatar.url }}" alt="{{ comment.user.name }}'s avatar"
-                            class="img-thumbnail user-avatar">
-                    {% else %}
-                        <i class="fas fa-user-astronaut text-primary user-avatar"></i>
-                    {% endif %}
-                    <strong class="user-name">{{ comment.user.username }}</strong>
+                    <a href="{% url 'view_user' comment.user.username %}">
+                        {% if user.avatar %}
+                            <img src="{{ comment.user.avatar.url }}" alt="{{ comment.user.username }}'s avatar"
+                                class="img-thumbnail user-avatar">
+                        {% else %}
+                            <i class="fas fa-user-astronaut text-primary user-avatar"></i>
+                        {% endif %}
+                        <strong class="user-name">{{ comment.user.username }}</strong>
+                    </a>
                 </div>
 
                 <div class="col-2">

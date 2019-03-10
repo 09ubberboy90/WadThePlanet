@@ -6,21 +6,21 @@
                 <i class="fas fa-sun text-dark"></i>
             </div>
             <div class="col-3">
-                <a href="../{{system.user }}/{{system}}">{{system.name}}</a>
+                <a href="{% url 'view_system' system.user.username system.name %}">{{ system.name }}</a>
             </div>
             {% if page == 'leaderboard' %}
             <div class="col-3">
-                User : <a href="../{{system.user}}">{{system.user}}</a>
+                User : <a href="{% url 'view_user' system.user.username %}">{{ system.user.username }}</a>
             </div>
             {% elif user.is_authenticated%}
             {% if user.username == username %}
             <div class="col-3">
-                Visibility : {{system.visibility}}
+                Visibility : {{ system.visibility }}
             </div>
             {% endif %}
             {% endif %}
             <div class="col-3">
-                Score : {{system.score}}
+                Score : {{ system.score }}
             </div>
         </div>
     </div>
