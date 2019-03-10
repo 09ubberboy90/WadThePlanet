@@ -101,12 +101,10 @@ def view_system(request: HttpRequest, username: str, systemname: str) -> HttpRes
         '''
         View a specific solar system
         '''
-        system = SolarSystem.objects.get(name=systemname, user__username=username)
-        planets = Planet.objects.filter(solarSystem__name=systemname)
         try:
-            user = PlanetUser.objects.get(username=username)
-            #FiXME : Implement me
-        except PlanetUser.DoesNotExist:
+            system = SolarSystem.objects.get(name=systemname, user__username=username)
+            planets = Planet.objects.filter(solarSystem=system)
+        except SolarSystem.DoesNotExist:
             raise Http404()
         return render(request, 'planet/view_system.html', {'system': system, 'planets': planets })
 
@@ -118,8 +116,8 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
     POST: Post the given comment form
     '''
     try:
-        planet = Planet.objects.get(name=planetname, user__username=username, solarSystem__name=systemname)
-        solarSystem = SolarSystem.objects.get(name=systemname)
+        planet = Planet.objects.get(name=planetname, solarSystem__user__username=username, solarSystem__name=systemname)
+        solarSystem = planet.solarSystem
     except Planet.DoesNotExist:
         raise Http404()
 
@@ -135,17 +133,17 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
         # Display and handle comment form only if an user is logged in
         if request.method == 'POST':
 
-			#Placeholder for modifying comments ratings
+            #Placeholder for modifying comments ratings
             preexisting_rating = 0
 
             # POST: upload the posted comment
             form = CommentForm(request.POST)
             preexisting = Comment.objects.filter(planet=planet, user=request.user)
 
-			#If there is already a comment for this planet with this user name, modify existing comment
+            #If there is already a comment for this planet with this user name, modify existing comment
             if preexisting.count() > 0:
                 form.instance = preexisting[0]
-				#Remember old comment's rating
+                #Remember old comment's rating
                 preexisting_rating = preexisting[0].rating
 
             comment = form.save(commit=False)
@@ -154,11 +152,11 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
 
             comment.save()  # Commit to DB
 
-			#Add comment score to planet score
+            #Add comment score to planet score
             planet.score += comment.rating - preexisting_rating
             planet.save()
 
-			#Add comment score to solar system score
+            #Add comment score to solar system score
             solarSystem.score += comment.rating - preexisting_rating
             solarSystem.save()
 
@@ -180,7 +178,7 @@ def edit_planet(request: HttpRequest, username: str, systemname: str, planetname
     GET: Render editor.html in read + write mode
     POST: Post the modified planet texture (done via AJAX from editor.js)
     '''
-    planet = Planet.objects.get(name=planetname, user__username=username, solarSystem__name=systemname)
+    planet = Planet.objects.get(name=planetname, solarSystem__user__username=username, solarSystem__name=systemname)
 
     if planet.user != request.user:
         return HttpResponseForbidden(f'You must be logged in as {planet.user.username} to edit this planet!')
@@ -284,7 +282,7 @@ def user_logout(request):
     return redirect('home')
 
 def about(request):
-	return render(request, 'planet/about.html')
-	
+    return render(request, 'planet/about.html')
+    
 def contact(request):
-	return render(request, 'planet/contact.html')
+    return render(request, 'planet/contact.html')
