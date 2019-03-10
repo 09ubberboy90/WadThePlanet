@@ -18,6 +18,8 @@ urlpatterns = [
     # /<username>/*
     url(r'^(?P<username>[A-Za-z0-9]+)/edit/$',
         views.edit_user, name='edit_user'),
+    url(r'^(?P<username>[A-Za-z0-9]+)/delete/$',
+        views.delete_user, name='delete_user'),
     url(r'^(?P<username>[A-Za-z0-9]+)/create-system/$',
         views.create_system, name='create_system'),
     url(r'^(?P<username>[A-Za-z0-9]+)/$',

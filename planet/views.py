@@ -67,6 +67,30 @@ def view_user(request: HttpRequest, username: str) -> HttpResponse:
     return render(request, 'planet/view_user.html', context)
 
 @login_required
+def delete_user(request: HttpRequest, username: str) -> HttpResponse:
+    try:
+        if(request.user.username == username):
+            u = PlanetUser.objects.get(username=request.user.username)
+            planets = Planet.objects.filter(user__username=username)
+            solars = SolarSystem.objects.filter(user__username=username)
+            for planet in planets:
+                planet.delete()
+            for solar in solars:
+                system_planet = Planet.objects.filter(solarSystem__id= solar.id)
+                for planet in system_planet:
+                    planet.delete()
+                solar.delete()
+            u.delete()
+            messages.success(request, "The user is deleted")
+        else:
+            HttpResponseForbidden(f'You need to log in as {username} to remove his profile')
+    except PlanetUser.DoesNotExist:
+        messages.error(request, "User does not exist")
+        return redirect('home')
+
+    return redirect('home')
+
+@login_required
 def edit_user(request: HttpRequest, username: str) -> HttpResponse:
     '''
     Edits request.user.
