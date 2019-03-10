@@ -154,6 +154,42 @@ class SolarSystemForm(forms.ModelForm):
             )
         )
 
+from PIL import Image, ImageDraw
+import random
+class PlanetForm(forms.ModelForm):
+    name = forms.CharField(min_length=6, max_length=50,
+                           help_text="Name of the Planet: ")
+    visibility = forms.BooleanField(label='Make public', required=False)
+
+    class Meta:
+        model = Planet
+        fields = ['name', 'visibility']
+
+    def __init__(self, *args, **kwargs):
+        super(PlanetForm, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Field('name', css_class="input_field"),
+            Field('visibility'),
+            ButtonHolder(
+                Submit('submit', 'Submit', css_class='button white')
+            )
+        )
+
+    def generate_texture(self, name):
+        img = Image.new('RGB', (2048, 2048), (
+            random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
+
+        self_path=os.path.dirname(os.path.abspath(os.path.join(__file__, '..')))
+
+        rel_dest_path = os.path.join('planets', name + '.jpg')  # Relative to /media
+        abs_dest_path = os.path.join(self_path, 'media', rel_dest_path)
+        img.save(abs_dest_path, 'JPEG')
+        return rel_dest_path
+
+
+
 
 class EditUserForm(forms.Form):
     username = forms.CharField(label='Change username', min_length=6, max_length=32,
