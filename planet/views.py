@@ -324,12 +324,7 @@ def user_logout(request):
     return redirect('home')
 
 def about(request):
-<<<<<<< HEAD
 	return render(request, 'planet/about.html')
 
-=======
-    return render(request, 'planet/about.html')
-
->>>>>>> bbf0ecd39c6c8ee068e2f4a09d092353bc7a1eff
 def contact(request):
     return render(request, 'planet/contact.html')
