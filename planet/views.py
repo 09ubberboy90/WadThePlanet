@@ -1,6 +1,7 @@
 import base64
 import re
 import logging
+import os
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden ,HttpResponseNotFound
 from planet.webhose_search import run_query
@@ -81,13 +82,16 @@ def delete_user(request: HttpRequest, username: str) -> HttpResponse:
                 for planet in system_planet:
                     planet.delete()
                 solar.delete()
+            if(u.avatar):
+                os.remove(u.avatar.url)
             u.delete()
-            messages.success(request, "The user is deleted")
         else:
-            HttpResponseForbidden(f'You need to log in as {username} to remove his profile')
-    except PlanetUser.DoesNotExist:
-        messages.error(request, "User does not exist")
-        return redirect('home')
+            message = 'A hacker discovered you tried to get '+ username + ' killed and now threatens to blackmail you'
+            return render(request, 'planet/error.html', {'error': message})
+    except Exception as e:
+        message = 'A fleet of enemy has intercepted your message and refuses to surrender it\n So please try again'
+        message += e
+        return render(request, 'planet/error.html', {'error': message})
 
     return redirect('home')
 
@@ -102,17 +106,15 @@ def edit_user(request: HttpRequest, username: str) -> HttpResponse:
         return HttpResponseForbidden(f'You need to log in as {username} to edit his profile')
 
     if request.method == 'POST':
-        form = EditUserForm(request.POST, user_id=request.user.id)
+        form = EditUserForm(request.POST, request.FILES, user_id=request.user.id)
         if form.is_valid():
+            f = form.save()
             # Change only the data that was input by the user
-            if form.cleaned_data['username']:
-                request.user.username = form.cleaned_data['username']
-            if form.cleaned_data['password']:
-                # NOTE: If you don't set_password, it gets saved as plaintext!!
-                request.user.set_password(form.cleaned_data['password'])
-            if form.cleaned_data['avatar']:
-                user.avatar = form.cleaned_data['avatar']
-            request.user.save()
+            f.save()
+            if(form.cleaned_data['username']):
+                return redirect('view_user', form.cleaned_data['username'])
+            else:
+                return redirect('view_user' ,request.user.username)
     else:
         form = EditUserForm(user_id=request.user.id)
 
@@ -278,9 +280,10 @@ def create_planet(request: HttpRequest, username: str, systemname: str) -> HttpR
 
 def register(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
-        form = RegistrationForm(request.POST)
+        form = RegistrationForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            f = form.save(commit=False)
+            f.save()
             username=form.cleaned_data['username']
             password=form.cleaned_data['password']
             user = auth.authenticate(username=username, password=password)

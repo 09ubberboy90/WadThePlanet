@@ -10,7 +10,13 @@
 
 {% block body %}
 <form method="post" novalidate class="needs-validation" id="edit-user-form"
-    action="{% url 'edit_user' request.user.username %}">
+    action="{% url 'edit_user' request.user.username %}" enctype="multipart/form-data">
     {% crispy user_form %}
 </form>
+
 {% endblock body %} 
+
+{% block footer %}
+<a href="{% url 'view_user' request.user.username %}" class="btn btn-primary"> My account </a>
+
+{% endblock footer %}
