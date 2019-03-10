@@ -163,7 +163,6 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
 
             #Placeholder for modifying comments ratings
             preexisting_rating = 0
-
             # POST: upload the posted comment
             form = CommentForm(request.POST)
             preexisting = Comment.objects.filter(planet=planet, user=request.user)
@@ -173,20 +172,17 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
                 form.instance = preexisting[0]
                 #Remember old comment's rating
                 preexisting_rating = preexisting[0].rating
+            if form.is_valid():
+                comment = form.save(request.user,planet)
+                comment.save()  # Commit to DB
 
-            comment = form.save(commit=False)
-            comment.user = request.user
-            comment.planet = planet
+                #Add comment score to planet score
+                planet.score += comment.rating - preexisting_rating
+                planet.save()
 
-            comment.save()  # Commit to DB
-
-            #Add comment score to planet score
-            planet.score += comment.rating - preexisting_rating
-            planet.save()
-
-            #Add comment score to solar system score
-            solarSystem.score += comment.rating - preexisting_rating
-            solarSystem.save()
+                #Add comment score to solar system score
+                solarSystem.score += comment.rating - preexisting_rating
+                solarSystem.save()
 
 
         else:
