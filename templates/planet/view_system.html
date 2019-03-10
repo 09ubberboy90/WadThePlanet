@@ -14,14 +14,14 @@
     </div>
     {% endif %}
     <div class="card">
-        <h2>{{system.name}}</h2>
-        Owner : <a href="{% url 'view_user' system.user %}">{{system.user}}</a>
-        Description : {{system.description}} </br>
-        Planets: </br>
+        <h1>{{system.name}}</h1>
+        <h4>Owner : </h4> <a href="{% url 'view_user' system.user %}">{{system.user}}</a> </br>
+        <h4>Description : </h4>{{system.description}} </br></br>
+        <h4>Planets: </h4>
           {% if planets %}
             {% for planet in planets %}
               {% if planet.name %}
-                <a href="{% url 'view_planet' system.user.username system.name planet.name %}">{{planet.name}}</a>
+                <a href="{% url 'view_planet' system.user.username system.name planet.name %}">{{planet.name}}, score: {{planet.score}}</a>
               {% endif %}
             {% endfor %}
           {% endif %}

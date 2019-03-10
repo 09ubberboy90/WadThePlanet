@@ -19,24 +19,13 @@
     {% if username == user %}
         <br><a href="{% url 'edit_user' user %}" class="btn btn-primary" role="button">Edit</a>
         <br><a href="{% url 'delete_user' user %}" class="btn btn-danger" role="button">Delete</a>
+        <br><a href="{% url 'create_system' user %}" class="btn btn-primary flex-wrap" role="button">create system</a>
     {% endif %}
     </div>
     </div>
 </div>
 <br>
-<div class="card">
-    <div class="card-body d-flex justify-content-start">
-        Planet List
-    </div>
-</div>
-<br>
 {% include 'planet/planettemplate.html' %}
-<br>
-<div class="card">
-    <div class="card-body d-flex justify-content-start">
-        Solar System list
-    </div>
-</div>
 <br>
 {% include 'planet/solartemplate.html' %}
 {% endblock padded_content_block %}

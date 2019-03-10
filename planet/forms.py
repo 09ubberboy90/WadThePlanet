@@ -128,6 +128,16 @@ class CommentForm(forms.ModelForm):
             )
         )
 
+    def save(self,username,planet, commit=False):
+        comment, created = Comment.objects.update_or_create(
+            user=username,
+            planet=planet, defaults={
+            'comment':self.cleaned_data['comment'],
+            'rating':self.cleaned_data['rating']}
+        )
+        print(created)
+        return comment
+
 
 class SolarSystemForm(forms.ModelForm):
     name = forms.CharField(min_length=6, max_length=50,
