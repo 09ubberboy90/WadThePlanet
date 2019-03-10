@@ -1,6 +1,9 @@
- 
+
 #!/usr/bin/env python3
 
+import shutil
+from planet.models import PlanetUser, Planet, SolarSystem
+import django
 import random
 import string
 from PIL import Image, ImageDraw
@@ -9,17 +12,14 @@ from PIL import Image, ImageDraw
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "WadThePlanet.settings")
 
-import django
 django.setup()
-from planet.models import PlanetUser, Planet, SolarSystem
+os.chdir(os.path.abspath(os.path.dirname(__file__)))  # Change directory to project root
 
-
-#Copy the files over to the media destination
-#to avoid deleting pictures when deleting database
-import shutil
+# Copy the files over to the media destination
+# to avoid deleting pictures when deleting database
 self_path = os.path.abspath(os.path.dirname(__file__))
-src = os.path.join(self_path,'_populationmedia/')
-dest = os.path.join(self_path,'media/planets/')
+src = os.path.join(self_path, '_populationmedia/')
+dest = os.path.join(self_path, 'media/planets/')
 src_files = os.listdir(src)
 for file_name in src_files:
     full_file_name = os.path.join(src, file_name)
@@ -79,7 +79,7 @@ def populate_old():
              "evatyy": {"solarSys": SolarSystem3},
              "crowtyy": {"solarSys": HiddenSystem}, }
 
-    #populate the database
+    # populate the database
     for user, solarsystems in users.items():
         u = add_user(user)
         for solarsystem in solarsystems["solarSys"]:
@@ -95,20 +95,24 @@ def populate(number):
     populate_old()
     counter = 5
     for t in range(number):
-        username = "".join(random.choice(string.ascii_lowercase) for i in range(6,15))
+        username = "".join(random.choice(string.ascii_lowercase)
+                           for i in range(6, 15))
         print("Generating Solar systems and planet for user : " + username)
         u = add_user(username)
-        for i in range(random.randint(2,5)):
+        for i in range(random.randint(2, 5)):
             SolarSystemName = "SolarSystem"+str(counter)
-            SolarSystemDescription = "".join(random.choice(string.ascii_lowercase) for i in range(100))
+            SolarSystemDescription = "".join(random.choice(
+                string.ascii_lowercase) for i in range(100))
             s = add_solarSys(u, SolarSystemName, SolarSystemDescription)
-            for planet in range(random.randint(2,5)):
+            for planet in range(random.randint(2, 5)):
                 planetName = "planet"+str(counter)
-                counter+=1
-                add_planet(planetName, u, s, generate_texture(planetName),counter%20!=0)
+                counter += 1
+                add_planet(planetName, u, s, generate_texture(
+                    planetName), counter % 20 != 0)
+
 
 def generate_texture(name):
-    img = Image.new('RGB', (2048, 2048), (  
+    img = Image.new('RGB', (2048, 2048), (
         random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
     draw = ImageDraw.Draw(img)
     draw.rectangle((random.randint(0, 2048), random.randint(0, 2048), random.randint(
@@ -121,29 +125,32 @@ def generate_texture(name):
         0, 2048), random.randint(0, 2048)), fill=(
         random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
     pos = []
-    for i in range(random.randint(3,10)):
+    for i in range(random.randint(3, 10)):
         pos.append((random.randint(0, 2048), random.randint(0, 2048)))
     draw.polygon(pos, fill=(
         random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
-    path = os.path.dirname(os.path.abspath(__file__)) + '/media/planets/'+name+'.png'
+    path = 'media/planets/' + name + '.png'
     if os.path.exists(path):
         os.remove(path)
-    img.save(path,'PNG')
+    img.save(path, 'PNG')
     return path
 
 
-#helper functions
+# helper functions
 def add_user(username):
     email = str(username + "@hotmail.com")
-    password = "".join(random.choice(string.ascii_lowercase) for i in range(10))
-    user = PlanetUser.objects.get_or_create(username=username, password=password,email=email)[0]
+    password = "".join(random.choice(string.ascii_lowercase)
+                       for i in range(10))
+    user = PlanetUser.objects.get_or_create(
+        username=username, password=password, email=email)[0]
     user.save()
     return user
 
 
 def add_planet(name, user, solarSys, texture, visibility=True):
-    planet = Planet.objects.get_or_create(name=name, user=user,solarSystem=solarSys,texture=texture)[0]
-    planet.score = random.randint(0,50000)
+    planet = Planet.objects.get_or_create(
+        name=name, user=user, solarSystem=solarSys, texture=texture)[0]
+    planet.score = random.randint(0, 50000)
     planet.visibility = visibility
     planet.save()
     return planet
@@ -157,12 +164,14 @@ def add_solarSys(user, name, description='', score=0, views=0):
     solarSys.save()
     return solarSys
 
+
 def create_super_user(username):
     email = str(username + "@hotmail.com")
-    u = PlanetUser.objects.create_superuser(username=username, email=email, password="superuser")
+    u = PlanetUser.objects.create_superuser(
+        username=username, email=email, password="superuser")
 
 
-#start execution here
+# start execution here
 
 if __name__ == '__main__':
     populate(5)
