@@ -1,0 +1,17 @@
+{% extends 'planet/logintemplate.html' %}
+
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block header %}
+<h3>Create planet</h3>
+
+{% endblock header %}
+
+{% block body %}
+
+<form method="post" novalidate class="needs-validation" id="planet-form" action="">
+    {% crispy form %}
+</form>
+
+{% endblock body %}
