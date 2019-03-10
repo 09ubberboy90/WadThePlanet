@@ -3,9 +3,59 @@
 
 {% block padded_content_block %}
 
-<h1> Contact us </h1>
+<link rel="stylesheet" href="{% static 'css/contact.css' %}">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<div>
-	Here is some contact info
+<div class="row">
+  <div class="column">
+    <div class="card">
+      <img src="{% static "images/astro.jpg" %}" alt="Img" style="width:100%">
+      <div class="container">
+        <h2>Paolo Jovon</h2>
+        <p class="title">Student University of Glasgow</p>
+				<p>Student in WAD2</p>
+        <p><a class="button" href="https://github.com/UberLambda">Contact</a></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="column">
+    <div class="card">
+      <img src="{% static "images/astro.jpg" %}" alt="Img" style="width:100%">
+      <div class="container">
+        <h2>Florent Audonnet</h2>
+        <p class="title">Student University of Glasgow</p>
+				<p>Student in WAD2 </p>
+        <p><a class="button" href="https://github.com/09ubberboy90">Contact</a></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="column">
+    <div class="card">
+      <img src="{% static "images/astro.jpg" %}" alt="Img" style="width:100%">
+      <div class="container">
+        <h2>Agnes Ola</h2>
+        <p class="title">Student University of Glasgow</p>
+				<p>Student in WAD2</p>
+        <p><a class="button" href="https://github.com/2321440o">Contact</a></p>
+      </div>
+    </div>
+  </div>
+
+	<div class="column">
+		<div class="card">
+			<img src="{% static "images/astro.jpg" %}" alt="Img" style="width:100%">
+			<div class="container">
+				<h2>Trine Olsen</h2>
+				<p class="title">Student University of Glasgow</p>
+				<p>Student in WAD2</p>
+				<p><a class="button" href="https://github.com/trineoo">Contact</a></p>
+			</div>
+		</div>
+	</div>
 </div>
+
+
+
 {% endblock padded_content_block %}
