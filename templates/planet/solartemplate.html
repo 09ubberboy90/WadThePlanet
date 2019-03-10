@@ -1,3 +1,30 @@
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-3">
+                <!-- Picture of the sun column -->
+            </div>
+            <div class="col-3">
+                Solar system
+            </div>
+            {% if page == 'leaderboard' %}
+            <div class="col-3">
+                Owner 
+            </div>
+            {% elif user.is_authenticated%}
+            {% if user == username %}
+            <div class="col-3">
+                Visibility
+            </div>
+            {% endif %}
+            {% endif %}
+            <div class="col-3">
+                Score
+            </div>
+        </div>
+    </div>
+</div>
+<br>
 {% for system in solars %}
 <div class="card">
     <div class="card-body">
@@ -10,19 +37,20 @@
             </div>
             {% if page == 'leaderboard' %}
             <div class="col-3">
-                User : <a href="{% url 'view_user' system.user.username %}">{{ system.user.username }}</a>
+                <a href="{% url 'view_user' system.user.username %}">{{ system.user.username }}</a>
             </div>
             {% elif user.is_authenticated%}
-            {% if user.username == username %}
+            {% if user == username %}
             <div class="col-3">
-                Visibility : {{ system.visibility }}
+                {{ system.visibility }}
             </div>
             {% endif %}
             {% endif %}
             <div class="col-3">
-                Score : {{ system.score }}
+                {{ system.score }}
             </div>
         </div>
     </div>
 </div>
 {% endfor %}
+</div>

@@ -3,8 +3,11 @@ $(function() {
     $(window).resize(function () {
         if ($(window).width() >= 975) {
             $('.adder').addClass('collapse');
+            $('.collapse-content').removeClass('collapse');
         } else if ($(window).width() < 975) {
             $('.adder').removeClass('collapse');
+            $('.collapse-content').addClass('collapse');
+            
         }
     });
 
