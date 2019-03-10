@@ -182,9 +182,11 @@ class PlanetForm(forms.ModelForm):
             random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
 
         self_path=os.path.dirname(os.path.abspath(os.path.join(__file__, '..')))
-        dest = os.path.join(self_path,'media/planets/'+name+'.png')
-        img.save(dest,'PNG')
-        return dest
+
+        rel_dest_path = os.path.join('planets', name + '.jpg')  # Relative to /media
+        abs_dest_path = os.path.join(self_path, 'media', rel_dest_path)
+        img.save(abs_dest_path, 'JPEG')
+        return rel_dest_path
 
 
 
