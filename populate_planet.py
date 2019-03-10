@@ -1,4 +1,4 @@
- 
+
 #!/usr/bin/env python3
 
 import random
@@ -11,7 +11,9 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "WadThePlanet.settings")
 
 import django
 django.setup()
-from planet.models import PlanetUser, Planet, SolarSystem
+from planet.models import PlanetUser, Planet, SolarSystem,Comment
+
+
 
 
 #Copy the files over to the media destination
@@ -92,6 +94,9 @@ def populate_old():
 
 
 def populate(number):
+    self_dir = os.path.abspath(os.path.dirname(__file__))
+    os.makedirs(os.path.join(self_dir, 'media', 'planets'), exist_ok=True)
+
     populate_old()
     counter = 5
     for t in range(number):
@@ -105,10 +110,11 @@ def populate(number):
             for planet in range(random.randint(2,5)):
                 planetName = "planet"+str(counter)
                 counter+=1
-                add_planet(planetName, u, s, generate_texture(planetName),counter%20!=0)
+                planet_object = add_planet(planetName, u, s, generate_texture(planetName),counter%20!=0)
+                add_comment(u,planet_object)
 
 def generate_texture(name):
-    img = Image.new('RGB', (2048, 2048), (  
+    img = Image.new('RGB', (2048, 2048), (
         random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
     draw = ImageDraw.Draw(img)
     draw.rectangle((random.randint(0, 2048), random.randint(0, 2048), random.randint(
@@ -126,7 +132,7 @@ def generate_texture(name):
     draw.polygon(pos, fill=(
         random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
 
-    rel_path = 'planets/'+name+'.png' 
+    rel_path = 'planets/'+name+'.png'
     abs_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'media', rel_path)
     if os.path.exists(abs_path):
         os.unlink(abs_path)
@@ -145,7 +151,6 @@ def add_user(username):
 
 def add_planet(name, user, solarSys, texture, visibility=True):
     planet = Planet.objects.get_or_create(name=name, user=user,solarSystem=solarSys,texture=texture)[0]
-    planet.score = random.randint(0,50000)
     planet.visibility = visibility
     planet.save()
     return planet
@@ -157,6 +162,14 @@ def add_solarSys(user, name, description='', score=0):
     solarSys.score = score
     solarSys.save()
     return solarSys
+
+def add_comment(user,planet):
+    comment = Comment.objects.create(user=user,planet=planet,comment="abc",rating=1)
+    comment.comment = "".join(random.choice(
+        string.ascii_lowercase) for i in range(10))
+    comment.rating = random.randint(1,6)
+    comment.save()
+    return comment
 
 def create_super_user(username):
     email = str(username + "@hotmail.com")

@@ -2,6 +2,7 @@ import base64
 import re
 import logging
 import os
+from typing import List
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden ,HttpResponseNotFound
 from planet.webhose_search import run_query
@@ -16,42 +17,52 @@ from django.http import Http404
 
 # ======================== Utilities ===========================================
 
-logger = logging.getLogger(__name__)
-HOST = 'http://wdp.pythonanywhere.com/'
+logger = logging.getLogger(__name__)  # A utility logger
+HOST = 'http://wdp.pythonanywhere.com/'  # The URL of the website when hosted.
+                                         # Required for social media sharing buttons to work.
+
+def get_mvps(model: 'Model', criteria: str='-score') -> List:
+    '''Gets the object[s] with the best `criteria` from the given model,
+    excluding those that have `visibility=False`.
+    '''
+    return model.objects.exclude(visibility=False).order_by(criteria)
 
 # ======================== Views ===============================================
 
 
 def home(request: HttpRequest) -> HttpResponse:
-    # FIXME(Paolo): Test!
-    #planet = Planet.objects.get(pk=1)
-    planet = Planet.objects.get_or_create(name="planet2")[0]
+    '''
+    Shows an index/landing page, showcasing the highest-scoring planet.
+    GET: Renders the page.
+    '''
+    mvp_planet = get_mvps(Planet)[0]
     context = {
-        'planet': planet,
+        'planet': mvp_planet,
     }
     return render(request, 'planet/home.html', context=context)
 
 
 def leaderboard(request: HttpRequest) -> HttpResponse:
+    '''
+    Shows the leaderboard page, sorting all planets and systems by certain criteria.
+    GET: Renders the page.
+    POST: Posts the form used to choose the sorting method. 
+    '''
     context = {}
+
+    result = '-score'
     if request.method == 'POST':
         form = LeaderboardForm(request.POST)
         if form.is_valid():
             result = form.cleaned_data['choice']
-            if result == "name":
-                planets = Planet.objects.exclude(visibility=False).order_by(result)
-                solars = SolarSystem.objects.exclude(
-                    visibility=False).order_by(result)
-            else:
-                planets = Planet.objects.exclude(visibility=False).order_by(result)[::-1]
-
-                solars = SolarSystem.objects.exclude(visibility=False).order_by(result)[::-1]
+            if result != "name":
+                result = '-' + result
     else:
         form = LeaderboardForm()
-        solars = SolarSystem.objects.exclude(
-            visibility=False).order_by('score')[::-1]
-        planets = Planet.objects.exclude(
-            visibility=False).order_by('score')[::-1]
+
+    planets = get_mvps(Planet, result)
+    solars = get_mvps(SolarSystem, result)
+
     context['form'] = form
     context['planets'] = planets
     context['solars'] = solars
@@ -59,19 +70,40 @@ def leaderboard(request: HttpRequest) -> HttpResponse:
     return render(request, 'planet/leaderboard.html',context= context)
 
 def view_user(request: HttpRequest, username: str) -> HttpResponse:
+    '''
+    Shows the profile of the user named `username`.
+    GET: Renders the page.
+    '''
     try:
         user = PlanetUser.objects.get(username=username)
         planets = Planet.objects.filter(user__username=username)
         solar = SolarSystem.objects.filter(user__username=username)
     except (PlanetUser.DoesNotExist,Planet.DoesNotExist,SolarSystem.DoesNotExist):
         raise Http404(username)
-    context = {'username': user, 'planets': planets, 'solars': solar, 'page':'view'}
+
+    context = {
+        'username': user,
+        'planets': planets,
+        'solars': solar,
+        'page': 'view'
+    }
     return render(request, 'planet/view_user.html', context)
 
 @login_required
 def delete_user(request: HttpRequest, username: str) -> HttpResponse:
+    '''
+    Deletes the currently logged-in user.
+    Only a logged-in user is allowed to delete its own account, so `username` must match `request.user.username`.
+    POST: Deletes the user, his planets, his solar systems and the planets in his
+          solar systems (even if they are by other users). Returns an error if the
+          name does not match.
+    GET: Returns an error, only POST allowed.
+    '''
     try:
-        if(request.user.username == username):
+        if request.method != 'POST':
+            raise ValueError()
+
+        if request.user.username == username:
             u = PlanetUser.objects.get(username=request.user.username)
             planets = Planet.objects.filter(user__username=username)
             solars = SolarSystem.objects.filter(user__username=username)
@@ -88,9 +120,10 @@ def delete_user(request: HttpRequest, username: str) -> HttpResponse:
         else:
             message = 'A hacker discovered you tried to get '+ username + ' killed and now threatens to blackmail you'
             return render(request, 'planet/error.html', {'error': message})
+
     except Exception as e:
         message = 'A fleet of enemy has intercepted your message and refuses to surrender it\n So please try again'
-        message += e
+        #message += e
         return render(request, 'planet/error.html', {'error': message})
 
     return redirect('home')
@@ -98,9 +131,10 @@ def delete_user(request: HttpRequest, username: str) -> HttpResponse:
 @login_required
 def edit_user(request: HttpRequest, username: str) -> HttpResponse:
     '''
-    Edits request.user.
-    GET: Render the editing form
-    POST: Apply the edited fields
+    Edits the currently-logged-in user.
+    Only a logged-in user is allowed to edit its own account, so `username` must match `request.user.username`.
+    GET: Renders the editing form.
+    POST: Apply the edits to `request.user`.
     '''
     if username != request.user.username:
         return HttpResponseForbidden(f'You need to log in as {username} to edit his profile')
@@ -125,22 +159,30 @@ def edit_user(request: HttpRequest, username: str) -> HttpResponse:
 
 
 def view_system(request: HttpRequest, username: str, systemname: str) -> HttpResponse:
-        '''
-        View a specific solar system
-        '''
-        try:
-            system = SolarSystem.objects.get(name=systemname, user__username=username)
-            planets = Planet.objects.filter(solarSystem=system)
-        except SolarSystem.DoesNotExist:
-            raise Http404()
-        return render(request, 'planet/view_system.html', {'system': system, 'planets': planets })
+    '''
+    Renders some information and the list of planets contained in a solar system.
+    The solar system should have been created by `username` and be named `systemname`.
+    GET: Renders the page.
+    '''
+    try:
+        system = SolarSystem.objects.get(name=systemname, user__username=username)
+        planets = Planet.objects.filter(solarSystem=system)
+    except SolarSystem.DoesNotExist:
+        raise Http404()
+
+    return render(request, 'planet/view_system.html', {'system': system, 'planets': planets })
 
 
 def view_planet(request: HttpRequest, username: str, systemname: str, planetname: str) -> HttpResponse:
     '''
-    View a specific planet.
-    GET: Render editor.html in readonly mode, render comments.html
-    POST: Post the given comment form
+    Renders a 3D view of a specific planet, with a form to post comments and ratings plus share the page.
+
+    The planet should be named `planetname`, and have been created inside a system `systemname`.
+    The system should have been created by `username`.
+
+    GET: Renders `editor.html` in readonly mode; the camera can be rotated/zoomed but painting is not possible.
+         Renders `comments.html` in read/write mode; comments can be posted.
+    POST: Post the comment form.
     '''
     try:
         planet = Planet.objects.get(name=planetname, solarSystem__user__username=username, solarSystem__name=systemname)
@@ -159,35 +201,28 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
 
     if request.user.is_authenticated:
         # Display and handle comment form only if an user is logged in
-        if request.method == 'POST':
-
-            #Placeholder for modifying comments ratings
-            preexisting_rating = 0
-
-            # POST: upload the posted comment
+        if request.method == 'POST':  # POST: upload the posted comment
             form = CommentForm(request.POST)
-            preexisting = Comment.objects.filter(planet=planet, user=request.user)
 
             #If there is already a comment for this planet with this user name, modify existing comment
+            preexisting_rating = 0
+            preexisting = Comment.objects.filter(planet=planet, user=request.user)
             if preexisting.count() > 0:
                 form.instance = preexisting[0]
                 #Remember old comment's rating
                 preexisting_rating = preexisting[0].rating
 
-            comment = form.save(commit=False)
-            comment.user = request.user
-            comment.planet = planet
+            if form.is_valid():
+                comment = form.save(request.user,planet)
+                comment.save()  # Commit to DB
 
-            comment.save()  # Commit to DB
+                #Add comment score to planet score
+                planet.score += comment.rating - preexisting_rating
+                planet.save()
 
-            #Add comment score to planet score
-            planet.score += comment.rating - preexisting_rating
-            planet.save()
-
-            #Add comment score to solar system score
-            solarSystem.score += comment.rating - preexisting_rating
-            solarSystem.save()
-
+                #Add comment score to solar system score
+                solarSystem.score += comment.rating - preexisting_rating
+                solarSystem.save()
 
         else:
             # GET: Display an empty comment form
@@ -200,13 +235,22 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
 
     return render(request, 'planet/view_planet.html', context=context)
 
+@login_required
 def edit_planet(request: HttpRequest, username: str, systemname: str, planetname: str) -> HttpResponse:
     '''
-    Edit a specific planet.
+    Renders a 3D editor for the given planet, allowing the user to paint it.
+
+    The planet should be named `planetname`, and have been created inside a system `systemname`.
+    The system should have been created by `username`.
+    Only the logged-in user can edit his own planets.
+
     GET: Render editor.html in read + write mode
     POST: Post the modified planet texture (done via AJAX from editor.js)
     '''
-    planet = Planet.objects.get(name=planetname, solarSystem__user__username=username, solarSystem__name=systemname)
+    try:
+        planet = Planet.objects.get(name=planetname, solarSystem__user__username=username, solarSystem__name=systemname)
+    except Planet.DoesNotExist:
+        raise Http404()
 
     if planet.user != request.user:
         return HttpResponseForbidden(f'You must be logged in as {planet.user.username} to edit this planet!')
@@ -233,6 +277,13 @@ def edit_planet(request: HttpRequest, username: str, systemname: str, planetname
         return render(request, 'planet/edit_planet.html', context=context)
 
 def create_system(request: HttpRequest, username: str) -> HttpResponse:
+    '''
+    Renders a form to create a new solar system.
+    Only the logged-in user can create solar systems under his name.
+
+    GET: Renders the creation form.
+    POST: Validates the form and creates the new system if successful.
+    '''
     if request.user.username != username:
         return HttpResponseForbidden(f'You need to be logged in as {username}')
 
@@ -246,7 +297,7 @@ def create_system(request: HttpRequest, username: str) -> HttpResponse:
             system.save()
             return redirect('view_system', username=username, systemname=system.name)
         else:
-            messages.error(request, 'Username and Password do not match')
+            messages.error(request, '')
             print(form.errors)
     else:
         form = SolarSystemForm()
@@ -256,6 +307,14 @@ def create_system(request: HttpRequest, username: str) -> HttpResponse:
 
 @login_required
 def create_planet(request: HttpRequest, username: str, systemname: str) -> HttpResponse:
+    '''
+    Renders a form to create a new planet.
+    Only the logged-in user can create a planet under his name, but he can create
+    it under anyone's (public) solar systems.
+
+    GET: Renders the creation form.
+    POST: Validates the form and creates the new planet if successful.
+    '''
     if request.method == 'POST':
         form = PlanetForm(request.POST)
         if form.is_valid():
@@ -277,8 +336,12 @@ def create_planet(request: HttpRequest, username: str, systemname: str) -> HttpR
     return render(request, 'planet/create_planet.html', {'form': form, 'username': username, 'systemname': systemname})
 
 
-
 def register(request: HttpRequest) -> HttpResponse:
+    '''
+    Renders a form to register a new user.
+    GET: Renders the form.
+    POST: Validates the form and creates the new user if successful.
+    '''
     if request.method == 'POST':
         form = RegistrationForm(request.POST, request.FILES)
         if form.is_valid():
@@ -295,6 +358,11 @@ def register(request: HttpRequest) -> HttpResponse:
 
 
 def user_login(request: HttpRequest) -> HttpResponse:
+    '''
+    Renders a form used to handle user login.
+    GET: Renders the form.
+    POST: Validates the form and logs in the user if successful.
+    '''
     if request.method == 'POST':
         form = LoggingForm(request.POST)
         if form.is_valid():
@@ -314,8 +382,11 @@ def user_login(request: HttpRequest) -> HttpResponse:
 
 
 def search(request: HttpRequest) -> HttpResponse:
+    '''
+    Searchs for users, systems or planets. The search query is in ?query=
+    GET: Renders the search form.
+    '''
     planets, systems, users = run_query(request.GET['query'].strip())
-
     context = {
         'planets': planets,
         'systems': systems,
@@ -325,13 +396,22 @@ def search(request: HttpRequest) -> HttpResponse:
 
 @login_required
 def user_logout(request):
+    '''
+    Logs out the currently logged-in user and redirects them to the homepage.
+    '''
     # Since we know the user is logged in, we can now just log them out.
     logout(request)
     # Take the user back to the homepage.
     return redirect('home')
 
 def about(request):
-	return render(request, 'planet/about.html')
+    '''
+    GET: Renders the about page.
+    '''
+    return render(request, 'planet/about.html')
 
 def contact(request):
+    '''
+    GET: Renders the contact page.
+    '''
     return render(request, 'planet/contact.html')
