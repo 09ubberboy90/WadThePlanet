@@ -129,6 +129,63 @@ def delete_user(request: HttpRequest, username: str) -> HttpResponse:
     return redirect('home')
 
 @login_required
+def delete_system(request: HttpRequest, username: str, systemname: str) -> HttpResponse:
+    '''
+    Deletes the current system.
+    Only a logged-in user is allowed to delete its own system, so `solar.user.username` must match `request.user.username`.
+    POST: Deletes his solar system and the planets in it
+    GET: Returns an error, only POST allowed.
+    '''
+    try:
+        if request.method != 'POST':
+            raise ValueError()
+        solar = SolarSystem.objects.get(name=systemname)
+        if request.user.username == solar.user.username:
+            planets = Planet.objects.filter(solarSystem__name=systemname)
+            for planet in planets:
+                planet.delete()
+            solar.delete()
+        else:
+            message = 'A hacker discovered you tried to get ' + systemname + ' destroy and now threatens to blackmail you'
+            return render(request, 'planet/error.html', {'error': message})
+    except Exception as e:
+        message = 'A fleet of enemy has intercepted your message and refuses to surrender it\n So please try again'
+        #message += e
+        return render(request, 'planet/error.html', {'error': message})
+
+    return redirect('home')
+
+
+@login_required
+def delete_planet(request: HttpRequest, username: str, systemname: str, planetname: str) -> HttpResponse:
+    '''
+    Deletes the current planet.
+    Only a logged-in user is allowed to delete its own planet, so `username` must match `request.user.username`.
+    POST: Deletes the user, his planets, his solar systems and the planets in his
+          solar systems (even if they are by other users). Returns an error if the
+          name does not match.
+    GET: Returns an error, only POST allowed.
+    '''
+    try:
+        if request.method != 'POST':
+            raise ValueError()
+
+        planet = Planet.objects.get(name=planetname)
+        if request.user.username == planet.user.username:
+            planet.delete()
+        else:
+            message = 'A hacker discovered you tried to get ' + \
+                planetname + ' destroyed and now threatens to blackmail you'
+            return render(request, 'planet/error.html', {'error': message})
+
+    except Exception as e:
+        message = 'A fleet of enemy has intercepted your message and refuses to surrender it\n So please try again'
+        #message += e
+        return render(request, 'planet/error.html', {'error': message})
+
+    return redirect('home')
+
+@login_required
 def edit_user(request: HttpRequest, username: str) -> HttpResponse:
     '''
     Edits the currently-logged-in user.
@@ -205,24 +262,13 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
             form = CommentForm(request.POST)
 
             #If there is already a comment for this planet with this user name, modify existing comment
-            preexisting_rating = 0
             preexisting = Comment.objects.filter(planet=planet, user=request.user)
             if preexisting.count() > 0:
                 form.instance = preexisting[0]
-                #Remember old comment's rating
-                preexisting_rating = preexisting[0].rating
 
             if form.is_valid():
                 comment = form.save(request.user,planet)
-                comment.save()  # Commit to DB
-
-                #Add comment score to planet score
-                planet.score += comment.rating - preexisting_rating
-                planet.save()
-
-                #Add comment score to solar system score
-                solarSystem.score += comment.rating - preexisting_rating
-                solarSystem.save()
+                comment.save()  # Commit to DB. This will also modify the ratings for the parent solar system and planet.
 
         else:
             # GET: Display an empty comment form

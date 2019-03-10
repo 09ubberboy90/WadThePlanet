@@ -30,10 +30,14 @@ urlpatterns = [
         views.create_planet, name='create_planet'),
     url(r'^(?P<username>[A-Za-z0-9]+)/(?P<systemname>[A-Za-z0-9]+)/$',
         views.view_system, name='view_system'),
+    url(r'^(?P<username>[A-Za-z0-9]+)/(?P<systemname>[A-Za-z0-9]+)/delete/$',
+        views.delete_system, name='delete_system'),
 
     # /<username>/<systemname>/<planetname>
     url(r'^(?P<username>[A-Za-z0-9]+)/(?P<systemname>[A-Za-z0-9]+)/(?P<planetname>[A-Za-z0-9]+)/edit/$',
         views.edit_planet, name='edit_planet'),
     url(r'^(?P<username>[A-Za-z0-9]+)/(?P<systemname>[A-Za-z0-9]+)/(?P<planetname>[A-Za-z0-9]+)/$',
         views.view_planet, name='view_planet'),
+    url(r'^(?P<username>[A-Za-z0-9]+)/(?P<systemname>[A-Za-z0-9]+)/(?P<planetname>[A-Za-z0-9]+)/delete/$',
+        views.delete_planet, name='delete_planet'),
 ]
