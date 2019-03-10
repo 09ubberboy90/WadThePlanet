@@ -31,7 +31,7 @@ def name_validator(name: str):
 
 def content_file_name(instance, filename):
     ext = filename.split('.')[-1]
-    filename = "%s.%s" % (instance.username, ext)
+    filename = f'{instance.username}.{ext}'
     return os.path.join('profile_images/', filename)
 
 # ======================== Models ==============================================
