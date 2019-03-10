@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden ,HttpResponseNotFound
 from planet.webhose_search import run_query
 from planet.models import Planet, Comment, PlanetUser, SolarSystem
-from planet.forms import LoggingForm, RegistrationForm, CommentForm, SolarSystemForm, EditUserForm, LeaderboardForm
+from planet.forms import LoggingForm, RegistrationForm, CommentForm, SolarSystemForm, EditUserForm, LeaderboardForm, PlanetForm
 from django.contrib import messages, auth
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
@@ -101,7 +101,7 @@ def view_system(request: HttpRequest, username: str, systemname: str) -> HttpRes
         '''
         View a specific solar system
         '''
-        system = SolarSystem.objects.get(name=systemname, user__username=username)
+        system = SolarSystem.objects.get(name=systemname)
         planets = Planet.objects.filter(solarSystem__name=systemname)
         try:
             user = PlanetUser.objects.get(username=username)
@@ -229,7 +229,25 @@ def create_system(request: HttpRequest, username: str) -> HttpResponse:
 
 
 def create_planet(request: HttpRequest, username: str, systemname: str) -> HttpResponse:
-    pass
+
+    if request.method == 'POST':
+        form = PlanetForm(request.POST)
+        if form.is_valid():
+            planet = form.save(commit=False)
+            planet.user = request.user
+            planet.solarSystem = SolarSystem.objects.get(name=systemname)
+            planet.texture = form.generate_texture(planet.name)
+            planet.score = 0
+            planet.save()
+            return redirect('view_planet', username=request.user.username, systemname=planet.solarSystem.name, planetname=planet.name)
+        else:
+            messages.error(request, 'Username and Password do not match')
+            print(form.errors)
+    else:
+        form = PlanetForm()
+
+    return render(request, 'planet/create_planet.html', {'form': form, 'username': username, 'systemname': systemname})
+
 
 
 def register(request: HttpRequest) -> HttpResponse:
@@ -285,6 +303,6 @@ def user_logout(request):
 
 def about(request):
 	return render(request, 'planet/about.html')
-	
+
 def contact(request):
 	return render(request, 'planet/contact.html')
