@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from populate_planet import generate_texture
 
 
-class UserTestCase (TestCase):
+class DatabaseCreationTestCase (TestCase):
 	def setUp(self):
 		#Creator object
 		PlanetUser.objects.create(username="Bob", password="Bob12345678", email="Bob@mail.com")
@@ -43,5 +43,20 @@ class UserTestCase (TestCase):
 	def test_comment_created(self):
 		self.assertEqual(Comment.objects.get(user = PlanetUser.objects.get(username="Anne")).rating, 4)
 		
+	def test_leaderboard(self):
+		response = self.client.get(reverse('leaderboard'))
+		self.assertEqual(response.status_code, 200)
+		#Planet in database reflected in leaderboard
+		self.assertContains(response, "Mars")
+		
+	def test_search(self):
+		response = self.client.get("/search/?query=ma")
+		self.assertEqual(response.status_code, 200)
+		#Search finds Mars for 'ma'
+		self.assertContains(response, "Mars")
+		#Search does not find user Anne with search query 'ma'
+		self.assertNotContains(response, "Anne")
+		
 
+		
 		
