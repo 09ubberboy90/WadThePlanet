@@ -15,12 +15,17 @@
 
     {% include 'planet/editor.html' %}
 
-    {% if request.user == planet.user %}
-    <a href="{% url 'edit_planet' planet.solarSystem.user.username planet.solarSystem.name planet.name %}"
-       id="edit-btn" class="btn btn-primary">
-        Edit
-    </a>
-    {% endif %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/sharingbuttons.css' %}">
+    <div class="card text-light bg-dark leftpadder">
+        {% if request.user == planet.user %}
+        <a id="edit-btn" class="btn btn-primary"
+           href="{% url 'edit_planet' planet.solarSystem.user.username planet.solarSystem.name planet.name %}">
+            Edit
+        </a>
+        {% endif %}
+        {% include 'planet/sharingbuttons.html' %}
+    </div>
 
     {% include 'planet/comments.html' %}
+
 {% endblock %}
