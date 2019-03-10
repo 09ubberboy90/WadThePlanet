@@ -31,7 +31,7 @@ SECRET_KEY = 'odf1%pq)s)sq+x15ml$11r!7_)d9e94i&3h-y)q03rg&%4go#$'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-	'wdp.pythonanywhere.com',
+	'wdp.pythonanywhere.com','127.0.0.1'
 ]
 
 # Application definition
