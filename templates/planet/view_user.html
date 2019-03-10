@@ -9,15 +9,15 @@
         </br><img src="{{ user.avatar.url }}" class="img-fluid" width="200">
     {% endif %}
     </div>
-    <div class="col-6 justify-content-center d-flex align-items-center">
+    <div class="col-6 d-flex align-items-center">
     <div>
         Account name : {{username.username}} </br>
         Email : {{username.email}}
     </div>
     </div>
     <div class="col-2">
-    {% if username.username == user.username %}
-        <br><a href="{% url 'edit_user' user %}" class="btn btn-dark" role="button">Edit</a>
+    {% if username == user %}
+        <br><a href="{% url 'edit_user' user %}" class="btn btn-primary" role="button">Edit</a>
         <br><a href="{% url 'delete_user' user %}" class="btn btn-danger" role="button">Delete</a>
     {% endif %}
     </div>

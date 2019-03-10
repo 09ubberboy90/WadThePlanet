@@ -1,11 +1,12 @@
 import base64
 import re
 import logging
+import os
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden ,HttpResponseNotFound
 from planet.webhose_search import run_query
 from planet.models import Planet, Comment, PlanetUser, SolarSystem
-from planet.forms import LoggingForm, RegistrationForm, CommentForm, SolarSystemForm, EditUserForm, LeaderboardForm
+from planet.forms import LoggingForm, RegistrationForm, CommentForm, SolarSystemForm, EditUserForm, LeaderboardForm, PlanetForm
 from django.contrib import messages, auth
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
@@ -80,13 +81,16 @@ def delete_user(request: HttpRequest, username: str) -> HttpResponse:
                 for planet in system_planet:
                     planet.delete()
                 solar.delete()
+            if(u.avatar):
+                os.remove(u.avatar.url)
             u.delete()
-            messages.success(request, "The user is deleted")
         else:
-            HttpResponseForbidden(f'You need to log in as {username} to remove his profile')
-    except PlanetUser.DoesNotExist:
-        messages.error(request, "User does not exist")
-        return redirect('home')
+            message = 'A hacker discovered you tried to get '+ username + ' killed and now threatens to blackmail you'
+            return render(request, 'planet/error.html', {'error': message})
+    except Exception as e:
+        message = 'A fleet of enemy has intercepted your message and refuses to surrender it\n So please try again'
+        message += e
+        return render(request, 'planet/error.html', {'error': message})
 
     return redirect('home')
 
@@ -251,14 +255,33 @@ def create_system(request: HttpRequest, username: str) -> HttpResponse:
 
 
 def create_planet(request: HttpRequest, username: str, systemname: str) -> HttpResponse:
-    pass
+
+    if request.method == 'POST':
+        form = PlanetForm(request.POST)
+        if form.is_valid():
+            planet = form.save(commit=False)
+            planet.user = request.user
+            planet.solarSystem = SolarSystem.objects.get(name=systemname)
+            planet.texture = form.generate_texture(planet.name)
+            planet.score = 0
+            planet.save()
+            return redirect('view_planet', username=request.user.username, systemname=planet.solarSystem.name, planetname=planet.name)
+        else:
+            messages.error(request, 'Username and Password do not match')
+            print(form.errors)
+    else:
+        form = PlanetForm()
+
+    return render(request, 'planet/create_planet.html', {'form': form, 'username': username, 'systemname': systemname})
+
 
 
 def register(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
-        form = RegistrationForm(request.POST)
+        form = RegistrationForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            f = form.save(commit=False)
+            f.save()
             username=form.cleaned_data['username']
             password=form.cleaned_data['password']
             user = auth.authenticate(username=username, password=password)
@@ -306,7 +329,7 @@ def user_logout(request):
     return redirect('home')
 
 def about(request):
-    return render(request, 'planet/about.html')
-    
+	return render(request, 'planet/about.html')
+
 def contact(request):
     return render(request, 'planet/contact.html')
