@@ -8,6 +8,11 @@
 {% endblock %}
 
 {% block padded_content_block %}
+    {% if request.user == system.user %}
+    <div class="card bg-dark text-light float-right">
+      <button class="btn btn-danger">Delete</button>
+    </div>
+    {% endif %}
     <div class="card">
         <h1>{{system.name}}</h1>
         <h4>Owner : </h4> <a href="{% url 'view_user' system.user %}">{{system.user}}</a> </br>

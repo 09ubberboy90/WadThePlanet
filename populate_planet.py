@@ -1,4 +1,4 @@
- 
+
 #!/usr/bin/env python3
 
 import random
@@ -12,6 +12,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "WadThePlanet.settings")
 import django
 django.setup()
 from planet.models import PlanetUser, Planet, SolarSystem,Comment
+
+
 
 
 #Copy the files over to the media destination
@@ -92,6 +94,9 @@ def populate_old():
 
 
 def populate(number):
+    self_dir = os.path.abspath(os.path.dirname(__file__))
+    os.makedirs(os.path.join(self_dir, 'media', 'planets'), exist_ok=True)
+
     populate_old()
     counter = 5
     for t in range(number):
@@ -109,7 +114,7 @@ def populate(number):
                 add_comment(u,planet_object)
 
 def generate_texture(name):
-    img = Image.new('RGB', (2048, 2048), (  
+    img = Image.new('RGB', (2048, 2048), (
         random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
     draw = ImageDraw.Draw(img)
     draw.rectangle((random.randint(0, 2048), random.randint(0, 2048), random.randint(
@@ -127,7 +132,7 @@ def generate_texture(name):
     draw.polygon(pos, fill=(
         random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
 
-    rel_path = 'planets/'+name+'.png' 
+    rel_path = 'planets/'+name+'.png'
     abs_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'media', rel_path)
     if os.path.exists(abs_path):
         os.unlink(abs_path)
