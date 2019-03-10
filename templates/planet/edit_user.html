@@ -13,4 +13,10 @@
     action="{% url 'edit_user' request.user.username %}">
     {% crispy user_form %}
 </form>
+
 {% endblock body %} 
+
+{% block footer %}
+<a onclick="window.history.back()" class="btn btn-primary"> Back</a>
+
+{% endblock footer %}
