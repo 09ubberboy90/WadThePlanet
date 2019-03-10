@@ -14,6 +14,10 @@
                 <h1 class="display-4 font-weight-bold">Create yours<br>now!</h1>
                 <a href="{% url 'register' %}" class="btn btn-elegant btn-lg waves-effect" usage="button">Register</a>
             </div>
+            {% else %}
+            <div class="text-center white-text">
+                <a href="{% url 'create_system' user.username %}" class="btn btn-elegant btn-lg waves-effect" usage="button">Create a Solar System</a>
+            </div>
             {% endif %}
             <!--Grid column-->
         </div>
