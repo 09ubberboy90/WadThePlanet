@@ -18,7 +18,6 @@
             <a class="btn btn-warning" href="{% url 'view_planet' planet.solarSystem.user.username planet.solarSystem.name planet.name %}">Done editing</a>
             <button id="save" class="btn btn-primary" onclick="onSave()">Save</button>
             <button id="reset" class="btn btn-danger" onclick="onReset()">Reset</button>
-        Created by <a href="{% url 'view_user' planet.user.username %}">{{ planet.user.username }}</a>
         </div>
     </div>
 
