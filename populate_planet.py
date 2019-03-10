@@ -125,11 +125,13 @@ def generate_texture(name):
         pos.append((random.randint(0, 2048), random.randint(0, 2048)))
     draw.polygon(pos, fill=(
         random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
-    path = os.path.dirname(os.path.abspath(__file__)) + '/media/planets/'+name+'.png'
-    if os.path.exists(path):
-        os.remove(path)
-    img.save(path,'PNG')
-    return path
+
+    rel_path = 'planets/'+name+'.png' 
+    abs_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'media', rel_path)
+    if os.path.exists(abs_path):
+        os.unlink(abs_path)
+    img.save(abs_path,'JPEG')
+    return rel_path  # Otherwise weird things may happen
 
 
 #helper functions
