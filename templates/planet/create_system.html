@@ -13,5 +13,12 @@
 <form method="post" novalidate class="needs-validation" id="system-form" action="">
     {% crispy form %}
 </form>
+{% if messages %}
+{% for message in messages %}
+<div {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+    {{ message }}
+</div>
+{% endfor %}
+{% endif %}
 
 {% endblock body %}

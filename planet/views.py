@@ -337,11 +337,14 @@ def create_system(request: HttpRequest, username: str) -> HttpResponse:
         form = SolarSystemForm(request.POST)
 
         if form.is_valid():
-            system = form.save(commit=False)
-            system.user = request.user
-            system.views = 0
-            system.save()
-            return redirect('view_system', username=username, systemname=system.name)
+            if SolarSystem.objects.filter(user=request.user, name=form.cleaned_data['name']).count() > 0:
+                messages.error(request, 'You have already created a system with the same name')
+            else:
+                system = form.save(commit=False)
+                system.user = request.user
+                system.views = 0
+                system.save()
+                return redirect('view_system', username=username, systemname=system.name)
         else:
             messages.error(request, '')
             print(form.errors)

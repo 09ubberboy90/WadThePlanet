@@ -72,6 +72,9 @@ class SolarSystem(models.Model):
     # Score of the SolarSystem
     score=models.IntegerField(default=0)
 
+    class Meta:
+        # Disallow multiple solar systems with the same name from the same user
+        unique_together=('user', 'name')
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
