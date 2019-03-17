@@ -18,7 +18,7 @@
         <div class="col-2">
             {% if username == user %}
             <br><a href="{% url 'edit_user' user.username %}" class="btn btn-primary" role="button">Edit</a>
-            <form method="POST" action="{% url 'delete_planet' user.username %}">
+            <form method="POST" action="{% url 'delete_user' user.username %}">
                 {% csrf_token %}
                 <input type="submit" value="delete" class="btn btn-danger">
             </form>
