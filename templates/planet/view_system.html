@@ -14,18 +14,18 @@
         <br>
         <div class="row">
             {% if system.user.avatar %}
-            <div class="col-lg-4 justify-content-center d-flex align-items-center ">
-                </br><img src="{{ system.user.avatar.url }}" class="img-responsive collapse-content" width="200">
-            </div>
-            {% if user.is_authenticated %}
-            <div class="col-lg-6 col-md-10">
-            {% else %}
-            <div class="col-8 col-md-12">
-            {% endif %}
+                <div class="col-lg-4 justify-content-center d-flex align-items-center ">
+                    </br><img src="{{ system.user.avatar.url }}" class="img-responsive collapse-content" width="200">
+                </div>
+                {% if user.is_authenticated %}
+                    <div class="col-lg-6 col-md-10">
+                {% else %}
+                    <div class="col-8 col-md-12">
+                {% endif %}
             {% elif user.is_authenticated%}
-            <div class="col-10">
+                <div class="col-10">
             {% else %}
-            <div class="col-12">
+                <div class="col-12">
             {% endif %}
                 <div class="row">
                     <div class='col-4'>
@@ -48,16 +48,13 @@
                 
             </div>
             {% if user.is_authenticated %}
-            <div class="col-2">
-                {% if system.user == user.username %}
-                <br><a href="{% url 'edit_user' user %}" class="btn btn-primary" role="button">Edit</a>
-                <form method="POST" action="{% url 'delete_planet' user.username planet.solarSystem.name %}">
-                    {% csrf_token %}
-                    <input type="submit" value="delete" class="btn btn-danger">
-                </form>
-                {% endif %}
-                <a href="{% url 'create_planet' system.user system.name%}" class="btn btn-primary flex-wrap" role="button">Create planet</a>
-            </div>
+                <div class="col-2">
+                    {% if system.user == user %}
+                        <a href="{% url 'delete_system' system.user.username system.name %}"
+                        class="btn btn-danger">Delete system</a>
+                    {% endif %}
+                    <a href="{% url 'create_planet' system.user.username system.name%}" class="btn btn-primary flex-wrap" role="button">Create planet</a>
+                </div>
             {% endif %}
         </div>
     </div>

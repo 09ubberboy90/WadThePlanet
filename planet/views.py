@@ -3,7 +3,7 @@ import re
 import logging
 import os
 from typing import List
-from django.shortcuts import render
+from django.shortcuts import render, reverse
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden ,HttpResponseNotFound
 from planet.webhose_search import run_query
 from planet.models import Planet, Comment, PlanetUser, SolarSystem
@@ -30,6 +30,11 @@ def get_mvps(model: 'Model', criteria: str='-score') -> List:
 def render_error(request: HttpRequest, message: str) -> HttpResponse:
     '''Renders an error page with the given message.'''
     return render(request, 'planet/error.html', {'error': message})
+
+def render_delete_page(request: HttpRequest, message: str, post_url: str) -> HttpResponse:
+    '''Renders a "confirm deletion?" form that will show the given message and, if
+    the user confirms the deletion, POST to `post_url`.'''
+    return render(request, 'planet/delete.html', {'message': message, 'post_url': post_url})
 
 # ======================== Views ===============================================
 
@@ -98,16 +103,24 @@ def delete_user(request: HttpRequest, username: str) -> HttpResponse:
     '''
     Deletes the currently logged-in user.
     Only a logged-in user is allowed to delete its own account, so `username` must match `request.user.username`.
+    GET: Shows the "confirm deletion" form
     POST: Deletes the user, his planets, his solar systems and the planets in his
           solar systems (even if they are by other users). Returns an error if the
           name does not match.
-    GET: Returns an error, only POST allowed.
     '''
     try:
-        if request.method != 'POST':
-            raise ValueError()
+        if request.user.username != username:
+            message = 'A hacker discovered you tried to get '+ username + ' killed and now threatens to blackmail you'
+            return render_error(request, message)
 
-        if request.user.username == username:
+        if request.method == 'GET':
+            return render_delete_page(request,
+                message=f'This will delete the user {username}, his solar systems '
+                         'and all planets in his solar systems (even if they are not his own). '
+                         'Are you sure?',
+                post_url=reverse('delete_user', args=[username]))
+        else:
+            # POST
             u = PlanetUser.objects.get(username=request.user.username)
             planets = Planet.objects.filter(user__username=username)
             solars = SolarSystem.objects.filter(user__username=username)
@@ -121,13 +134,10 @@ def delete_user(request: HttpRequest, username: str) -> HttpResponse:
             if u.avatar:
                 os.remove(u.avatar.path)
             u.delete()
-        else:
-            message = 'A hacker discovered you tried to get '+ username + ' killed and now threatens to blackmail you'
-            return render_error(request, message)
 
     except Exception as e:
         message = 'A fleet of enemy has intercepted your message and refuses to surrender it\n So please try again'
-        #message += e
+        message += e
         return render_error(request, message)
 
     return redirect('home')
@@ -137,21 +147,28 @@ def delete_system(request: HttpRequest, username: str, systemname: str) -> HttpR
     '''
     Deletes the current system.
     Only a logged-in user is allowed to delete its own system, so `solar.user.username` must match `request.user.username`.
+    GET: Renders the "confirm deletion" page
     POST: Deletes his solar system and the planets in it
-    GET: Returns an error, only POST allowed.
     '''
     try:
-        if request.method != 'POST':
-            raise ValueError()
         solar = SolarSystem.objects.get(name=systemname)
-        if request.user.username == solar.user.username:
+        if request.user.username != solar.user.username:
+            message = 'You tried to destroy ' + systemname + ', but it\'s not yours >:('
+            return render_error(request, message)
+
+        if request.method == 'GET':
+            return render_delete_page(request,
+                message=f'The solar system {systemname} will be deleted,'
+                         'and all contained planets with it (even if they are not yours).'
+                         'Are you sure?',
+                post_url=reverse('delete_system', args=[username, systemname]))
+        else:
+            # POST
             planets = Planet.objects.filter(solarSystem__name=systemname)
             for planet in planets:
                 planet.delete()
             solar.delete()
-        else:
-            message = 'A hacker discovered you tried to get ' + systemname + ' destroy and now threatens to blackmail you'
-            return render_error(request, message)
+
     except Exception as e:
         message = 'A fleet of enemy has intercepted your message and refuses to surrender it\n So please try again'
         #message += e
@@ -165,22 +182,25 @@ def delete_planet(request: HttpRequest, username: str, systemname: str, planetna
     '''
     Deletes the current planet.
     Only a logged-in user is allowed to delete its own planet, so `username` must match `request.user.username`.
+    GET: Renders the "confirm deletion" form
     POST: Deletes the user, his planets, his solar systems and the planets in his
           solar systems (even if they are by other users). Returns an error if the
           name does not match.
-    GET: Returns an error, only POST allowed.
     '''
     try:
-        if request.method != 'POST':
-            raise ValueError()
-
         planet = Planet.objects.get(name=planetname)
-        if request.user.username == planet.user.username:
-            planet.delete()
-        else:
+        if request.user.username != planet.user.username:
             message = 'A hacker discovered you tried to get ' + \
                 planetname + ' destroyed and now threatens to blackmail you'
             return render_error(request, message)
+
+        if request.method == 'GET':
+            return render_delete_page(request,
+                message=f'This will delete the planet {planetname}, are you sure?',
+                post_url=reverse('delete_planet', args=[username, systemname, planetname]))
+        else:
+            # POST
+            planet.delete()
 
     except Exception as e:
         message = 'A fleet of enemy has intercepted your message and refuses to surrender it\n So please try again'
