@@ -2,6 +2,7 @@ import base64
 import re
 import logging
 import os
+import functools
 from typing import List
 from django.shortcuts import render, reverse
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden ,HttpResponseNotFound
@@ -85,8 +86,14 @@ def view_user(request: HttpRequest, username: str) -> HttpResponse:
     '''
     try:
         user = PlanetUser.objects.get(username=username)
-        planets = Planet.objects.filter(user__username=username)
-        solar = SolarSystem.objects.filter(user__username=username)
+
+        if user != request.user:
+            planets = Planet.objects.filter(user__username=username, visibility=True)
+            solar = SolarSystem.objects.filter(user__username=username, visibility=True)
+        else:
+            planets = Planet.objects.filter(user__username=username)
+            solar = SolarSystem.objects.filter(user__username=username)
+
     except (PlanetUser.DoesNotExist,Planet.DoesNotExist,SolarSystem.DoesNotExist):
         raise Http404(username)
 
@@ -247,7 +254,12 @@ def view_system(request: HttpRequest, username: str, systemname: str) -> HttpRes
     '''
     try:
         system = SolarSystem.objects.get(name=systemname, user__username=username)
-        planets = Planet.objects.filter(solarSystem=system)
+        if request.user != system.user and not system.visibility:
+            return render_error(request, 'This system is private')
+
+        planets = Planet.objects.filter(solarSystem=system, visibility=True)
+        planets = planets.union(Planet.objects.filter(solarSystem=system, visibility=False, user=request.user))
+
     except SolarSystem.DoesNotExist:
         raise Http404()
 
@@ -272,7 +284,7 @@ def view_planet(request: HttpRequest, username: str, systemname: str, planetname
         raise Http404()
 
     if planet.user != request.user and not planet.visibility:
-        return HttpResponseForbidden(f'This planet is hidden')
+        return render_error(request, 'This planet is private')
 
     context = {
         'comments': Comment.objects.filter(planet=planet),
