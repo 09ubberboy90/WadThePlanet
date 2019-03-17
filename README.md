@@ -1,6 +1,20 @@
 # WadThePlanet??
 It's like Facebook, but with more planets.
 
+### Setup
+Requires Python 3.6+.
+- Pull the repo.
+- `cd planetWad; virtualenv venv; cd venv`
+- `pip install -r requirements.txt`
+- `python manage.py makemigrations planet`
+- `python manage.py migrate`
+- `python populate_planet.py`
+- `python manage.py runserver`
+
+The site can be accessed from `127.0.0.1:8000` (not `localhost:8000` due to security restrictions`).
+
+* * * * *
+
 ### Server-side and middleware
 - [Django 1.11](https://www.djangoproject.com/)
 - [Django Crispy Forms](https://django-crispy-forms.readthedocs.io/en/latest/)
@@ -29,3 +43,5 @@ It's like Facebook, but with more planets.
 - [Tango With Django](https://www.tangowithdjango.com/)
 - [Django documentation](https://docs.djangoproject.com/en/1.11/)
 - [Three.js examples](https://threejs.org/examples/)
+
+

@@ -27,6 +27,10 @@ def get_mvps(model: 'Model', criteria: str='-score') -> List:
     '''
     return model.objects.exclude(visibility=False).order_by(criteria)
 
+def render_error(request: HttpRequest, message: str) -> HttpResponse:
+    '''Renders an error page with the given message.'''
+    return render(request, 'planet/error.html', {'error': message})
+
 # ======================== Views ===============================================
 
 
@@ -119,12 +123,12 @@ def delete_user(request: HttpRequest, username: str) -> HttpResponse:
             u.delete()
         else:
             message = 'A hacker discovered you tried to get '+ username + ' killed and now threatens to blackmail you'
-            return render(request, 'planet/error.html', {'error': message})
+            return render_error(request, message)
 
     except Exception as e:
         message = 'A fleet of enemy has intercepted your message and refuses to surrender it\n So please try again'
         #message += e
-        return render(request, 'planet/error.html', {'error': message})
+        return render_error(request, message)
 
     return redirect('home')
 
@@ -147,11 +151,11 @@ def delete_system(request: HttpRequest, username: str, systemname: str) -> HttpR
             solar.delete()
         else:
             message = 'A hacker discovered you tried to get ' + systemname + ' destroy and now threatens to blackmail you'
-            return render(request, 'planet/error.html', {'error': message})
+            return render_error(request, message)
     except Exception as e:
         message = 'A fleet of enemy has intercepted your message and refuses to surrender it\n So please try again'
         #message += e
-        return render(request, 'planet/error.html', {'error': message})
+        return render_error(request, message)
 
     return redirect('home')
 
@@ -176,12 +180,12 @@ def delete_planet(request: HttpRequest, username: str, systemname: str, planetna
         else:
             message = 'A hacker discovered you tried to get ' + \
                 planetname + ' destroyed and now threatens to blackmail you'
-            return render(request, 'planet/error.html', {'error': message})
+            return render_error(request, message)
 
     except Exception as e:
         message = 'A fleet of enemy has intercepted your message and refuses to surrender it\n So please try again'
         #message += e
-        return render(request, 'planet/error.html', {'error': message})
+        return render_error(request, message)
 
     return redirect('home')
 
