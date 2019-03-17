@@ -96,13 +96,16 @@ def populate_old():
 def populate(number):
     self_dir = os.path.abspath(os.path.dirname(__file__))
     os.makedirs(os.path.join(self_dir, 'media', 'planets'), exist_ok=True)
-
+    print("Generating manual User")
     populate_old()
     counter = 5
+    userLs = []
+    planetLs = []
     for t in range(number):
         username = "".join(random.choice(string.ascii_lowercase) for i in range(6,15))
         print("Generating Solar systems and planet for user : " + username)
         u = add_user(username)
+        userLs.append(u)
         for i in range(random.randint(2,5)):
             SolarSystemName = "SolarSystem"+str(counter)
             SolarSystemDescription = "".join(random.choice(string.ascii_lowercase) for i in range(100))
@@ -111,7 +114,13 @@ def populate(number):
                 planetName = "planet"+str(counter)
                 counter+=1
                 planet_object = add_planet(planetName, u, s, generate_texture(planetName),counter%20!=0)
-                add_comment(u,planet_object)
+                planetLs.append(planet_object)
+    for people in userLs:
+        commenting = random.randint(1,10)
+        for planet in planetLs:
+            if random.randint(0,5) % commenting == 0:
+                print(people.username + "is commenting on " + planet.name)
+                add_comment(people, planet)
 
 def generate_texture(name):
     img = Image.new('RGB', (2048, 2048), (
