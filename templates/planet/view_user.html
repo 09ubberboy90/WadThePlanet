@@ -4,24 +4,27 @@
 {% block padded_content_block %}
 <div class="text-light">
     <div class="row">
-    <div class="col-4 justify-content-center d-flex align-items-center">
-    {% if username.avatar %}
-        </br><img src="{{ username.avatar.url }}" class="img-fluid" width="200">
-    {% endif %}
-    </div>
-    <div class="col-6 d-flex align-items-center">
-    <div>
-        Account name : {{username.username}} </br>
-        Email : {{username.email}}
-    </div>
-    </div>
-    <div class="col-2">
-    {% if username == user %}
-        <br><a href="{% url 'edit_user' user %}" class="btn btn-primary" role="button">Edit</a>
-        <br><a href="{% url 'delete_user' user %}" class="btn btn-danger" role="button">Delete</a>
-        <br><a href="{% url 'create_system' user %}" class="btn btn-primary flex-wrap" role="button">create system</a>
-    {% endif %}
-    </div>
+        <div class="col-4 justify-content-center d-flex align-items-center">
+            {% if username.avatar %}
+            </br><img src="{{ username.avatar.url }}" class="img-fluid" width="200">
+            {% endif %}
+        </div>
+        <div class="col-6 d-flex align-items-center">
+            <div>
+                Account name : {{username.username}} </br>
+                Email : {{username.email}}
+            </div>
+        </div>
+        <div class="col-2">
+            {% if username == user %}
+            <br><a href="{% url 'edit_user' user.username %}" class="btn btn-primary" role="button">Edit</a>
+            <form method="POST" action="{% url 'delete_planet' user.username %}">
+                {% csrf_token %}
+                <input type="submit" value="delete" class="btn btn-danger">
+            </form>
+            <a href="{% url 'create_system' user.username %}" class="btn btn-primary flex-wrap" role="button">create system</a>
+            {% endif %}
+        </div>
     </div>
 </div>
 <br>

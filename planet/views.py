@@ -114,8 +114,8 @@ def delete_user(request: HttpRequest, username: str) -> HttpResponse:
                 for planet in system_planet:
                     planet.delete()
                 solar.delete()
-            if(u.avatar):
-                os.remove(u.avatar.url)
+            if u.avatar:
+                os.remove(u.avatar.path)
             u.delete()
         else:
             message = 'A hacker discovered you tried to get '+ username + ' killed and now threatens to blackmail you'

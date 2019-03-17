@@ -18,12 +18,16 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/sharingbuttons.css' %}">
     <div class="card text-light bg-dark leftpadder">
         {% if request.user == planet.user %}
+        <form method="POST" action="{% url 'delete_planet' user.username planet.solarSystem.name planet.name %}">
+            {% csrf_token %}    
+            <input type="submit" value="delete" class="btn btn-danger">
+        </form>        
+        {% include 'planet/sharingbuttons.html' %}
         <a id="edit-btn" class="btn btn-primary"
            href="{% url 'edit_planet' planet.solarSystem.user.username planet.solarSystem.name planet.name %}">
             Edit
         </a>
         {% endif %}
-        {% include 'planet/sharingbuttons.html' %}
     </div>
 
     {% include 'planet/comments.html' %}
