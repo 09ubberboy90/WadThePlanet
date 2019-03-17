@@ -42,7 +42,11 @@
             {% elif user.is_authenticated%}
             {% if user == username %}
             <div class="col-3">
-                {{ system.visibility }}
+                {% if system.visibility %}
+                    <i class="fas fa-eye"></i> Visible
+                {% else %}
+                    <i class="fas fa-eye-slash"></i> Private
+                {% endif %}
             </div>
             {% endif %}
             {% endif %}
