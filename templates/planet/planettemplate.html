@@ -9,7 +9,11 @@
                     Planet name
                 </div>
                 <div class="col-3">
+                    {% if page == 'leaderboard' %}
                     Solar System
+                    {% else %}
+                    Owner
+                    {% endif %}
                 </div>
                 <div class="col-3">
                     Score
@@ -30,7 +34,11 @@
                 <a href="{% url 'view_planet' planet.solarSystem.user.username planet.solarSystem.name planet.name %}">{{ planet.name }}</a>
             </div>
             <div class="col-3">
+                {% if page == 'leaderboard' %}
                 <a href="{% url 'view_system' planet.solarSystem.user.username planet.solarSystem.name %}">{{ planet.solarSystem.name }}</a>
+                {% else %}
+                <a href="{% url 'view_user' planet.solarSystem.user.username %}">{{ planet.solarSystem.user.username }}</a>
+                {% endif %}
             </div>
             <div class="col-3">
                 {{planet.score}}
