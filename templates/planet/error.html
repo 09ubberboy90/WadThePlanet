@@ -1,7 +1,14 @@
 {% extends 'planet/base.html' %}
 {% block padded_content_block %}
-<div class="text-center text-danger">
-    {{error}}
-    <br><a onclick="window.history.back()" class="btn btn-dark"> Back</a>
+<div class="justify-content-center row mt-2">
+    <div class="card col-md-6 bg-danger text-white">
+        <div class="card-header">
+            Error
+        </div>
+        <div class="card-body">
+            {{ error }}
+            <br><a onclick="window.history.back()" class="btn btn-primary"> Back</a>
+        </div>
+    </div>
 </div>
 {% endblock padded_content_block %}
