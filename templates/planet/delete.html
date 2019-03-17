@@ -1,0 +1,14 @@
+{% extends 'planet/base.html' %}
+{% block padded_content_block %}
+<div class="card text-white bg-danger">
+    <div class="card-body">
+        <p>{{ message }}</p>
+        <br>
+        <form method="POST" action="{{ post_url }}">
+            {% csrf_token %}
+            <a onclick="window.history.back()" class="btn btn-primary">Cancel</a>
+            <input type="submit" value="delete" class="btn btn-danger">
+        </form>
+    </div>
+</div>
+{% endblock padded_content_block %}

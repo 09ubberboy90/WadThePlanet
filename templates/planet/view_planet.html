@@ -17,16 +17,26 @@
 
     <link rel="stylesheet" type="text/css" href="{% static 'css/sharingbuttons.css' %}">
     <div class="card text-light bg-dark leftpadder">
-        {% if request.user == planet.user %}
-        <form method="POST" action="{% url 'delete_planet' user.username planet.solarSystem.name planet.name %}">
-            {% csrf_token %}    
-            <input type="submit" value="delete" class="btn btn-danger">
-        </form>        
         {% include 'planet/sharingbuttons.html' %}
-        <a id="edit-btn" class="btn btn-primary"
-           href="{% url 'edit_planet' planet.solarSystem.user.username planet.solarSystem.name planet.name %}">
-            Edit
-        </a>
+
+        {% if request.user == planet.user %}
+            <div class="btn-group">
+                <a id="edit-btn" class="btn btn-primary col-10"
+                href="{% url 'edit_planet' planet.solarSystem.user.username planet.solarSystem.name planet.name %}">
+                    Edit planet
+                </a>
+                <a id="delete-btn" href="{% url 'delete_planet' planet.solarSystem.user.username planet.solarSystem.name planet.name %}"
+                class="btn btn-danger col-2">
+                    Delete planet
+                </a>
+            </div>
+            {% if not planet.visibility %}
+                <div class="card bg-secondary">
+                    <div class="card-body text-center text-light">
+                        <i class="fas fa-eye-slash"></i> This planet is private, only you can see it
+                    </div>
+                </div>
+            {% endif %}
         {% endif %}
     </div>
 
