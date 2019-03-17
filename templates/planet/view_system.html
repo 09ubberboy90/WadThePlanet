@@ -54,6 +54,11 @@
                         class="btn btn-danger">Delete system</a>
                     {% endif %}
                     <a href="{% url 'create_planet' system.user.username system.name%}" class="btn btn-primary flex-wrap" role="button">Create planet</a>
+                    {% if not system.visibility %}
+                        <div class="text-secondary">
+                            <i class="fas fa-eye-slash"></i> This solar system is private, only you can see it
+                        </div>
+                    {% endif %}
                 </div>
             {% endif %}
         </div>

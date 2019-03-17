@@ -146,7 +146,7 @@ class SolarSystemForm(forms.ModelForm):
                            help_text="Name of the SolarSystem: ")
     description = forms.CharField(max_length=160,
                             help_text="Description of the SolarSystem")
-    visibility = forms.BooleanField(label='Make public', required=False)
+    visibility = forms.BooleanField(label='Make public', required=False, initial=True)
     #visibility = forms.BooleanField(initial = True)
 
     class Meta:
@@ -170,7 +170,7 @@ class SolarSystemForm(forms.ModelForm):
 class PlanetForm(forms.ModelForm):
     name = forms.CharField(min_length=6, max_length=50,
                            help_text="Name of the Planet: ")
-    visibility = forms.BooleanField(label='Make public', required=False)
+    visibility = forms.BooleanField(label='Make public', required=False, initial=True)
 
     class Meta:
         model = Planet

@@ -68,7 +68,7 @@ class SolarSystem(models.Model):
     # Description of the SolarSystem
     description=models.CharField(max_length=160)
     # Privacy setting of planet. Visibility True - visible to all users
-    visibility=models.BooleanField(default=True)
+    visibility=models.BooleanField(blank=False, default=True)
     # Score of the SolarSystem
     score=models.IntegerField(default=0)
 
@@ -99,7 +99,7 @@ class Planet(models.Model):
     # The planet's texture (as painted by the user).
     texture=models.ImageField(null=False, upload_to='planets')
     # Privacy setting of planet. Visibility True - visible to all users
-    visibility=models.BooleanField(default=True)
+    visibility=models.BooleanField(blank=False, default=True)
     # Score of the planet
     score=models.IntegerField(default=0)
 

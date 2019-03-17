@@ -30,6 +30,13 @@
                     Delete planet
                 </a>
             </div>
+            {% if not planet.visibility %}
+                <div class="card bg-secondary">
+                    <div class="card-body text-center text-light">
+                        <i class="fas fa-eye-slash"></i> This planet is private, only you can see it
+                    </div>
+                </div>
+            {% endif %}
         {% endif %}
     </div>
 
