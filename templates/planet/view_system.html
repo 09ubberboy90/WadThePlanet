@@ -11,17 +11,18 @@
 <div class="card">
     <div class="card-body">
         <h1>{{system.name}}</h1>
+        <br>
         <div class="row">
             {% if system.user.avatar %}
             <div class="col-lg-4 justify-content-center d-flex align-items-center ">
                 </br><img src="{{ system.user.avatar.url }}" class="img-responsive collapse-content" width="200">
             </div>
-            {% if system.user == user%}
+            {% if user.is_authenticated %}
             <div class="col-lg-6 col-md-10">
             {% else %}
             <div class="col-8 col-md-12">
             {% endif %}
-            {% elif system.user == user%}
+            {% elif user.is_authenticated%}
             <div class="col-10">
             {% else %}
             <div class="col-12">
@@ -46,13 +47,18 @@
                 </div>
                 
             </div>
-            {% if system.user == user %}
-                <div class="col-2">
-                    <br><a href="{% url 'edit_user' user %}" class="btn btn-primary" role="button">Edit</a>
-                    <br><a href="{% url 'delete_user' user %}" class="btn btn-danger" role="button">Delete</a>
-                    <br><a href="{% url 'create_planet' user system.name%}" class="btn btn-primary flex-wrap" role="button">Create planet</a>
-                </div>
+            {% if user.is_authenticated %}
+            <div class="col-2">
+                {% if system.user == user.username %}
+                <br><a href="{% url 'edit_user' user %}" class="btn btn-primary" role="button">Edit</a>
+                <form method="POST" action="{% url 'delete_planet' user.username planet.solarSystem.name %}">
+                    {% csrf_token %}
+                    <input type="submit" value="delete" class="btn btn-danger">
+                </form>
                 {% endif %}
+                <a href="{% url 'create_planet' system.user system.name%}" class="btn btn-primary flex-wrap" role="button">Create planet</a>
+            </div>
+            {% endif %}
         </div>
     </div>
     <br>
