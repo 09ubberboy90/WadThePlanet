@@ -108,7 +108,9 @@ def populate(number):
         userLs.append(u)
         for i in range(random.randint(2,5)):
             SolarSystemName = "SolarSystem"+str(counter)
-            SolarSystemDescription = "".join(random.choice(string.ascii_lowercase) for i in range(100))
+            SolarSystemDescription = ""
+            for j in range(1,16):
+                SolarSystemDescription += " " + "".join(random.choice(string.ascii_lowercase) for i in range(random.randint(2,10)))
             s = add_solarSys(u, SolarSystemName, SolarSystemDescription)
             for planet in range(random.randint(2,5)):
                 planetName = "planet"+str(counter)

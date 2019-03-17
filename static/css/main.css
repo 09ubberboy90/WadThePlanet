@@ -59,6 +59,18 @@ body {
     padding-left: 220px;
 }
 
+/* not active */
+.nav-pills .pill-leaderboard .nav-link:not(.active) {
+    background-color: #212121;
+    color: white;
+}
+
+/* active (faded) */
+.nav-pills .pill-leaderboard .nav-link {
+    color: white;
+    background-color: #007bff;
+}
+
 @media (max-width: 992px) {
     .navbar:not(.top-nav-collapse) {
         background: #1C2331 !important;
