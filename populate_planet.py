@@ -167,7 +167,7 @@ def add_comment(user,planet):
     comment = Comment.objects.create(user=user,planet=planet,comment="abc",rating=1)
     comment.comment = "".join(random.choice(
         string.ascii_lowercase) for i in range(10))
-    comment.rating = random.randint(1,6)
+    comment.rating = random.randint(1,5)
     comment.save()
     return comment
 

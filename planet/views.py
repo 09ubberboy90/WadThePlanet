@@ -337,11 +337,14 @@ def create_system(request: HttpRequest, username: str) -> HttpResponse:
         form = SolarSystemForm(request.POST)
 
         if form.is_valid():
-            system = form.save(commit=False)
-            system.user = request.user
-            system.views = 0
-            system.save()
-            return redirect('view_system', username=username, systemname=system.name)
+            if SolarSystem.objects.filter(user=request.user, name=form.cleaned_data['name']).count() > 0:
+                messages.error(request, 'You have already created a system with the same name')
+            else:
+                system = form.save(commit=False)
+                system.user = request.user
+                system.views = 0
+                system.save()
+                return redirect('view_system', username=username, systemname=system.name)
         else:
             messages.error(request, '')
             print(form.errors)
@@ -365,16 +368,19 @@ def create_planet(request: HttpRequest, username: str, systemname: str) -> HttpR
         form = PlanetForm(request.POST)
         if form.is_valid():
             system = SolarSystem.objects.get(user__username=username, name=systemname)
-            planet = form.save(commit=False)
-            planet.user = request.user
-            planet.solarSystem = system
-            planet.texture = form.generate_texture(planet.name)
-            planet.score = 0
-            planet.save()
-            return redirect('view_planet',
-                username=system.user.username, systemname=planet.solarSystem.name, planetname=planet.name)
+            if Planet.objects.filter(solarSystem=system, name=form.cleaned_data['name']).count() > 0:
+                messages.error(request, 'A planet with the same name already exists in the solar system')
+            else:
+                planet = form.save(commit=False)
+                planet.user = request.user
+                planet.solarSystem = system
+                planet.texture = form.generate_texture(planet.name)
+                planet.score = 0
+                planet.save()
+                return redirect('view_planet',
+                    username=system.user.username, systemname=planet.solarSystem.name, planetname=planet.name)
         else:
-            messages.error(request, 'Username and Password do not match')
+            messages.error(request, 'Invalid input')
             print(form.errors)
     else:
         form = PlanetForm()

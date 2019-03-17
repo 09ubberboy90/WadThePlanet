@@ -10,7 +10,7 @@ class GeneralTests(TestCase):
 		self.assertTemplateUsed(response, 'planet/base.html')
 
 	
-	
+#Tests with manually created objects	
 class DatabaseCreationTestCase (TestCase):
 	def setUp(self):
 		#Creator object
@@ -75,6 +75,7 @@ class DatabaseCreationTestCase (TestCase):
 		self.assertContains(response, "Created by")
 		self.assertContains(response, "Please log in to leave a rating")
 
+#Tests with population script
 class PopulationScript(TestCase):
 	#Running population script
 	def setUp(self):

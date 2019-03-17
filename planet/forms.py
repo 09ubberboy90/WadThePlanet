@@ -1,3 +1,5 @@
+import random
+from PIL import Image, ImageDraw
 from django import forms
 from django.forms import ModelForm
 from planet.models import *
@@ -164,8 +166,7 @@ class SolarSystemForm(forms.ModelForm):
             )
         )
 
-from PIL import Image, ImageDraw
-import random
+
 class PlanetForm(forms.ModelForm):
     name = forms.CharField(min_length=6, max_length=50,
                            help_text="Name of the Planet: ")
@@ -197,8 +198,6 @@ class PlanetForm(forms.ModelForm):
         abs_dest_path = os.path.join(self_path, 'media', rel_dest_path)
         img.save(abs_dest_path, 'JPEG')
         return rel_dest_path
-
-
 
 
 class EditUserForm(forms.Form):

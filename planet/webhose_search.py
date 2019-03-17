@@ -3,14 +3,6 @@ import django
 from planet.models import Planet, SolarSystem, PlanetUser
 from typing import Iterable, Tuple
 
-# Don;t need this
-#import json
-#import urllib.parse
-#import urllib.request
-#
-#os.environ.setdefault("DJANGO_SETTINGS_MODULE", "planet.settings")
-#django.setup()
-
 def run_query(search_terms: Iterable[str], count: int = 100) -> Tuple:
     # Find planets that are visible and contain search term in their name
     found_planets = Planet.objects.all().exclude(

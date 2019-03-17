@@ -72,6 +72,9 @@ class SolarSystem(models.Model):
     # Score of the SolarSystem
     score=models.IntegerField(default=0)
 
+    class Meta:
+        # Disallow multiple solar systems with the same name from the same user
+        unique_together=('user', 'name')
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -100,6 +103,9 @@ class Planet(models.Model):
     # Score of the planet
     score=models.IntegerField(default=0)
 
+    class Meta:
+        # Disallow multiple planets with the same name in the same solar system
+        unique_together=('solarSystem', 'name')
 
     def save(self, *args, **kwargs):
         # Overridden save() method that resizes the uploaded `texture` if required
