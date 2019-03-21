@@ -24,7 +24,7 @@
 
                 <div class="col-3 d-flex align-items-center">
                     <a href="{% url 'view_user' comment.user.username %}">
-                        {% if user.avatar %}
+                        {% if comment.user.avatar %}
                             <img src="{{ comment.user.avatar.url }}" alt="{{ comment.user.username }}'s avatar"
                                 class="img-thumbnail user-avatar">
                         {% else %}
