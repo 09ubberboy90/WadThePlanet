@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 import re
 from django.core.exceptions import ValidationError
+from django.dispatch import receiver
 
 
 # ======================== Utilities ===========================================
@@ -120,6 +121,11 @@ class Planet(models.Model):
                     (self.TEXTURE_SIZE, self.TEXTURE_SIZE), resample=PIL.Image.BICUBIC)
                 pil_img.save(self.texture.path, quality=90, optimize=True)
 
+    def delete(self, *args, **kwargs):
+        self.solarSystem.score -= self.score
+        self.solarSystem.save()
+        super().delete(*args, **kwargs)
+
     def __str__(self) -> str:
         return self.name
 
@@ -162,3 +168,10 @@ class Comment(models.Model):
         # Apply the changes to the DB row
         super().save(*args, **kwargs)
         return self
+
+    def delete(self, *args, **kwargs):
+        self.planet.score -= self.score
+        self.planet.save()
+        self.planet.solarSystem.score -= self.score
+        self.planet.solarSystem.save()
+        super().delete(*args, **kwargs)
