@@ -258,7 +258,7 @@ def view_system(request: HttpRequest, username: str, systemname: str) -> HttpRes
             return render_error(request, 'This system is private')
 
         planets = Planet.objects.filter(solarSystem=system, visibility=True)
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             planets = planets.union(Planet.objects.filter(solarSystem=system, visibility=False, user=request.user))
 
     except SolarSystem.DoesNotExist:

@@ -63,19 +63,20 @@ class SolarSystem(models.Model):
     # An unique numeric id for each SolarSystem
     id = models.AutoField(null=False, primary_key=True)
     # foreign key to the owner
-    user = models.ForeignKey(PlanetUser)
+    user = models.ForeignKey(PlanetUser, on_delete=models.CASCADE)
     # The name of the SolarSystem
-    name = models.CharField(null=False, max_length=50, validators=[name_validator])
+    name = models.CharField(null=False, max_length=50,
+                            validators=[name_validator])
     # Description of the SolarSystem
-    description=models.CharField(max_length=160)
+    description = models.CharField(max_length=160)
     # Privacy setting of planet. Visibility True - visible to all users
-    visibility=models.BooleanField(blank=False, default=True)
+    visibility = models.BooleanField(blank=False, default=True)
     # Score of the SolarSystem
-    score=models.IntegerField(default=0)
+    score = models.IntegerField(default=0)
 
     class Meta:
         # Disallow multiple solar systems with the same name from the same user
-        unique_together=('user', 'name')
+        unique_together = ('user', 'name')
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -86,33 +87,33 @@ class SolarSystem(models.Model):
 
 class Planet(models.Model):
     # The size of the textures to save (in pixels, should be power-of-two)
-    TEXTURE_SIZE=2048
+    TEXTURE_SIZE = 2048
 
     # An unique numeric id for each planet
-    id=models.AutoField(null=False, primary_key=True)
+    id = models.AutoField(null=False, primary_key=True)
     # The name of the planet
-    name=models.CharField(null=False, max_length=50,
-                          validators=[name_validator])
+    name = models.CharField(null=False, max_length=50,
+                            validators=[name_validator])
     # foreign key to the owner
-    user=models.ForeignKey(PlanetUser)
+    user = models.ForeignKey(PlanetUser, on_delete=models.CASCADE)
     # foreign key to the solarsystem it belongs to
-    solarSystem=models.ForeignKey(SolarSystem)
+    solarSystem = models.ForeignKey(SolarSystem, on_delete=models.CASCADE)
     # The planet's texture (as painted by the user).
-    texture=models.ImageField(null=False, upload_to='planets')
+    texture = models.ImageField(null=False, upload_to='planets')
     # Privacy setting of planet. Visibility True - visible to all users
-    visibility=models.BooleanField(blank=False, default=True)
+    visibility = models.BooleanField(blank=False, default=True)
     # Score of the planet
-    score=models.IntegerField(default=0)
+    score = models.IntegerField(default=0)
 
     class Meta:
         # Disallow multiple planets with the same name in the same solar system
-        unique_together=('solarSystem', 'name')
+        unique_together = ('solarSystem', 'name')
 
     def save(self, *args, **kwargs):
         # Overridden save() method that resizes the uploaded `texture` if required
         super().save(*args, **kwargs)
         with PIL.Image.open(self.texture.path) as pil_img:
-            width, height=pil_img.size
+            width, height = pil_img.size
             if width != self.TEXTURE_SIZE or height != self.TEXTURE_SIZE:
                 # Rescale image to correct size and save
                 logger.debug(f'Planet{self.id}: Image has wrong size {width}x{height},'
@@ -129,19 +130,20 @@ class Planet(models.Model):
     def __str__(self) -> str:
         return self.name
 
+
 class Comment(models.Model):
     # A list of (number, choice to show to the user) pair for ratings
-    CHOICES=[(0, 'No rating')] + \
-              [(n, f'{"🟊" * n}{"☆" * (5 - n)}') for n in range(1, 6)]
+    CHOICES = [(0, 'No rating')] + \
+        [(n, f'{"🟊" * n}{"☆" * (5 - n)}') for n in range(1, 6)]
 
-    planet=models.ForeignKey(Planet)
-    user=models.ForeignKey(PlanetUser)
-    comment=models.CharField(max_length=200, null=False)
-    rating=models.IntegerField(choices=CHOICES, null=False)
+    planet = models.ForeignKey(Planet, on_delete=models.CASCADE)
+    user = models.ForeignKey(PlanetUser, on_delete=models.CASCADE)
+    comment = models.CharField(max_length=200, null=False)
+    rating = models.IntegerField(choices=CHOICES, null=False)
 
     class Meta:
         # Disallow multiple comments on a planet from the same user
-        unique_together=('planet', 'user')
+        unique_together = ('planet', 'user')
 
     def save(self, *args, **kwargs):
         '''
